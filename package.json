@@ -13,8 +13,7 @@
     "type": "git",
     "url": ""
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -22,9 +21,11 @@
     "clean-webpack-plugin": "^0.1.16",
     "cross-env": "^5.0.4",
     "css-loader": "^0.28.7",
-    "handlebars-loader": "^1.6.0",
     "file-loader": "^0.11.2",
+    "handlebars": "^4.0.10",
+    "handlebars-loader": "^1.6.0",
     "html-webpack-plugin": "^2.30.1",
+    "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
