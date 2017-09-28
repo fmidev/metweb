@@ -31,6 +31,8 @@ module.exports = {
         }),
 
         new webpack.ProvidePlugin({
+	        $: 'jquery',
+			jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
@@ -79,7 +81,7 @@ module.exports = {
                         loader: 'less-loader',
                         options: {
                             sourceMap: IS_DEV,
-                            includePaths: [dirAssets]
+                            includePaths: [dirAssets],
                         }
                     }
                 ]
@@ -98,7 +100,23 @@ module.exports = {
                 options: {
                     name: '[path][name].[ext]'
                 }
-            }
+            },
+            // SVG
+            {
+			    test: /\.svg/,
+			    use: {
+			        loader: 'svg-url-loader',
+			        options: {}
+			    }
+			},
+			// Fonts
+			{
+			  test: /\.(ttf|eot|woff|woff2)$/,
+			  loader: 'file-loader',
+			  options: {
+			    name: 'fonts/[name].[ext]',
+			  },
+			}
         ]
     }
 };
