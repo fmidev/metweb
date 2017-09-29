@@ -49,6 +49,14 @@ html,body {
 	height: 100%;
 	background-color: #f7f7f7;
 	margin-right: 2px;
+	background-image: url('../../assets/images/product-folder-icon-a.svg');
+	background-size: 35px 35px;
+    background-repeat: no-repeat;
+	background-position: 8px 5px;
+}
+
+#fmi-metweb-sidebar.open {
+	background-image: url('../../assets/images/product-folder-icon-b.svg');		
 }
 
 #fmi-metweb-sidebar-menu {
@@ -78,6 +86,7 @@ html,body {
 	height: 50px;
 	background-color: #f7f7f7;
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);	
+	display: flex;
 }
 
 #fmi-metweb-sidebar-menu-title {
@@ -184,5 +193,20 @@ html,body {
 
 #fmi-metweb-entry #fmi-metweb-windows .lm_root {
 	height: ~"calc(100vh - 50px)";
+}
+
+#fmi-metweb-footer-empty {
+	flex-grow: 1;
+}
+
+#fmi-metweb-footer-new-window {
+	width: 46px;
+	margin-right: 30px;
+	background-image: url('../../assets/images/add-window-icon-a.svg');
+	background-size: 32px 32px;
+    background-repeat: no-repeat;
+	background-position: center center;	
+	border-left: 2px solid #e4e4e4;
+	border-right: 2px solid #e4e4e4;
 }
 
