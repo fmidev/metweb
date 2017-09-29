@@ -69,7 +69,8 @@ html,body {
 #fmi-metweb-windows {
 	flex-grow: 1;
 	width: 100%;
-	
+	display: flex;
+	flex-direction: column;
 }
 
 #fmi-metweb-footer {
@@ -181,4 +182,7 @@ html,body {
 	border-left: 2px solid #e4e4e4;
 }
 
+#fmi-metweb-entry #fmi-metweb-windows .lm_root {
+	height: ~"calc(100vh - 50px)";
+}
 

@@ -4,6 +4,8 @@
 
 // Load application styles
 import './home.less';
+// Load temporarily from tmp directory
+import * as mapWindows from '../../tmpLib/mapWindows';
 
 // ================================
 // START YOUR APP HERE
@@ -18,14 +20,32 @@ $(document).ready(function() {
 	$("#fmi-metweb-sidebar").on("click", toggleSidebar);
 	$(".fmi-metweb-filter-button").on("click", toggleFilter);
 
+	/*
+	mapWindows.get(index)
+	Get a MetOClient object from a windows collection location specified by `index`.
+
+	mapWindows.push(config)
+	Push a new MetOClient object defined by MetOClient configuration object `config` to the end of windows collection.
+
+	mapWindows.set(index, config)
+	Set a new MetOClient object defined by MetOClient configuration object `config` to the windows collection location specified by `index`.
+
+	mapWindows.unset(index)
+	Remove a MetOClient object from a windows collection location specified by `index`.
+	*/
+
 });
 
 function toggleSidebar() {
-	
-	if ($("#fmi-metweb-sidebar-menu").is(":visible"))
-		$("#fmi-metweb-sidebar-menu").css("display", "none");
-	else
-		$("#fmi-metweb-sidebar-menu").css("display", "flex");	
+	if ($("#fmi-metweb-sidebar-menu").is(":visible")) {
+        $("#fmi-metweb-sidebar-menu").css("display", "none");
+		$("#fmi-metweb-windows").css("width", "100%");
+    } else {
+		$("#fmi-metweb-sidebar-menu").css("display", "flex");
+		$("#fmi-metweb-windows").width(function(i, w) {
+			return w - 270;
+		});
+    }
 }
 
 function toggleProductGroup() {
