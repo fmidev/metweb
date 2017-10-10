@@ -1,9 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 // Is the current build a development build
 const IS_DEV = (process.env.NODE_ENV === 'dev');
+
+const extractLess = new ExtractTextPlugin({
+    filename: "[name].css",
+    disable: IS_DEV
+});
 
 const dirNode = 'node_modules';
 const dirApp = path.join(__dirname, 'src');
@@ -31,14 +37,16 @@ module.exports = {
         }),
 
         new webpack.ProvidePlugin({
-	        $: 'jquery',
-			jQuery: 'jquery'
+            $: 'jquery',
+            jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'src/views/home/home.handlebars'),
             title: appHtmlTitle
-        })
+        }),
+
+        extractLess
     ],
     module: {
         rules: [
@@ -52,39 +60,18 @@ module.exports = {
                 }
             },
 
-            // Styles
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: IS_DEV
-                        }
-                    }
-                ]
-            },
-
             // Less
             {
                 test: /\.less/,
-                use: [
-                    'style-loader',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: IS_DEV
-                        }
-                    },
-                    {
-                        loader: 'less-loader',
-                        options: {
-                            sourceMap: IS_DEV,
-                            includePaths: [dirAssets],
-                        }
-                    }
-                ]
+                use: extractLess.extract({
+                    use: [{
+                        loader: "css-loader"
+                    }, {
+                        loader: "less-loader"
+                    }],
+                    // use style-loader in development
+                    fallback: "style-loader"
+                })
             },
 
             // Handlebars
@@ -103,20 +90,20 @@ module.exports = {
             },
             // SVG
             {
-			    test: /\.svg/,
-			    use: {
-			        loader: 'svg-url-loader',
-			        options: {}
-			    }
-			},
-			// Fonts
-			{
-			  test: /\.(ttf|eot|woff|woff2)$/,
-			  loader: 'file-loader',
-			  options: {
-			    name: 'fonts/[name].[ext]',
-			  },
-			}
+                test: /\.svg/,
+                use: {
+                    loader: 'svg-url-loader',
+                    options: {}
+                }
+            },
+            // Fonts
+            {
+                test: /\.(ttf|eot|woff|woff2)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'fonts/[name].[ext]',
+                },
+            }
         ]
     }
 };
