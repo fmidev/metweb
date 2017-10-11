@@ -37,18 +37,26 @@ $(document).ready(function() {
 
 	// Testimielessä API key on tässä mahdollista antaa URL-parametrina,
 	// jotta esimerkki toimisi eikä avainta tarvitsisi säilyttää versionhallinnassa
-    var apiKey = getUrlParameter('api-key');
+    var apiKey = getUrlParameter('apikey');
     console.log(apiKey);
 	var config = getConfig(apiKey);
-
+	// Esimerkin vuoksi neljä vastaavaa karttanäkymää, joiden sijainnit poikkeavat toisistaan
+	var config0 = jQuery.extend(true, {}, config);
+	config0.map.view.defaultCenterLocation = [2250000, 8500000];
+	var config1 = jQuery.extend(true, {}, config);
+	config1.map.view.defaultCenterLocation = [2750000, 9000000];
+	var config2 = jQuery.extend(true, {}, config);
+	config2.map.view.defaultCenterLocation = [2050000, 9500000];
+	var config3 = jQuery.extend(true, {}, config);
+	config3.map.view.defaultCenterLocation = [2800000, 10800000];
 	// Määritellään ikkunoiden sijainti, luodaan ne sekä konfiguroidaan niiden sisältö
     mapWindows
     	.setContainer('fmi-metweb-windows')
 		.createWindows()
-		.set(0, config)
-		.set(1, config)
-		.set(2, config)
-		.set(3, config);
+		.set(0, config0)
+		.set(1, config1)
+		.set(2, config2)
+		.set(3, config3);
 });
 
 function toggleSidebar() {
@@ -67,37 +75,13 @@ function toggleSidebar() {
 
 function getConfig(apiKey) {
 
-	// Initialize options objects for animation.
-	var resolutionTime = 5 * 60 * 60 * 1000;
+	// Create animation layers.
+	var resolutionTime = 30 * 60 * 1000;
 	var currentDate = new Date();
-	var currentTime = window.fi.fmi.metoclient.ui.animator.Utils.floorTime(currentDate.getTime(), 60 * 60 * 1000);
-	var beginDate = new Date(currentTime);
-	var endDate = new Date(currentTime);
-	// Make sure begin time starts from the exact hour.
-	// Then, timesteps will be on the proper positions when layers are requested.
-	// If requested times do not match exactly FMI observation times, layers may
-	// not contain any visible content.
-	beginDate = window.fi.fmi.metoclient.ui.animator.Utils.floorDate(beginDate, 60 * 60 * 1000);
-	var beginTime = beginDate.getTime();
-	var endTime = endDate.getTime();
-	var baseUrl = 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/';
-	var wmsBaseUrl = baseUrl + 'wms';
-	var wmtsBaseUrl = baseUrl + 'gwc/service/wmts';
+	var currentTime = window.fi.fmi.metoclient.ui.animator.Utils.floorTime(currentDate.getTime(), 60*60*1000);
+	var beginTime = currentTime-resolutionTime;
+	var endTime = currentTime+resolutionTime;
 	var resolutions = [2048, 1024, 512, 256, 128, 64];
-	var matrixIds = [
-		'ETRS-TM35FIN:2',
-		'ETRS-TM35FIN:3',
-		'ETRS-TM35FIN:4',
-		'ETRS-TM35FIN:5',
-		'ETRS-TM35FIN:6',
-		'ETRS-TM35FIN:7'
-	];
-	var origin = [-4537345.568, 8254755.58];
-	var origins256 = [[-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]];
-	var origins512 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]];
-	var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]];
-	var extent = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352];
-
 	return {
 		project: 'mymap',
 		// Map view configurations
@@ -136,7 +120,7 @@ function getConfig(apiKey) {
 						"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
 						"timeCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/wms?request=GetCapabilities&service=WMS",
 						"animation": {
-							"beginTime": 1505371354395,
+							"beginTime": beginTime,
 							"hasLegend": "http://data.fmi.fi/fmi-apikey/"+apiKey+"/dali?customer=legend&product=rr&width=100&height=250&type=png"
 						}
 					},
@@ -185,7 +169,7 @@ function getConfig(apiKey) {
 				refreshInterval: 60 * 60 * 1000,
 				frameRate: 500,
 				resolutionTime: resolutionTime,
-				defaultAnimationTime: (new Date()).getTime(),
+				defaultAnimationTime: beginTime,
 				beginTime: beginTime,
 				endTime: endTime,
 				endTimeDelay: 1000
