@@ -29,7 +29,10 @@ module.exports = {
             dirNode,
             dirApp,
             dirAssets
-        ]
+        ],
+		alias: {
+			openlayers4: path.join(dirApp, 'views/home/ol.js')
+		},
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -37,8 +40,8 @@ module.exports = {
         }),
 
         new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery'
+	        $: 'jquery',
+			jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
@@ -77,7 +80,8 @@ module.exports = {
             // Handlebars
             {
                 test: /\.handlebars$/,
-                loader: 'handlebars-loader'
+                loader: 'handlebars-loader',
+                query: { inlineRequires: '\/images\/' } 
             },
 
             // Images
