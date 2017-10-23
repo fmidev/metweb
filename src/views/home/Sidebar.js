@@ -1,4 +1,4 @@
-import WMSCapabilities from 'ol/format/WMSCapabilities';
+import WMSCapabilities from 'ol/format/wmscapabilities';
 
 
 class Sidebar {
