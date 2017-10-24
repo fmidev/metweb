@@ -5,7 +5,7 @@
 // Load application styles
 import './home.less';
 // Load temporarily from tmp directory
-import * as mapWindows from '../../tmpLib/mapWindows';
+import * as layout from '../../tmpLib/layout';
 import Sidebar from './Sidebar.js';
 
 // ================================
@@ -50,8 +50,8 @@ $(document).ready(function() {
 	var config3 = jQuery.extend(true, {}, config);
 	config3.map.view.defaultCenterLocation = [2800000, 10800000];
 	// Määritellään ikkunoiden sijainti, luodaan ne sekä konfiguroidaan niiden sisältö
-    mapWindows
-    	.setContainer('fmi-metweb-windows')
+	layout
+    .setContainer('fmi-metweb-windows')
 		.createWindows()
 		.set(0, config0)
 		.set(1, config1)

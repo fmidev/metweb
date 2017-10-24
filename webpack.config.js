@@ -57,7 +57,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|mapWindows\.js)/,
+                exclude: /(node_modules|layout\.js)/,
                 options: {
                     compact: true
                 }
