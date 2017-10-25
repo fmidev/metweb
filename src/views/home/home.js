@@ -56,8 +56,11 @@ $(document).ready(function() {
 		.set(0, config0)
 		.set(1, config1)
 		.set(2, config2)
-		.set(3, config3);
-		
+		.set(3, config3)
+		.select(2);
+
+	console.log(layout);
+	console.log('Selected: '+layout.getSelected());
 		
 	var sb = new Sidebar();
 	sb.updateProducts();
