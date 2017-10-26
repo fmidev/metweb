@@ -65,9 +65,9 @@ $(document).ready(function() {
 
 	console.log(layout);
 	console.log('Selected: '+layout.getSelected());
-		
-	var sb = new Sidebar();
-	sb.updateProducts();
+				
+	Sidebar.setWindows(layout);	
+	Sidebar.updateProducts();
 		
 });
 
