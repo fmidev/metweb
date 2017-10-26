@@ -141,21 +141,19 @@ class Sidebar {
 		
 		//console.log(config.map.model.layers);
 		
-		
 		this.windows.set(0, config);
 	}
 	
 	generateConfigForProduct(product) {
 		
-		// Create animation layers.
+		var apiKey = this.getApiKey();
+		
 		var resolutionTime = 30 * 60 * 1000;
 		var currentDate = new Date();
-		var currentTime = window.fi.fmi.metoclient.ui.animator.Utils.floorTime(currentDate.getTime(), 60*60*1000);
+		var currentTime = currentDate.getTime();
 		var beginTime = currentTime-resolutionTime;
 		var endTime = currentTime+resolutionTime;
 		var resolutions = [2048, 1024, 512, 256, 128, 64];
-		
-		var apiKey = this.getApiKey();
 		
 		var config = {
 			project: 'mymap',
@@ -166,40 +164,21 @@ class Sidebar {
 					layers: [
 						// ---------------------------------------------------------------
 						{
-							"className": "WMTS",
-							"title": "Taustakartta",
-							"type": "map",
-							"visible": true,
-							"opacity": 1.0,
-							"sourceOptions": {
-								"matrixSet": "ETRS-TM35FIN",
-								"layer": "KAP:Europe_basic_EurefFIN",
-								"format": "image/png"
+							className: 'WMTS',
+							title: 'Taustakartta',
+							type: 'map',
+							visible: true,
+							opacity: 1.0,
+							sourceOptions: {
+								matrixSet: 'ETRS-TM35FIN',
+								layer: 'KAP:Europe_basic_EurefFIN',
+								format: 'image/png'
 							},
-							"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-							"animation": {
-								"hasLegend": false
+							tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/'+apiKey+'/geoserver/gwc/service/wmts?request=GetCapabilities',
+							animation: {
+								hasLegend: false
 							}
 						}
-						/*
-						{
-							"className": "WMTS",
-							"title": "Tutkahavainto",
-							"type": "obs",
-							"visible": true,
-							"opacity": 1.0,
-							"sourceOptions": {
-								"matrixSet": "ETRS-TM35FIN-FINLAND",
-								"layer": "Radar:suomi_rr_eureffin",
-								"format": "image/png"
-							},
-							"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-							"timeCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/wms?request=GetCapabilities&service=WMS",
-							"animation": {
-								"beginTime": beginTime,
-								"hasLegend": "http://data.fmi.fi/fmi-apikey/"+apiKey+"/dali?customer=legend&product=rr&width=100&height=250&type=png"
-							}
-						} */
 					]
 				},
 				view: {
@@ -287,7 +266,6 @@ class Sidebar {
 			}
 		};
 		
-		console.log("push product");
 		config.map.model.layers.push(layer);
 		
 		return config;		
