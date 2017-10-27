@@ -141,7 +141,7 @@ class Sidebar {
 		
 		//console.log(config.map.model.layers);
 		
-		this.windows.set(0, config);
+		this.windows.set(this.windows.getSelected(), config);
 	}
 	
 	generateConfigForProduct(product) {
