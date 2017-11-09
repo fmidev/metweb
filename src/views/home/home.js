@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 	$("#fmi-metweb-sidebar").on("click", toggleSidebar);
 	$(".fmi-metweb-filter-button").on("click", toggleFilter);
-	
+
 	var getUrlParameter = function getUrlParameter(sParam) {
 		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
 			sURLVariables = sPageURL.split('&'),
@@ -38,8 +38,8 @@ $(document).ready(function() {
 
 	// Testimielessä API key on tässä mahdollista antaa URL-parametrina,
 	// jotta esimerkki toimisi eikä avainta tarvitsisi säilyttää versionhallinnassa
-    var apiKey = getUrlParameter('apikey');
-    console.log(apiKey);
+  var apiKey = getUrlParameter('apikey');
+  console.log(apiKey);
 	var config = getConfig(apiKey);
 	// Esimerkin vuoksi neljä vastaavaa karttanäkymää, joiden sijainnit poikkeavat toisistaan
 	var config0 = jQuery.extend(true, {}, config);
@@ -65,10 +65,10 @@ $(document).ready(function() {
 
 	console.log(layout);
 	console.log('Selected: '+layout.getSelected());
-				
-	Sidebar.setWindows(layout);	
+
+	Sidebar.setWindows(layout);
 	Sidebar.updateProducts();
-		
+
 });
 
 function toggleSidebar() {
@@ -91,11 +91,12 @@ function getConfig(apiKey) {
 	var resolutionTime = 30 * 60 * 1000;
 	var currentDate = new Date();
 	var currentTime = currentDate.getTime();
-	var beginTime = currentTime-resolutionTime;
-	var endTime = currentTime+resolutionTime;
+	var beginTime = currentTime-2*resolutionTime;
+	var endTime = currentTime+2*resolutionTime;
 	var resolutions = [2048, 1024, 512, 256, 128, 64];
+	var imgPath = 'src/assets/images/';
 	return {
-		project: 'mymap',
+		project: 'metweb',
 		// Map view configurations
 		map: {
 			model: {
@@ -154,7 +155,6 @@ function getConfig(apiKey) {
 				]
 			},
 			view: {
-				container: 'fmi-animator',
 				projection: 'EPSG:3857',
 				extent: [-500000, 5000000, 5000000, 20000000],
 				resolutions: resolutions,
@@ -187,30 +187,52 @@ function getConfig(apiKey) {
 				endTimeDelay: 1000
 			},
 			view: {
-				showTimeSlider: false,
+				showTimeSlider: true,
 				timeZone: 'Europe/Helsinki',
-				imageWidth: 55,
-				imageHeight: 55,
-				imageBackgroundColor: '#585858',
-				sliderOffset: 55,
-				sliderHeight: 55,
-				statusHeight: 12,
-				tickTextColor: '#000000',
-				pastColor: '#B2D8EA',
-				futureColor: '#D7B13E',
+				playPauseImageWidth: 60,
+				playPauseImageHeight: 60,
+				timeStepsImageWidth: 60,
+				timeStepsImageHeight: 60,
+				backgroundColor: '#000000',
+				imageBackgroundColor: 'rgba(0,0,0,0)',
+				imageHoverColor: 'rgba(0,0,0,0)',
+				shadowOpacity: 0.3,
+				height: 100,
+				sliderXOffset: 10,
+				sliderYOffset: 40,
+				sliderHeight: 60,
+				statusHeight: 4,
+				statusXOffset: 30,
+				statusYOffset: 40,
+				statusRounded: true,
+				tickTextColor: '#FFFFFF',
+				pastColor: '#8ED141',
+				futureColor: '#74B6E6',
 				tickColor: '#FFFFFF',
 				notLoadedColor: '#585858',
-				loadingColor: '#B2D8EA',
-				loadedColor: '#94BF77',
+				loadingColor: '#BDBDBD',
 				loadingErrorColor: '#9A2500',
-				tickHeight: 24,
-				tickTextYOffset: 18,
-				tickTextSize: 12,
+				tickHeight: 0,
+				tickTextYOffset: 35,
+				tickTextSize: 14,
+				pointerTop: true,
 				pointerHeight: 30,
-				pointerTextOffset: 15,
-				pointerColor: '#585858',
-				pointerTextColor: '#D7B13E',
-				pointerTextSize: 12
+				pointerArrowHeight: 10,
+				pointerArrowWidth: 5,
+				pointerYOffset: 50,
+				pointerTextYOffset: 0,
+				pointerColor: '#FFFFFF',
+				pointerStrokeColor: '#BDBDBD',
+				pointerStrokeWidth: 1,
+				pointerTextColor: '#000000',
+				pointerTextSize: 13,
+				pointerHandleYOffset: 0,
+				pointerHandleImageWidth: 18,
+				pointerHandleImageHeight: 18,
+				pointerHandleImagePath: imgPath + 'timeline-handle.svg',
+				playImagePath: imgPath + 'play.svg',
+				pauseImagePath: imgPath + 'pause.svg',
+				timeStepsImagePath: imgPath + 'time-steps.svg'
 			}
 		}
 	};

@@ -41,7 +41,7 @@ module.exports = {
 
         new webpack.ProvidePlugin({
 	        $: 'jquery',
-			jQuery: 'jquery'
+          jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
@@ -81,7 +81,9 @@ module.exports = {
             {
                 test: /\.handlebars$/,
                 loader: 'handlebars-loader',
-                query: { inlineRequires: '\/images\/' } 
+                query: {
+                    inlineRequires: '\/images\/'
+                }
             },
 
             // Images

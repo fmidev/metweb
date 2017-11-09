@@ -451,7 +451,7 @@ div.legendchooser {
 
 div.fmi-animator-timeslider {
     position: absolute;
-    bottom: 5px;
+    bottom: 0;
     width: 100%;
     min-width: 100px;
     height: 120px;
@@ -479,4 +479,10 @@ div.metoclient-map {
     position: absolute;
     width: 100%;
     height: 100%;
+}
+
+button#fmi-map-layer-switcher, #fmi-metweb-windows button.ol-zoom-in, #fmi-metweb-windows button.ol-zoom-out {
+    width: 0;
+    height: 0;
+    display: none;
 }
