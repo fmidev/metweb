@@ -1,16 +1,35 @@
 #!groovy
 pipeline {
 
-  agent any
+  agent {
+    node {
+      label 'master'
+    }
+  }
+
+  tools {
+    nodejs 'default'
+  }
 
   stages {
+    stage('Configure http proxy') {
+      when { expression { env.HTTP_PROXY != '' } }
+      steps {
+         sh "npm config set proxy ${env.HTTP_PROXY}"
+      }
+    }
 
-    stage('Environment setup') {
+    stage('Configure https proxy') {
+      when { expression { env.HTTPS_PROXY != '' } }
+      steps {
+         sh "npm config set https-proxy ${env.HTTPS_PROXY}"
+      }
+    }
+
+    stage('Install') {
       steps {
         sh "env"
-        sh "export"
-        sh "ls -lA"
-        sh "git describe --tags --exact-match || echo 'no exact tag'"
+        sh "npm install"
       }
     }
 
@@ -28,17 +47,28 @@ pipeline {
       }
     }
 
-    stage('For all branches') {
+    stage('Build') {
       steps {
-        echo "current branch is ${env.BRANCH_NAME}"
-        slackSend "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+        sh "npm run build"
+        sh "chmod --verbose --recursive u+r+w+X,g+r-w+X,o-r-w-x dist/"
+        sh "ssh fmi@dev.elmo.fmi.fi \"mkdir -p /fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}\""
+        sh "scp -rp dist/ fmi@dev.elmo.fmi.fi:/fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}/${env.BUILD_NUMBER}"
       }
     }
   }
 
   post {
     success {
-      slackSend "Success with ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+      slackSend "Success ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+    unstable {
+      slackSend "Unstable ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+    failure {
+      slackSend "Failure ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+    changed {
+      slackSend "Changed ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
     }
   }
 }
