@@ -48,6 +48,10 @@ pipeline {
     }
 
     stage('Build') {
+      /*
+      environment {
+        SOME_CREDENTIAL = credentials('metweb.SOME_CREDENTIAL')
+      }*/
       steps {
         sh "npm run build"
         sh "chmod --verbose --recursive u+r+w+X,g+r-w+X,o-r-w-x dist/"
