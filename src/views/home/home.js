@@ -74,14 +74,12 @@ $(document).ready(function() {
 function toggleSidebar() {
 	if ($("#fmi-metweb-sidebar-menu").is(":visible")) {
 		$("#fmi-metweb-sidebar").removeClass("open");
-        $("#fmi-metweb-sidebar-menu").css("display", "none");
-		$("#fmi-metweb-windows").css("width", "100%");
+    $("#fmi-metweb-sidebar-menu").css("display", "none");
+		$("#fmi-metweb-windows-and-footer").css("width", "calc(100vw - 50px)");
     } else {
 	    $("#fmi-metweb-sidebar").addClass("open");
-		$("#fmi-metweb-sidebar-menu").css("display", "flex");
-		$("#fmi-metweb-windows").width(function(i, w) {
-			return w - 270;
-		});
+  		$("#fmi-metweb-sidebar-menu").css("display", "flex");
+	  	$("#fmi-metweb-windows-and-footer").css("width", "calc(100vw - 320px)");
     }
 }
 

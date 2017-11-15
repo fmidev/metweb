@@ -1,7 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Is the current build a development build
 const IS_DEV = (process.env.NODE_ENV === 'dev');
@@ -41,13 +42,18 @@ module.exports = {
 
         new webpack.ProvidePlugin({
 	        $: 'jquery',
-          jQuery: 'jquery'
+          jQuery: 'jquery',
+          SVG: 'svg.js'
         }),
 
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'src/views/home/home.handlebars'),
             title: appHtmlTitle
         }),
+
+        new CopyWebpackPlugin([
+          { from: 'src/assets/images/*svg', to: 'src/assets/images', flatten: true, force: true }
+        ]),
 
         extractLess
     ],
@@ -97,9 +103,9 @@ module.exports = {
             // SVG
             {
                 test: /\.svg/,
-                use: {
-                    loader: 'svg-url-loader',
-                    options: {}
+                loader: 'svg-url-loader',
+                options: {
+                    name: '[path][name].[ext]'
                 }
             },
             // Fonts
