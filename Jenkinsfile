@@ -57,6 +57,7 @@ pipeline {
         sh "chmod --verbose --recursive u+r+w+X,g+r-w+X,o-r-w-x dist/"
         sh "ssh fmi@dev.elmo.fmi.fi \"mkdir -p /fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}\""
         sh "scp -rp dist/ fmi@dev.elmo.fmi.fi:/fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}/${env.BUILD_NUMBER}"
+        sh "ssh fmi@dev.elmo.fmi.fi \"rm -rf /fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}/latest; cp -rf /fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}/${env.BUILD_NUMBER} /fmi/dev/www/test.fmi.fi/metweb/${env.BRANCH_NAME}/latest\""
       }
     }
   }
