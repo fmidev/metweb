@@ -37,7 +37,7 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            IS_DEV: IS_DEV
+            APIKEY: JSON.stringify('insert-your-apikey-here')
         }),
 
         new webpack.ProvidePlugin({

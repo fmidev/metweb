@@ -36,9 +36,12 @@ $(document).ready(function() {
 		}
 	};
 
-	// Testimielessä API key on tässä mahdollista antaa URL-parametrina,
-	// jotta esimerkki toimisi eikä avainta tarvitsisi säilyttää versionhallinnassa
+	// The FMI API key can be set as a url parameter or in the Webpack
+	// configuration file. See the placeholder in the file webpack.config.js.
   var apiKey = getUrlParameter('apikey');
+  if (apiKey == null) {
+		apiKey = APIKEY;
+  }
   console.log(apiKey);
 	var config = getConfig(apiKey);
 	// Esimerkin vuoksi neljä vastaavaa karttanäkymää, joiden sijainnit poikkeavat toisistaan
