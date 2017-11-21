@@ -56,12 +56,7 @@ $(document).ready(function() {
 	// Määritellään ikkunoiden sijainti, luodaan ne sekä konfiguroidaan niiden sisältö
 	layout
     .setContainer('fmi-metweb-windows')
-		.createWindows()
-		.set(0, config0)
-		.set(1, config1)
-		.set(2, config2)
-		.set(3, config3)
-		.select(0)
+		.create()
 		.onSelectionChanged(function(selected) {
 			console.log('On selection changed: '+selected);
 		})
