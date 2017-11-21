@@ -56,12 +56,14 @@ $(document).ready(function() {
 	// Määritellään ikkunoiden sijainti, luodaan ne sekä konfiguroidaan niiden sisältö
 	layout
     .setContainer('fmi-metweb-windows')
-		.create()
-		.onSelectionChanged(function(selected) {
-			console.log('On selection changed: '+selected);
+		.onWindowCreated(function(id) {
+			console.log('On window created: '+id);
 		})
+		.onSelectionChanged(function(id) {
+			console.log('On selection changed: '+id);
+		})
+		.create('Työpöytä 1')
 
-	console.log(layout);
 	console.log('Selected: '+layout.getSelected());
 
 	Sidebar.setWindows(layout);
