@@ -73,14 +73,8 @@ function createWorkspace() {
 	newWorkspaceContainer.id = containerId;
 	newWorkspaceContainer.dataset.workspaceId = workspaceId
 	newWorkspaceContainer.classList.add('workspace-container');
-	$('.workspace-container').hide();
-	var workspaceContainers = document.getElementsByClassName('workspace-container');
-	var numWorkspaceContainers = workspaceContainers.length;
-  for (var i = 0; i < numWorkspaceContainers; i++) {
-    workspaceContainers[i].style.visibility = 'hidden';
-	}
-	newWorkspaceContainer.style.visibility = 'visible'
 	var baseWorkspaceContainer = document.getElementById(baseId);
+	selectWorkspace();
 	baseWorkspaceContainer.appendChild(newWorkspaceContainer)
 	layout
     .setContainer(containerId)
@@ -91,15 +85,22 @@ function createWorkspace() {
 			console.log('On selection changed: '+id);
 		})
 		.onBookmarkAdded(function(id) {
-			console.log('On boomark added: '+id);
+			console.log('On bookmark added: '+id);
 		})
 		.onDestroyed(function(id) {
 			console.log('On destroyed: '+id);
 			var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
 			var numWorkspaceIcons = workspaceIcons.length
-			for (i=0; i<numWorkspaceIcons; i++) {
+			for (var i=0; i<numWorkspaceIcons; i++) {
 				if (workspaceIcons[i].dataset.workspaceId === id) {
+					var newSelectedId;
+					if (numWorkspaceIcons > 1) {
+						newSelectedId = workspaceIcons[(i === 0) ? 1 : i - 1].dataset.workspaceId
+					}
 					workspaceIcons[i].parentElement.removeChild(workspaceIcons[i]);
+					if (newSelectedId !== null) {
+						selectWorkspace(newSelectedId);
+					}
 					break;
 				}
 			}
@@ -107,14 +108,37 @@ function createWorkspace() {
 		.create('Työpöytä '+workspaceId)
   //console.log('Selected: '+layout.getSelected());
   var newWorkspaceIcon = document.createElement('div');
-  var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
-	var numWorkspaceIcons = workspaceIcons.length;
-  for (var j = 0; j < numWorkspaceIcons; j++) {
-    workspaceIcons[j].classList.remove('selected');
-	}
-  newWorkspaceIcon.classList.add('fmi-metweb-footer-workspace-icon', 'selected');
+  newWorkspaceIcon.classList.add('fmi-metweb-footer-workspace-icon');
   newWorkspaceIcon.dataset.workspaceId = workspaceId;
+  newWorkspaceIcon.addEventListener("click", () => {
+  	selectWorkspace(newWorkspaceIcon.dataset.workspaceId);
+  })
   document.getElementById('fmi-metweb-footer-workspaces').appendChild(newWorkspaceIcon)
+  selectWorkspace(workspaceId)
+}
+
+function selectWorkspace(workspaceId) {
+	if (workspaceId === undefined) {
+		workspaceId = null;
+	}
+	var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
+	var numWorkspaceIcons = workspaceIcons.length;
+	for (var i=0; i < numWorkspaceIcons; i++) {
+		if (workspaceIcons[i].dataset.workspaceId === workspaceId) {
+			workspaceIcons[i].classList.add('selected');
+		} else {
+			workspaceIcons[i].classList.remove('selected');
+		}
+	}
+	var workspaceContainers = document.getElementsByClassName('workspace-container');
+	var numWorkspaceContainers = workspaceContainers.length;
+  for (var j = 0; j < numWorkspaceContainers; j++) {
+		if (workspaceContainers[j].dataset.workspaceId === workspaceId) {
+			workspaceContainers[j].style.display = 'inline';
+		} else {
+			workspaceContainers[j].style.display = 'none';
+		}
+	}
 }
 
 function toggleSidebar() {
