@@ -16,6 +16,8 @@ import Sidebar from './Sidebar.js';
 
 // Some initial testing. Will be added to own class soon.
 
+var workspaceIndex = 0;
+
 $(document).ready(function() {
 
 	$("#fmi-metweb-sidebar").on("click", toggleSidebar);
@@ -43,6 +45,7 @@ $(document).ready(function() {
 		apiKey = APIKEY;
   }
   console.log(apiKey);
+  /*
 	var config = getConfig(apiKey);
 	// Esimerkin vuoksi neljä vastaavaa karttanäkymää, joiden sijainnit poikkeavat toisistaan
 	var config0 = jQuery.extend(true, {}, config);
@@ -52,24 +55,67 @@ $(document).ready(function() {
 	var config2 = jQuery.extend(true, {}, config);
 	config2.map.view.defaultCenterLocation = [2050000, 9500000];
 	var config3 = jQuery.extend(true, {}, config);
-	config3.map.view.defaultCenterLocation = [2800000, 10800000];
-	// Määritellään ikkunoiden sijainti, luodaan ne sekä konfiguroidaan niiden sisältö
+	config3.map.view.defaultCenterLocation = [2800000, 10800000];*/
+
+	createWorkspace()
+	$("#fmi-metweb-footer-new-workspace").on("click", createWorkspace);
+
+	Sidebar.setWindows(layout);
+	Sidebar.updateProducts();
+});
+
+function createWorkspace() {
+	workspaceIndex++;
+	var baseId = 'fmi-metweb-windows';
+	var workspaceId = workspaceIndex.toString();
+	var containerId = baseId + workspaceId;
+	var newWorkspaceContainer = document.createElement('div');
+	newWorkspaceContainer.id = containerId;
+	newWorkspaceContainer.dataset.workspaceId = workspaceId
+	newWorkspaceContainer.classList.add('workspace-container');
+	$('.workspace-container').hide();
+	var workspaceContainers = document.getElementsByClassName('workspace-container');
+	var numWorkspaceContainers = workspaceContainers.length;
+  for (var i = 0; i < numWorkspaceContainers; i++) {
+    workspaceContainers[i].style.visibility = 'hidden';
+	}
+	newWorkspaceContainer.style.visibility = 'visible'
+	var baseWorkspaceContainer = document.getElementById(baseId);
+	baseWorkspaceContainer.appendChild(newWorkspaceContainer)
 	layout
-    .setContainer('fmi-metweb-windows')
+    .setContainer(containerId)
 		.onWindowCreated(function(id) {
 			console.log('On window created: '+id);
 		})
 		.onSelectionChanged(function(id) {
 			console.log('On selection changed: '+id);
 		})
-		.create('Työpöytä 1')
-
-	console.log('Selected: '+layout.getSelected());
-
-	Sidebar.setWindows(layout);
-	Sidebar.updateProducts();
-
-});
+		.onBookmarkAdded(function(id) {
+			console.log('On boomark added: '+id);
+		})
+		.onDestroyed(function(id) {
+			console.log('On destroyed: '+id);
+			var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
+			var numWorkspaceIcons = workspaceIcons.length
+			for (i=0; i<numWorkspaceIcons; i++) {
+				if (workspaceIcons[i].dataset.workspaceId === id) {
+					workspaceIcons[i].parentElement.removeChild(workspaceIcons[i]);
+					break;
+				}
+			}
+		})
+		.create('Työpöytä '+workspaceId)
+  //console.log('Selected: '+layout.getSelected());
+  var newWorkspaceIcon = document.createElement('div');
+  var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
+	var numWorkspaceIcons = workspaceIcons.length;
+  for (var j = 0; j < numWorkspaceIcons; j++) {
+    workspaceIcons[j].classList.remove('selected');
+	}
+  newWorkspaceIcon.classList.add('fmi-metweb-footer-workspace-icon', 'selected');
+  newWorkspaceIcon.dataset.workspaceId = workspaceId;
+  document.getElementById('fmi-metweb-footer-workspaces').appendChild(newWorkspaceIcon)
+}
 
 function toggleSidebar() {
 	if ($("#fmi-metweb-sidebar-menu").is(":visible")) {
