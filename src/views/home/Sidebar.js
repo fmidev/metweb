@@ -44,7 +44,7 @@ class Sidebar {
 			var submenu = menu.menu[i];
 			
 			html += '<div class="fmi-metweb-productgroup closed">';
-			html += '<div class="fmi-metweb-productgroup-title">'+submenu.title.toUpperCase()+'</div>';		
+			html += '<div class="fmi-metweb-productgroup-title">'+submenu.title+'</div>';		
 			html += '<div class="fmi-metweb-productgroup-list">';
 			
 			if (submenu.items.length==0) {
