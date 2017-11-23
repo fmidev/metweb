@@ -1,0 +1,10 @@
+[[item]]
+
+title = "rr1h Suomi"
+description = "The best rr1h radar layer for Finland"
+layer = "Radar:suomi_rr1h_eureffin"
+
+[[item]]
+
+title = "Precipitationrate (rr) Suomi"
+layer = "Radar:suomi_rr_eureffin"

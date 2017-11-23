@@ -1,0 +1,27 @@
+# Defaults, can be overriden
+
+type = "animation"
+
+[[metadata]]
+
+name = "fmiwms"
+type = "GetCapabilities"
+url = "http://wms.fmi.fi/fmi-apikey/023162b1-8f00-43aa-93cd-e7332c26a2a3/geoserver/wms?request=GetCapabilities&service=WMS"
+
+[[menu]]
+
+title = "Tutka"
+type = "obs"
+file = "radar.toml"
+
+[[menu]]
+
+title = "Satelliitti"
+type = "obs"
+file = "satellite.toml"
+
+[[menu]]
+
+title = "Ennusteet"
+type = "for"
+file = "forecasts.toml"

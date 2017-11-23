@@ -1,0 +1,9 @@
+[[item]]
+
+title = "Eurooppa HRV-IR"
+layer = "Satellite:eurooppa_hrv-ir_eureffin"
+
+[[item]]
+
+title = "Eurooppa HRV"
+layer = "Satellite:eurooppa_hrv_eureffin"
