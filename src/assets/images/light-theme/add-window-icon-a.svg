@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>add-window-icon-a</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="add-window-icon-a">
+            <g id="add-window-icon" transform="translate(4.000000, 4.000000)">
+                <g id="icon">
+                    <path d="M21,19 L21,16 L19,16 L19,19 L16,19 L16,21 L19,21 L19,24 L21,24 L21,21 L24,21 L24,19 L21,19 Z M15,14 L25,14 C25.5522847,14 26,14.4477153 26,15 L26,25 C26,25.5522847 25.5522847,26 25,26 L15,26 C14.4477153,26 14,25.5522847 14,25 L14,15 L14,15 C14,14.4477153 14.4477153,14 15,14 L15,14 Z" id="Combined-Shape" fill="#60B3E1"></path>
+                    <rect id="fill-3" fill="#ECEDED" x="0" y="14" width="12" height="12" rx="1"></rect>
+                    <rect id="fill-2" fill="#ECEDED" x="14" y="0" width="12" height="12" rx="1"></rect>
+                    <rect id="fill-1" fill="#ECEDED" x="0" y="0" width="12" height="12" rx="1"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

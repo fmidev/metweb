@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>fullscreen-icon-b</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="fullscreen-icon-b">
+            <circle id="bg" fill="#60B3E1" cx="17" cy="17" r="17"></circle>
+            <g id="icon" transform="translate(8.000000, 9.000000)" fill="#FFFFFF">
+                <path d="M2,2 L2,14 L16,14 L16,2 L2,2 Z M0,0 L18,0 L18,16 L0,16 L0,0 Z" id="Rectangle-2" fill-rule="nonzero"></path>
+                <rect id="Rectangle-3" x="0" y="0" width="18" height="5"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
