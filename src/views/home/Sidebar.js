@@ -19,7 +19,7 @@ class Sidebar {
 			
 		// Now read configuration
 		
-		var menu = MenuReader.getMenuJson();
+		var menu = MenuReader.getMenuJson(this.getApiKey());
 		this.updateProductListView(menu);
 		
 		Metadata.resolveMetadataForMenu(menu);	

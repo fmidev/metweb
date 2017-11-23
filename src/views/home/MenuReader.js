@@ -10,14 +10,21 @@ class MenuReader {
 	
 	constructor() {}
 	
-	getMenuJson() {
+	getMenuJson(apikey) {
 				
 		// Read main menu
 		
 		var toml = require('toml');
 		
 		try {
-			var data = toml.parse(menufiles["./menu.toml"]);
+			var menucfg = menufiles["./menu.toml"];
+			
+			// Replace apikey if given
+			
+			if (apikey)
+				menucfg = menucfg.replace("{APIKEY}", apikey);
+			
+			var data = toml.parse(menucfg);
 		} catch(e) {
 			return false;
 		}		
