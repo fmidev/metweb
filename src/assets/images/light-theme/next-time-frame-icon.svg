@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="50px" viewBox="0 0 30 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>next-time-frame-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="next-time-frame-icon" fill="#FFFFFF">
+            <g id="next" transform="translate(10.000000, 20.000000)">
+                <path d="M6.64320271,5.8479983 L1.52999894,9.04375066 L1.52999894,9.04375066 C1.06166241,9.33646099 0.444712028,9.19408783 0.152001696,8.7257513 C0.0526694449,8.5668197 2.29522956e-17,8.38317208 0,8.19575236 L0,1.80424764 L6.66133815e-16,1.80424764 C5.9849844e-16,1.25196289 0.44771525,0.804247642 1,0.804247642 C1.18741972,0.804247642 1.37106734,0.856917086 1.52999894,0.956249338 L6.64320271,4.1520017 L6.64320271,4.1520017 C7.11153924,4.44471203 7.25391241,5.06166241 6.96120208,5.52999894 C6.88072137,5.65876807 6.77197185,5.7675176 6.64320271,5.8479983 Z" id="Triangle"></path>
+                <rect id="Rectangle-4" x="8" y="0" width="2" height="10" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
