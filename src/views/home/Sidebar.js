@@ -1,20 +1,12 @@
 import WMSCapabilities from 'ol/format/wmscapabilities';
-
+import MenuReader from './MenuReader.js';
+import Metadata from './Metadata.js';
 
 class Sidebar {
 		
 	constructor() {
 		this.windows = false;
-		
-		this.products = {
-			all: [],
-			maps: [],
-			observations: [],
-			forecasts: [],
-			radar: [],
-			satellite: []	
-		}
-		
+			
 		//console.log(this.products);
 	}
 	
@@ -24,79 +16,67 @@ class Sidebar {
 	
 	updateProducts() {
 		console.log("updateProducts()");
-		
-		var apikey = decodeURIComponent(window.location.search.match(/(\?|&)apikey\=([^&]*)/)[2]);
-				
-		var url = 'http://wms.fmi.fi/fmi-apikey/'+apikey+'/geoserver/wms?request=GetCapabilities&service=WMS';
-	
-		var parser = new WMSCapabilities();
-		var self = this;
 			
-		fetch(url).then(function(response) {
-			  return response.text();
-      	}).then(function(text) {
-	      	var result = parser.read(text);
-	    
-		  	result.Capability.Layer.Layer.forEach(function(value, index) {
-				
-				if (value.Name.search("BasicMap")>=0) {
-					self.products.maps.push(value);
-				}
-
-				if (value.Name.search("Radar")>=0) {
-					self.products.radar.push(value);
-				}
-
-				if (value.Name.search("Weather")>=0) {
-					self.products.forecasts.push(value);
-				}
-				
-				if (value.Name.search("Satellite")>=0) {
-					self.products.satellite.push(value);
-				}
-				
-				self.products.all.push(value);
-				 	
-		  	});
-		  	
-		  	self.updateProductListView();
-	    
-	    });
+		// Now read configuration
 		
+		var menu = MenuReader.getMenuJson();
+		this.updateProductListView(menu);
+		
+		Metadata.resolveMetadataForMenu(menu);	
 	}
 	
 	getApiKey() {
+		if (window.location.search.match(/(\?|&)apikey\=([^&]*)/)==null)
+			return APIKEY;		
+		
 		return decodeURIComponent(window.location.search.match(/(\?|&)apikey\=([^&]*)/)[2]);
+				
 	}
 	
-	updateProductListView() {
+	updateProductListView(menu) {
 		
 		console.log("updateProductListView()");
 		
-		var keys = Object.keys(this.products);	
-		
 		var html = "";
-		
-		var self = this;
-		
-		keys.forEach(function(value, index) {
+				
+		for(var i=0; i<menu.menu.length; i++) {
+			
+			var submenu = menu.menu[i];
+			
 			html += '<div class="fmi-metweb-productgroup closed">';
-			html += '<div class="fmi-metweb-productgroup-title">'+value.toUpperCase()+'</div>';		
+			html += '<div class="fmi-metweb-productgroup-title">'+submenu.title.toUpperCase()+'</div>';		
 			html += '<div class="fmi-metweb-productgroup-list">';
 			
-			if (self.products[value].length==0) {
+			if (submenu.items.length==0) {
 				html += '<div class="fmi-metweb-productgroup-product">No products</div>';			
 			} else {
-				self.products[value].forEach(function(value, index) {
-					html += '<div class="fmi-metweb-productgroup-product">'+value.Name+'</div>';
+				submenu.items.forEach(function(value, index) {
+					var data = "";
+					
+					if (value.layer)
+						data += ' data-layer="'+value.layer+'"';
+						
+					if (value.metadata)
+						data += ' data-metadata="'+value.metadata+'"';
+					else
+						data += ' data-metadata="'+menu.metadata[0].name+'"';
+						
+					if (submenu.type)
+						data += ' data-type="'+submenu.type+'"';
+					else
+						data += ' data-type="'+submenu.type+'"';
+						
+					// Find time interval for layer
+																			
+					html += '<div class="fmi-metweb-productgroup-product" '+data+'>'+value.title+'</div>';
 				});
 			}
 			
 			html += '</div></div>';
-		});	
+		};
 	
 		$("#fmi-metweb-productgroup-container").html(html);
-		$(".fmi-metweb-productgroup-title").on("click", self.toggleProductGroup);
+		$(".fmi-metweb-productgroup-title").on("click", this.toggleProductGroup);
 		//$(".fmi-metweb-productgroup-product").on("click", self.addProductToActiveMap);
 		
 		var products = document.querySelectorAll(".fmi-metweb-productgroup-product");
@@ -107,6 +87,8 @@ class Sidebar {
 	}
 	
 	toggleProductGroup() {
+		
+		console.log("toggleProductGroup()");
 		
 		var $group = $(this).parent(".fmi-metweb-productgroup").first();
 		
@@ -121,46 +103,60 @@ class Sidebar {
 		
 		console.log("addProductToActiveMap");
 		
-		var name = $(evt.target).html();
-		var product = false;
+		var title = $(evt.target).html();
+		var layer = $(evt.target).data("layer");
+		var type = $(evt.target).data("type");
+		var metadata = $(evt.target).data("metadata");
 		
-		//console.log(this.products.all);
-				
-		for(let current of this.products.all) {
-			if (current.Name===name) {
-				product = current; 
-				break;
-			}
-		}
+		if (!layer)
+			return;	
 		
-		if (!product)
-			return;
-		
-		
-		var config = this.generateConfigForProduct(product);
+		var config = this.generateConfigForProduct(title, layer, type, metadata);
 		
 		//console.log(config.map.model.layers);
 		
 		this.windows.set(this.windows.getSelected(), config);
 	}
 	
-	generateConfigForProduct(product) {
-		
+	generateConfigForProduct(title, layer, type, metadata) {
+				
 		var apiKey = this.getApiKey();
 		
-		var resolutionTime = 30 * 60 * 1000;
+		var baseUrl = 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/';
+		var wmsBaseUrl = baseUrl + 'wms'		
+		
 		var currentDate = new Date();
 		var currentTime = currentDate.getTime();
-		var beginTime = currentTime-resolutionTime;
-		var endTime = currentTime+resolutionTime;
+			  
 		var resolutions = [2048, 1024, 512, 256, 128, 64];
+		var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]];
+		var extent = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352];
+		var imgPath = 'src/assets/images/';
 		
+		// Resolve correct time resolution from metadata		
+		
+		var minutes = Metadata.getTimeResolutionForLayer(metadata, layer);
+		
+		if (minutes)
+			var resolutionTime = minutes * 60 * 1000;
+		else
+			var resolutionTime = 60 * 60 * 1000;
+		
+		if (type=="obs") {
+			var beginTime = currentTime-10*resolutionTime;
+			var endTime = currentTime;
+	    } else {
+			var beginTime = currentTime;
+			var endTime = currentTime+10*resolutionTime;		    		    
+	    }	
+					
 		var config = {
 			project: 'mymap',
 			// Map view configurations
 			map: {
 				model: {
 					// Layer configuration
+					
 					layers: [
 						// ---------------------------------------------------------------
 						{
@@ -206,7 +202,7 @@ class Sidebar {
 					autoStart: false,
 					waitUntilLoaded: false,
 					autoReplay: true,
-					refreshInterval: 60 * 60 * 1000,
+					refreshInterval: 5 * 60 * 1000,
 					frameRate: 500,
 					resolutionTime: resolutionTime,
 					defaultAnimationTime: beginTime,
@@ -215,57 +211,87 @@ class Sidebar {
 					endTimeDelay: 1000
 				},
 				view: {
-					showTimeSlider: false,
+					showTimeSlider: true,
 					timeZone: 'Europe/Helsinki',
-					imageWidth: 55,
-					imageHeight: 55,
-					imageBackgroundColor: '#585858',
-					sliderOffset: 55,
-					sliderHeight: 55,
-					statusHeight: 12,
-					tickTextColor: '#000000',
-					pastColor: '#B2D8EA',
-					futureColor: '#D7B13E',
+					playPauseImageWidth: 60,
+					playPauseImageHeight: 60,
+					timeStepsImageWidth: 60,
+					timeStepsImageHeight: 60,
+					backgroundColor: '#000000',
+					imageBackgroundColor: 'rgba(0,0,0,0)',
+					imageHoverColor: 'rgba(0,0,0,0)',
+					shadowOpacity: 0.3,
+					height: 100,
+					sliderXOffset: 10,
+					sliderYOffset: 40,
+					sliderHeight: 60,
+					statusHeight: 4,
+					statusXOffset: 30,
+					statusYOffset: 40,
+					statusRounded: true,
+					tickTextColor: '#FFFFFF',
+					pastColor: '#8ED141',
+					futureColor: '#74B6E6',
 					tickColor: '#FFFFFF',
 					notLoadedColor: '#585858',
-					loadingColor: '#B2D8EA',
-					loadedColor: '#94BF77',
+					loadingColor: '#BDBDBD',
 					loadingErrorColor: '#9A2500',
-					tickHeight: 24,
-					tickTextYOffset: 18,
-					tickTextSize: 12,
+					tickHeight: 0,
+					tickTextYOffset: 35,
+					tickTextSize: 14,
+					pointerTop: true,
 					pointerHeight: 30,
-					pointerTextOffset: 15,
-					pointerColor: '#585858',
-					pointerTextColor: '#D7B13E',
-					pointerTextSize: 12
+					pointerArrowHeight: 10,
+					pointerArrowWidth: 5,
+					pointerYOffset: 50,
+					pointerTextYOffset: 0,
+					pointerColor: '#FFFFFF',
+					pointerStrokeColor: '#BDBDBD',
+					pointerStrokeWidth: 1,
+					pointerTextColor: '#000000',
+					pointerTextSize: 13,
+					pointerHandleYOffset: 0,
+					pointerHandleImageWidth: 18,
+					pointerHandleImageHeight: 18,
+					pointerHandleImagePath: imgPath + 'timeline-handle.svg',
+					playImagePath: imgPath + 'play.svg',
+					pauseImagePath: imgPath + 'pause.svg',
+					timeStepsImagePath: imgPath + 'time-steps.svg'
 				}
 			}
 		};
 		
 		// Add product to layers
-		
-		console.log("product: "+product);
-		
+			
 		var layer = {
-			"className": "WMTS",
-			"title": product.Title,
-			"type": "obs",
-			"visible": true,
-			"opacity": 1.0,
-			"sourceOptions": {
-				"matrixSet": "ETRS-TM35FIN-FINLAND",
-				"layer": product.Name,
-				"format": "image/png"
-			},
-			"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-			"timeCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/wms?request=GetCapabilities&service=WMS",
-			"animation": {
-				"beginTime": beginTime,
-				"hasLegend": "http://data.fmi.fi/fmi-apikey/"+apiKey+"/dali?customer=legend&product=rr&width=100&height=250&type=png"
-			}
-		};
-		
+              className: 'TileWMS',
+              title: title,
+              visible: true,
+              opacity: 1.0,
+              type: type,
+              sourceOptions: {
+                url: wmsBaseUrl,
+                params: {
+                  'LAYERS': layer,
+                  'TRANSPARENT': 'TRUE',
+                  'FORMAT': 'image/png'
+                },
+                projection: 'EPSG:3067',
+                tileGridOptions: {
+                  origins: origins1024,
+                  extent: extent,
+                  resolutions: resolutions,
+                  tileSize: 1024
+                }
+              },
+              //"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
+			  "timeCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/wms?request=GetCapabilities&service=WMS",
+              animation: {
+                beginTime: currentTime,
+                hasLegend: true
+              }
+        };
+			
 		config.map.model.layers.push(layer);
 		
 		return config;		
