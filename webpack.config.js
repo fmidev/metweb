@@ -115,6 +115,15 @@ module.exports = {
                 options: {
                     name: 'fonts/[name].[ext]',
                 },
+            },
+            // TOML configuration files
+            {
+                test: /\.toml/,
+                use: 'raw-loader'
+                //loader: 'file-loader',
+                //options: {
+                //    name: 'toml/[name].[ext]'
+                //}
             }
         ]
     }

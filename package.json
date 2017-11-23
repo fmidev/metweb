@@ -34,8 +34,10 @@
     "jquery": "^3.2.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
+    "raw-loader": "^0.5.1",
     "style-loader": "^0.18.2",
     "svg-url-loader": "^2.2.0",
+    "toml": "^2.3.3",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
