@@ -4,9 +4,11 @@
 
 // Load application styles
 import './home.less';
+import '../../styles/base.less';
 import '../../styles/map.less';
 // Load temporarily from tmp directory
 import * as layout from '../../tmpLib/layout';
+import '../../tmpLib/layout.less';
 import Sidebar from './Sidebar.js';
 
 // ================================
