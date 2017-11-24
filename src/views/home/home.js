@@ -7,7 +7,7 @@ import './home.less';
 import '../../styles/base.less';
 import '../../styles/map.less';
 // Load temporarily from tmp directory
-import * as layout from '../../tmpLib/layout';
+import { Layout } from '../../tmpLib/layout';
 import '../../tmpLib/layout.less';
 import Sidebar from './Sidebar.js';
 
@@ -19,6 +19,7 @@ import Sidebar from './Sidebar.js';
 // Some initial testing. Will be added to own class soon.
 
 var workspaceIndex = 0;
+var workspaces = {};
 
 $(document).ready(function() {
 
@@ -62,7 +63,6 @@ $(document).ready(function() {
 	createWorkspace()
 	$("#fmi-metweb-footer-new-workspace").on("click", createWorkspace);
 
-	Sidebar.setWindows(layout);
 	Sidebar.updateProducts();
 });
 
@@ -78,36 +78,33 @@ function createWorkspace() {
 	var baseWorkspaceContainer = document.getElementById(baseId);
 	selectWorkspace();
 	baseWorkspaceContainer.appendChild(newWorkspaceContainer)
-	layout
-    .setContainer(containerId)
-		.onWindowCreated(function(id) {
-			console.log('On window created: '+id);
-		})
-		.onSelectionChanged(function(id) {
-			console.log('On selection changed: '+id);
-		})
-		.onBookmarkAdded(function(id) {
-			console.log('On bookmark added: '+id);
-		})
-		.onDestroyed(function(id) {
-			console.log('On destroyed: '+id);
-			var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
-			var numWorkspaceIcons = workspaceIcons.length
-			for (var i=0; i<numWorkspaceIcons; i++) {
-				if (workspaceIcons[i].dataset.workspaceId === id) {
-					var newSelectedId;
-					if (numWorkspaceIcons > 1) {
-						newSelectedId = workspaceIcons[(i === 0) ? 1 : i - 1].dataset.workspaceId
-					}
-					workspaceIcons[i].parentElement.removeChild(workspaceIcons[i]);
-					if (newSelectedId !== null) {
-						selectWorkspace(newSelectedId);
-					}
-					break;
+	let workspace = new Layout(containerId);
+  workspace.onWindowCreated(function(id) {
+    console.log('On window created: ' + id);
+  }).onSelectionChanged(function(id) {
+		console.log('On selection changed: '+id);
+	}).onBookmarkAdded(function(id) {
+		console.log('On bookmark added: '+id);
+	})
+	.onDestroyed(function(id) {
+		console.log('On destroyed: '+id);
+		var workspaceIcons = document.getElementsByClassName('fmi-metweb-footer-workspace-icon');
+		var numWorkspaceIcons = workspaceIcons.length
+		for (var i=0; i<numWorkspaceIcons; i++) {
+			if (workspaceIcons[i].dataset.workspaceId === id) {
+				var newSelectedId;
+				if (numWorkspaceIcons > 1) {
+					newSelectedId = workspaceIcons[(i === 0) ? 1 : i - 1].dataset.workspaceId
 				}
-			}
-		})
-		.create('Työpöytä '+workspaceId)
+				workspaceIcons[i].parentElement.removeChild(workspaceIcons[i]);
+				if (newSelectedId !== null) {
+					selectWorkspace(newSelectedId);
+				}
+				break;
+      }
+		}
+	}).create('Työpöytä '+workspaceId)
+	workspaces[workspaceId] = workspace;
   //console.log('Selected: '+layout.getSelected());
   var newWorkspaceIcon = document.createElement('div');
   newWorkspaceIcon.classList.add('fmi-metweb-footer-workspace-icon');
@@ -141,6 +138,7 @@ function selectWorkspace(workspaceId) {
 			workspaceContainers[j].style.display = 'none';
 		}
 	}
+	Sidebar.setWindows(workspaces[workspaceId]);
 }
 
 function toggleSidebar() {
