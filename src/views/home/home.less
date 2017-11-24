@@ -68,6 +68,7 @@ html,body {
 	background-color: #ffffff;
 	display: none;
 	flex-direction: column;
+	border-right: 2px solid #eceded;
 }
 
 #fmi-metweb-windows-and-footer {
@@ -93,7 +94,7 @@ html,body {
 #fmi-metweb-footer {
 	width: 100%;
 	height: 50px;
-	background-color: #f7f7f7;
+	background-color: #ffffff;
 	box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 	display: flex;
 }
@@ -126,28 +127,26 @@ html,body {
 
 .fmi-metweb-productgroup-title {
 	font-family: fmi-metweb-bold;
-	padding-bottom: 10px;
+	line-height: 40px;
 	border-bottom: 1px solid #e4e4e4;
 	background-image: url('../../assets/images/light-theme/open-icon-a.svg');
 	background-size: 20px 20px;
-	background-position: right 0px;
+	background-position: right 10px;
     background-repeat: no-repeat;
     cursor: pointer;
 }
-
-/*
-.fmi-metweb-productgroup:first-child .fmi-metweb-productgroup-title{
-	border-top: 1px solid #e4e4e4;
-}
-*/
 
 .fmi-metweb-productgroup.open .fmi-metweb-productgroup-title {
 	background-image: url('../../assets/images/light-theme/close-icon-a.svg');
 	background-size: 20px 20px;
 }
 
-.fmi-metweb-productgroup.closed .fmi-metweb-productgroup-product {
+.fmi-metweb-productgroup.closed .fmi-metweb-productgroup-list {
 	display: none;
+}
+
+.fmi-metweb-productgroup:first-child .fmi-metweb-productgroup-title {
+	border-top: 1px solid #e4e4e4;
 }
 
 .fmi-metweb-productgroup .fmi-metweb-productgroup-product:last-child {
@@ -157,7 +156,7 @@ html,body {
 .fmi-metweb-productgroup-list {
 	overflow-y: scroll;
 	max-height: 400px;
-	box-sizing: border-box;	
+	box-sizing: border-box;
 }
 
 .fmi-metweb-productgroup-product {
