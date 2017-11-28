@@ -157,25 +157,25 @@ class Sidebar {
 				model: {
 					// Layer configuration
 					
-					layers: [
-						// ---------------------------------------------------------------
-						{
-							className: 'WMTS',
-							title: 'Taustakartta',
-							type: 'map',
-							visible: true,
-							opacity: 1.0,
-							sourceOptions: {
-								matrixSet: 'ETRS-TM35FIN',
-								layer: 'KAP:Europe_basic_EurefFIN',
-								format: 'image/png'
-							},
-							tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/'+apiKey+'/geoserver/gwc/service/wmts?request=GetCapabilities',
-							animation: {
-								hasLegend: false
-							}
-						}
-					]
+					layers: {
+            // ---------------------------------------------------------------
+            'Taustakartta': {
+              className: 'WMTS',
+              title: 'Taustakartta',
+              type: 'map',
+              visible: true,
+              opacity: 1.0,
+              sourceOptions: {
+                matrixSet: 'ETRS-TM35FIN',
+                layer: 'KAP:Europe_basic_EurefFIN',
+                format: 'image/png'
+              },
+              tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
+              animation: {
+                hasLegend: false
+              }
+            }
+          }
 				},
 				view: {
 					projection: 'EPSG:3857',
@@ -262,36 +262,36 @@ class Sidebar {
 		
 		// Add product to layers
 			
-		var layer = {
-              className: 'TileWMS',
-              title: title,
-              visible: true,
-              opacity: 1.0,
-              type: type,
-              sourceOptions: {
-                url: wmsBaseUrl,
-                params: {
-                  'LAYERS': layer,
-                  'TRANSPARENT': 'TRUE',
-                  'FORMAT': 'image/png'
-                },
-                projection: 'EPSG:3067',
-                tileGridOptions: {
-                  origins: origins1024,
-                  extent: extent,
-                  resolutions: resolutions,
-                  tileSize: 1024
-                }
-              },
-              //"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-			  "timeCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/wms?request=GetCapabilities&service=WMS",
-              animation: {
-                beginTime: currentTime,
-                hasLegend: true
-              }
-        };
+		var layerConfig = {
+      className: 'TileWMS',
+      title: title,
+      visible: true,
+      opacity: 1.0,
+      type: type,
+      sourceOptions: {
+        url: wmsBaseUrl,
+        params: {
+          'LAYERS': layer,
+          'TRANSPARENT': 'TRUE',
+          'FORMAT': 'image/png'
+        },
+        projection: 'EPSG:3067',
+        tileGridOptions: {
+          origins: origins1024,
+          extent: extent,
+          resolutions: resolutions,
+          tileSize: 1024
+        }
+      },
+      //"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
+      'timeCapabilities': 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/wms?request=GetCapabilities&service=WMS',
+      animation: {
+        beginTime: currentTime,
+        hasLegend: true
+      }
+    };
 			
-		config.map.model.layers.push(layer);
+		config.map.model.layers[layer] = layerConfig;
 		
 		return config;		
 	
