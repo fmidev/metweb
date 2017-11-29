@@ -163,9 +163,14 @@ html,body {
 	line-height: 30px;
 	white-space: nowrap;
 	overflow-x: hidden;
-	cursor: pointer;
 	padding: 0;
 	margin: 0;
+	display: flex;
+}
+
+.fmi-metweb-product-title {
+	width: 180px;
+	white-space: normal;
 }
 
 .fmi-metweb-selected {
@@ -273,4 +278,61 @@ html,body {
 div.fmi-metweb-workspace-container {
 	width: 100%;
 	display: flex;
+}
+
+// From: https://www.w3schools.com/howto/howto_css_switch.asp
+
+.fmi-metweb-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-top: 4px;
+}
+
+/* Hide default HTML checkbox */
+.fmi-metweb-switch input {display:none;}
+
+/* The slider */
+.fmi-metweb-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  background-color: #e1e1e1;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.fmi-metweb-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 1px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+  border: solid 1px #efefef;
+
+}
+
+input:checked + .fmi-metweb-slider {
+  background-color: #60b3e1;
+}
+
+input:focus + .fmi-metweb-slider {
+  box-shadow: 0 0 1px #60b3e1;
+}
+
+input:checked + .fmi-metweb-slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
 }

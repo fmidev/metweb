@@ -1,10 +1,20 @@
 # Main menu configuration
 
-[[metadata]]
+[[source]]
 
 name = "fmiwms"
-type = "GetCapabilities"
-url = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
+type = "wms"
+url = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/"
+tileCapabilities = "http://wms.fmi.fi/fmi-apikey/{APIKEY/geoserver/gwc/service/wmts?request=GetCapabilities"
+timeCapabilities = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
+default = true
+
+[[source]]
+
+name = "fmidaliwms"
+type = "wms"
+url = "http://data.fmi.fi/fmi-apikey/{APIKEY}/"
+timeCapabilities = "http://data.fmi.fi/fmi-apikey/{APIKEY}/wms?request=GetCapabilities&service=WMS"
 
 [[menu]]
 

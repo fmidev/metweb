@@ -6,9 +6,16 @@ function importAll (r) {
 
 importAll(require.context("../../assets/conf", true, /\.toml$/));
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 class MenuReader {
 	
-	constructor() {}
+	constructor() {
+		this.menu = {};
+	}
 	
 	getMenuJson(apikey) {
 				
@@ -22,8 +29,8 @@ class MenuReader {
 			// Replace apikey if given
 			
 			if (apikey)
-				menucfg = menucfg.replace("{APIKEY}", apikey);
-			
+				menucfg = menucfg.replaceAll("{APIKEY}", apikey);
+						
 			var data = toml.parse(menucfg);
 		} catch(e) {
 			return false;
@@ -44,9 +51,22 @@ class MenuReader {
 			
 		}
 		
+		this.menu = data;		
 		return data;
 		
 	}
+	
+	getSource(name) {
+		
+		for(var i=0; i<this.menu.source.length; i++) {
+			if (this.menu.source[i].name==name)
+				return this.menu.source[i];			
+		}
+
+		return false;
+		
+	}
+	
 	
 }
 

@@ -83,6 +83,9 @@ function createWorkspace() {
     console.log('On window created: ' + id);
   }).onSelectionChanged(function(id) {
 		console.log('On selection changed: '+id);
+		
+		setTimeout($.proxy(Sidebar.updateActiveProducts, Sidebar), 500);
+		
 	}).onBookmarkAdded(function(id) {
 		console.log('On bookmark added: '+id);
 	})
@@ -144,12 +147,15 @@ function selectWorkspace(workspaceId) {
 function toggleSidebar() {
 	if ($("#fmi-metweb-sidebar-menu").is(":visible")) {
 		$("#fmi-metweb-sidebar").removeClass("open");
-    $("#fmi-metweb-sidebar-menu").css("display", "none");
+		$("#fmi-metweb-sidebar-menu").css("display", "none");
 		$("#fmi-metweb-windows-and-footer").css("width", "calc(100vw - 50px)");
     } else {
 	    $("#fmi-metweb-sidebar").addClass("open");
   		$("#fmi-metweb-sidebar-menu").css("display", "flex");
 	  	$("#fmi-metweb-windows-and-footer").css("width", "calc(100vw - 320px)");
+	  	
+	  	Sidebar.updateActiveProducts();
+	  	
     }
 }
 

@@ -8,36 +8,68 @@ class Metadata {
 	
 	resolveMetadataForMenu(menu) {
 		
-		var parser = new WMSCapabilities();
 		var self = this;
+		var urls = [];
+		var namesForUrls = {};
 		
-		for(var i=0; i < menu.metadata.length; i++) {
+		for(var i=0; i < menu.source.length; i++) {
 			
-			var item = menu.metadata[i];
+			var item = menu.source[i];
 			
-			if (item.type !== "GetCapabilities")
+			if (item.type !== "wms")
 				continue;
-			
-			fetch(item.url).then(function(response) {
-				return response.text();
-			}).then(function(text) {
-		      	var result = parser.read(text);
-				self.capabilities[item.name] = result;
-		  	});
-
-		}
-	}
+							
+			if (item.timeCapabilities)
+				var url = item.timeCapabilities
+			else
+				var url = item.url;
+		
+			urls.push(url);
+			namesForUrls[url] = item.name;			
+		}	
 	
-	getTimeResolutionForLayer(metadata, layer) {
+		var results = [];
+		
+		for(var i=0; i<urls.length; i++) {
 			
-		if (!this.capabilities[metadata]) {
+			results.push($.ajax( {
+				url:urls[i],
+				beforeSend: function(jqXHR, settings) {
+					jqXHR.url = settings.url;
+    			}
+    		}));
+		}
+		
+		$.when.apply(this, results).done(function() {
+			
+			var parser = new WMSCapabilities();
+			
+			for(var i=0;i<arguments.length;i++){			
+		    	var jqXHR = arguments[i][2];
+		      	var result = parser.read(jqXHR.responseText);
+		      	
+		      	var name = namesForUrls[jqXHR.url];
+			 
+		      	if (result && name) {
+		      		console.log(name);
+		      		self.capabilities[name] = result;
+		        }
+		   	}
+		});
+	
+	}
+		
+	getTimeResolutionForLayer(source, layer) {
+			
+		if (!this.capabilities[source]) {		
+			console.log("not loaded: "+source);
 			alert("Metadata has not loaded yet. Please try again.");
 			return;
 		}
 		
-		for(var i=0; i<this.capabilities[metadata].Capability.Layer.Layer.length; i++) {
+		for(var i=0; i<this.capabilities[source].Capability.Layer.Layer.length; i++) {
 			
-			var current = this.capabilities[metadata].Capability.Layer.Layer[i];
+			var current = this.capabilities[source].Capability.Layer.Layer[i];
 			
 			if (current.Name==layer) {
 				
