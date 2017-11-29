@@ -16,7 +16,7 @@ const dirNode = 'node_modules';
 const dirApp = path.join(__dirname, 'src');
 const dirAssets = path.join(__dirname, 'assets');
 
-const appHtmlTitle = 'Web-työasema';
+const appHtmlTitle = 'MetWeb';
 
 /**
  * Webpack Configuration
