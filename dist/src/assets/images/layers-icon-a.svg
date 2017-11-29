@@ -6,7 +6,7 @@
     <defs></defs>
     <g id="page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="layers-icon-a">
-            <circle id="bg" fill="#000000" opacity="0.300000012" cx="17" cy="17" r="17"></circle>
+            <circle id="bg" fill="#000000" opacity="0.5" cx="17" cy="17" r="17"></circle>
             <polygon id="fill-1" fill="#ffffff" points="17.0000255 9 8 14.5000235 17.0000255 20 26 14.5000235"></polygon>
             <polygon id="fill-2" fill="#ffffff" points="17.0000255 21.6314403 10.8516177 18 8 19.6842571 17.0000255 25 26 19.6842571 23.1484332 18"></polygon>
         </g>
