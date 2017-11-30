@@ -77,7 +77,13 @@ class Metadata {
 					var dimension = current.Dimension[n];
 					
 					if (dimension.name=="time") {
-						var items = dimension.values.split("/"); 
+						var items = dimension.values.split("/");
+						
+						// This one is returned when timesteps are listed, not interval (for example some satellite layers)
+						
+						if (items.length==1)
+							return 30;
+												 
 						var duration = this.convertDuration(items[2]);
 						return parseInt(duration.H)*60+parseInt(duration.M);
 					}
