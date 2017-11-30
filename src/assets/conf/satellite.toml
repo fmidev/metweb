@@ -7,3 +7,7 @@ layer = "Satellite:eurooppa_hrv-ir_eureffin"
 
 title = "Eurooppa HRV"
 layer = "Satellite:eurooppa_hrv_eureffin"
+
+[[item]]
+title = "Europe avhrr IR 10.8µ"
+layer = "Satellite:europe_avhrr_ir108"
