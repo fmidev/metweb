@@ -1,0 +1,235 @@
+
+div.fmi-metoclient-timeslider.rotated {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 90px;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  div.fmi-metoclient-timeslider-clickable-container {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  div.fmi-metoclient-timeslider-pre-margin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0;
+  }
+
+  div.fmi-metoclient-timeslider-pre-tools {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 60px;
+  }
+
+  div.fmi-metoclient-timeslider-play-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 90px;
+    height: 60px;
+    background-image: url('../assets/images/play.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  div.fmi-metoclient-timeslider-play-button:hover {
+    background-color: #60B3E1;
+  }
+
+  div.fmi-metoclient-timeslider-play-button.playing {
+    background-image: url('../assets/images/pause.svg');
+  }
+
+  div.fmi-metoclient-timeslider-frames-container {
+    position: absolute;
+    top: 65px;
+    bottom: 65px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  div.fmi-metoclient-timeslider-frame {
+    position: relative;
+  }
+
+  div.fmi-metoclient-timeslider-frame.history {
+    background-color: transparent;
+  }
+
+  div.fmi-metoclient-timeslider-frame.future {
+    background-color: transparent;
+  }
+
+  div.fmi-metoclient-timeslider-indicator {
+    box-sizing: border-box;
+    position: absolute;
+    left: 20px;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background-color: #585858;
+  }
+
+  .history > div.fmi-metoclient-timeslider-indicator {
+    background-color: #8ED141;
+  }
+
+  .future > div.fmi-metoclient-timeslider-indicator {
+    background-color: #8ED141;
+  }
+
+  div.fmi-metoclient-timeslider-indicator[data-status='working'] {
+    background-color: #BDBDBD;
+  }
+
+  .history > div.fmi-metoclient-timeslider-indicator[data-status='success'] {
+    background-color: #8ED141;
+  }
+
+  .future > div.fmi-metoclient-timeslider-indicator[data-status='success'] {
+    background-color: #74B6E6;
+  }
+
+  div.fmi-metoclient-timeslider-indicator[data-status='error'] {
+    background-color: #9A2500;
+  }
+
+  div.fmi-metoclient-timeslider-frame-tick {
+    display: none;
+  }
+
+  div.fmi-metoclient-timeslider-frame-text-wrapper {
+    box-sizing: border-box;
+    position: absolute;
+    bottom: -3px;
+    left: 15px;
+    width: 100%;
+    height: 12px;
+    text-align: center;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    color: #fff;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    z-index: 21;
+    background-color: transparent;
+  }
+
+  div.fmi-metoclient-timeslider-post-tools {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+  }
+
+  div.fmi-metoclient-timeslider-step-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 90px;
+    height: 60px;
+    background-image: url('../assets/images/time-steps.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  div.fmi-metoclient-timeslider-step-button:hover {
+    background-color: #60B3E1;
+  }
+
+  div.fmi-metoclient-timeslider-post-margin {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+  }
+
+  div.fmi-metoclient-timeslider-pointer {
+    box-sizing: border-box;
+    position: absolute;
+    left: -50px;
+    bottom: -12.5px;
+    width: 50px;
+    height: 25px;
+    border-radius: 2px;
+    border: 0.2px solid #000;
+    background-color: #fff;
+    z-index: 22;
+  }
+
+  div.fmi-metoclient-timeslider-pointer-wrapper {
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  div.fmi-metoclient-timeslider-pointer-wrapper:after, div.fmi-metoclient-timeslider-pointer-wrapper:before {
+    box-sizing: border-box;
+    top: 50%;
+    left: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  div.fmi-metoclient-timeslider-pointer-wrapper:after {
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 10px solid #fff;
+    margin-top: -5px;
+  }
+
+  div.fmi-metoclient-timeslider-pointer-wrapper:before {
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 11px solid #000;
+    margin-top: -6px;
+  }
+
+  div.fmi-metoclient-timeslider-pointer-handle {
+    box-sizing: border-box;
+    border-radius: 50%;
+    position: absolute;
+    right: -32px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+  }
+
+  span.fmi-metoclient-timeslider-pointer-text {
+    box-sizing: border-box;
+    color: #000;
+    display: table;
+    margin: 0 auto;
+    line-height: 23px;
+    vertical-align: middle;
+    letter-spacing: 0.2px;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 15px;
+  }
+
+  div.fmi-metoclient-timeslider-drag-listener {
+    width: 100vw;
+    height: 100%;
+  }
+
+}
