@@ -320,7 +320,6 @@ class Sidebar {
       //"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
       'timeCapabilities': sourcecfg.timeCapabilities,
       animation: {
-        beginTime: currentTime,
         hasLegend: true
       }
     }

@@ -80,15 +80,8 @@ div.fmi-metoclient-timeslider.rotated {
     top: 0;
     width: 4px;
     height: 100%;
+    pointer-events: none;
     background-color: #585858;
-  }
-
-  .history > div.fmi-metoclient-timeslider-indicator {
-    background-color: #8ED141;
-  }
-
-  .future > div.fmi-metoclient-timeslider-indicator {
-    background-color: #8ED141;
   }
 
   div.fmi-metoclient-timeslider-indicator[data-status='working'] {
@@ -125,6 +118,7 @@ div.fmi-metoclient-timeslider.rotated {
     font-family: Roboto, Arial, Helvetica, sans-serif;
     font-size: 13px;
     z-index: 21;
+    pointer-events: none;
     background-color: transparent;
   }
 
@@ -167,7 +161,7 @@ div.fmi-metoclient-timeslider.rotated {
     width: 50px;
     height: 25px;
     border-radius: 2px;
-    border: 0.2px solid #000;
+    border: 1px solid #000;
     background-color: #fff;
     z-index: 22;
   }
@@ -228,8 +222,10 @@ div.fmi-metoclient-timeslider.rotated {
   }
 
   div.fmi-metoclient-timeslider-drag-listener {
+    position:absolute;
+    top:0;
+    bottom:0;
     width: 100vw;
-    height: 100%;
   }
 
 }
