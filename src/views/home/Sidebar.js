@@ -70,7 +70,6 @@ class Sidebar {
       html += '</div></div>'
     }
 
-
     $('#fmi-metweb-productgroup-container').html(html)
     $('.fmi-metweb-productgroup-title').on('click', this.toggleProductGroup)
 
@@ -102,7 +101,7 @@ class Sidebar {
       return
     }
 
-    var keys = Object.keys(config.map.model.layers)
+    var keys = Object.keys(config.layers)
 
     $('#fmi-metweb-productgroup-container .fmi-metweb-productgroup').each(function () {
 
@@ -169,7 +168,7 @@ class Sidebar {
       return
 
     var config = this.windows.get(this.windows.getSelected())
-    delete config.map.model.layers[layer]
+    delete config.layers[layer]
 
     this.windows.set(this.windows.getSelected(), config)
     this.updateActiveProducts()
@@ -219,78 +218,65 @@ class Sidebar {
 
       config = {
         project: 'mymap',
-        // Map view configurations
-        map: {
-          model: {
-            // Layer configuration
+        // Layer configuration
 
-            layers: {
-              // ---------------------------------------------------------------
-              'Taustakartta': {
-                className: 'WMTS',
-                title: 'Taustakartta',
-                type: 'map',
-                visible: true,
-                opacity: 1.0,
-                source: {
-                  matrixSet: 'ETRS-TM35FIN',
-                  layer: 'KAP:Europe_basic_EurefFIN',
-                  format: 'image/png'
-                },
-                tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
-                animation: {
-                  hasLegend: false
-                }
-              }
+        layers: {
+          // ---------------------------------------------------------------
+          'Taustakartta': {
+            className: 'WMTS',
+            title: 'Taustakartta',
+            type: 'map',
+            visible: true,
+            opacity: 1.0,
+            source: {
+              matrixSet: 'ETRS-TM35FIN',
+              layer: 'KAP:Europe_basic_EurefFIN',
+              format: 'image/png'
+            },
+            tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
+            animation: {
+              hasLegend: false
             }
-          },
-          view: {
-            projection: 'EPSG:3857',
-            extent: [-500000, 5000000, 5000000, 20000000],
-            resolutions: resolutions,
-            defaultCenterLocation: [2750000, 9000000],
-            defaultCenterProjection: 'EPSG:3857',
-            defaultZoomLevel: 0,
-            showLegend: true,
-            legendTitle: 'Legend',
-            noLegendText: 'None',
-            showLayerSwitcher: true,
-            showLoadProgress: true,
-            ignoreObsOffset: 5 * 60 * 1000,
-            maxAsyncLoadCount: 5,
-            // Disable panning and zooming
-            staticControls: false
           }
         },
+        projection: 'EPSG:3857',
+        extent: [-500000, 5000000, 5000000, 20000000],
+        resolutions: resolutions,
+        defaultCenterLocation: [2750000, 9000000],
+        defaultCenterProjection: 'EPSG:3857',
+        defaultZoomLevel: 0,
+        showLegend: true,
+        legendTitle: 'Legend',
+        noLegendText: 'None',
+        showLayerSwitcher: true,
+        showLoadProgress: true,
+        ignoreObsOffset: 5 * 60 * 1000,
+        maxAsyncLoadCount: 5,
+        // Disable panning and zooming
+        staticControls: false,
         // Time configuration
-        time: {
-          model: {
-            autoStart: false,
-            waitUntilLoaded: false,
-            autoReplay: true,
-            refreshInterval: 5 * 60 * 1000,
-            frameRate: 500,
+        autoStart: false,
+        waitUntilLoaded: false,
+        autoReplay: true,
+        refreshInterval: 5 * 60 * 1000,
+        frameRate: 500,
 //            resolutionTime: resolutionTime,
-            defaultAnimationTime: beginTime,
-            beginTime: beginTime,
-            endTime: endTime,
-            endTimeDelay: 1000
-          },
-          view: {
-            showTimeSlider: true,
-            timeZone: 'Europe/Helsinki'
-          }
-        }
+        defaultAnimationTime: beginTime,
+        beginTime: beginTime,
+        endTime: endTime,
+        endTimeDelay: 1000,
+        showTimeSlider: true,
+        timeZone: 'Europe/Helsinki'
       }
 
     } else {
 
       // Update time options
 
-      if (config.time.model.beginTime > beginTime)
-        config.time.model.beginTime = beginTime
-      if (config.time.model.endTime < endTime)
-        config.time.model.endTime = endTime
+      if (config.beginTime > beginTime)
+        config.beginTime = beginTime
+      if (config.endTime < endTime)
+        config.endTime = endTime
 
     }
 
@@ -324,7 +310,7 @@ class Sidebar {
       }
     }
 
-    config.map.model.layers[layer] = layerConfig
+    config.layers[layer] = layerConfig
 
     return config
 
