@@ -8,9 +8,8 @@ import '../../styles/base.less'
 import '../../styles/map.less'
 import '../../styles/timeSlider.less'
 import '../../styles/timeSliderRotated.less'
-// Load temporarily from tmp directory
-import { Layout } from '../../tmpLib/layout'
-import '../../tmpLib/layout.less'
+import { Layout } from 'metoclient/apps/layout'
+import 'metoclient/apps/layout/dist/layout.css'
 import Sidebar from './Sidebar.js'
 
 var workspaceIndex = 0

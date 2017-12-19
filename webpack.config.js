@@ -42,8 +42,7 @@ module.exports = {
 
         new webpack.ProvidePlugin({
 	        $: 'jquery',
-          jQuery: 'jquery',
-          SVG: 'svg.js'
+          jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
@@ -77,6 +76,18 @@ module.exports = {
                         loader: "css-loader"
                     }, {
                         loader: "less-loader"
+                    }],
+                    // use style-loader in development
+                    fallback: "style-loader"
+                })
+            },
+
+            // css
+            {
+                test: /\.css/,
+                use: extractLess.extract({
+                    use: [{
+                        loader: "css-loader"
                     }],
                     // use style-loader in development
                     fallback: "style-loader"
