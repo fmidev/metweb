@@ -37,4 +37,4 @@ file = "forecasts.toml"
 [[menu]]
 title = "Jääkartta"
 type = "obs"
-file = icecoverage.toml"
+file = "icecoverage.toml"
