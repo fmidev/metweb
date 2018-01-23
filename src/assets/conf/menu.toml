@@ -33,3 +33,8 @@ file = "satellite.toml"
 title = "Ennusteet"
 type = "for"
 file = "forecasts.toml"
+
+[[menu]]
+title = "Jääkartta"
+type = "obs"
+file = icecoverage.toml"
