@@ -10,7 +10,7 @@ import '../../styles/timeSlider.less'
 import '../../styles/timeSliderRotated.less'
 import { Layout } from 'metoclient/apps/layout'
 import 'metoclient/apps/layout/dist/layout.css'
-import Sidebar from './Sidebar.js'
+import Sidebar from './Sidebar.jsx'
 
 var workspaceIndex = 0
 var workspaces = {}

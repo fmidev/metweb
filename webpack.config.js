@@ -60,11 +60,11 @@ module.exports = {
         rules: [
             // Babel
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 loader: 'babel-loader',
                 exclude: /(node_modules|layout\.js)/,
-                options: {
-                    compact: true
+                query: {
+                  presets: ['react']
                 }
             },
 
