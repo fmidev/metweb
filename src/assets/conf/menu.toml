@@ -5,7 +5,7 @@
 name = "fmiwms"
 type = "wms"
 url = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/"
-tileCapabilities = "http://wms.fmi.fi/fmi-apikey/{APIKEY/geoserver/gwc/service/wmts?request=GetCapabilities"
+tileCapabilities = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/gwc/service/wmts?request=GetCapabilities"
 timeCapabilities = "http://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
 default = true
 

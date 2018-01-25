@@ -6,7 +6,7 @@ class Metadata {
     this.capabilities = {}
   }
 
-  resolveMetadataForMenu (menu) {
+  resolveMetadataForMenu (menu, callback) {
 
     var self = this
     var urls = []
@@ -54,7 +54,10 @@ class Metadata {
           self.capabilities[name] = result
         }
       }
-    })
+      if(typeof callback === "function"){
+        callback();
+      }
+    }.bind(callback))
 
   }
 

@@ -1,28 +1,30 @@
 import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ProductList } from './ProductList.jsx'
 
-class SidebarPlaceholder extends React.Component{
-  
-}
+export class Sidebar extends React.Component{
 
-class Sidebar {
-
-  constructor () {
-    this.windows = false
+  constructor(props) {
+    super(props);
+    this.state = {
+      windows: false,
+      menu: MenuReader.getMenuJson(this.getApiKey())
+    };
+    Metadata.resolveMetadataForMenu(this.state.menu)
   }
 
-  setWindows (windows) {
-    this.windows = windows
+  componentWillMount(){
+    if(this.state.windows){
+      try{
+        this.updateActiveProducts()
+      }catch(e){ /* Some kind of error handling fault in the Layout component produces errors here */ }
+    }
   }
 
-  updateProducts () {
-    // Now read configuration
-    var menu = MenuReader.getMenuJson(this.getApiKey())
-    this.updateProductListView(menu)
-
-    Metadata.resolveMetadataForMenu(menu)
+  componentWillReceiveProps(nextProps) {
+    this.setState({ windows: nextProps.windows });
   }
 
   getApiKey () {
@@ -33,156 +35,67 @@ class Sidebar {
 
   }
 
-  updateProductListView (menu) {
-    var html = ''
+  updateActiveProducts (){
 
-    for (var i = 0; i < menu.menu.length; i++) {
-
-      var submenu = menu.menu[i]
-
-      html += '<div class="fmi-metweb-productgroup closed">'
-      html += '<div class="fmi-metweb-productgroup-title">' + submenu.title + ' <span class="fmi-metweb-product-count"></span></div>'
-      html += '<div class="fmi-metweb-productgroup-list">'
-
-      if (submenu.items.length == 0) {
-        html += '<div class="fmi-metweb-productgroup-product">No products</div>'
-      } else {
-        submenu.items.forEach(function (value, index) {
-          var data = ''
-
-          if (value.layer)
-            data += ' data-layer="' + value.layer + '"'
-
-          if (value.source)
-            data += ' data-source="' + value.source + '"'
-          else
-            data += ' data-source="' + menu.source[0].name + '"'
-
-          if (value.type)
-            data += ' data-type="' + value.type + '"'
-          else if (submenu.type)
-            data += ' data-type="' + submenu.type + '"'
-          else
-            data += ' data-type="obs"'
-
-          // Find time interval for layer
-
-          html += '<div class="fmi-metweb-productgroup-product" '
-            + data + '><div class="fmi-metweb-product-title">' + value.title
-            + '</div><label class="fmi-metweb-switch"><input type="checkbox"><span class="fmi-metweb-slider"></span></label></div>'
-        })
-      }
-
-      html += '</div></div>'
-    }
-
-    $('#fmi-metweb-productgroup-container').html(html)
-    $('.fmi-metweb-productgroup-title').on('click', this.toggleProductGroup)
-
-    //$(".fmi-metweb-productgroup-product").on("click", self.addProductToActiveMap);
-
-    var products = document.querySelectorAll('#fmi-metweb-productgroup-container .fmi-metweb-switch')
-
-    for (var i = 0; i < products.length; i++) {
-
-      products[i].addEventListener('change', (e) => {
-        if (e.target.checked)
-          this.addProductToActiveMap(e)
-        else
-          this.removeProductFromActiveMap(e)
+    // By default everything all products be inactive
+    this.state.menu.menu.forEach((menu, menuIndex) => {
+      menu.items.forEach((item, itemIndex) => {
+          item.active = false
       })
-    }
-
-  }
-
-  updateActiveProducts () {
-
-    var config = this.windows.get(this.windows.getSelected())
-
-    // Config is null if no products
-
-    if (config == null) {
-      $('#fmi-metweb-productgroup-container input:checkbox').prop('checked', false)
-      $('#fmi-metweb-productgroup-container .fmi-metweb-product-count').html('')
-      return
-    }
-
-    var keys = Object.keys(config.layers)
-
-    $('#fmi-metweb-productgroup-container .fmi-metweb-productgroup').each(function () {
-
-      var count = 0
-
-      $(this).find('.fmi-metweb-productgroup-product').each(function () {
-        var layer = $(this).data('layer')
-
-        if (keys.indexOf(layer) > -1) {
-          $(this).find('input:checkbox').prop('checked', true)
-          count++
-        } else {
-          $(this).find('input:checkbox').prop('checked', false)
-        }
-
-      })
-
-      if (count == 0)
-        $(this).find('.fmi-metweb-product-count').html('')
-      else
-        $(this).find('.fmi-metweb-product-count').html('(' + count + ')')
-
     })
+    var config = this.state.windows.get(this.state.windows.getSelected())
 
-  }
-
-  toggleProductGroup () {
-    var $group = $(this).parent('.fmi-metweb-productgroup').first()
-
-    if ($group.hasClass('closed'))
-      $group.removeClass('closed').addClass('open')
-    else
-      $group.removeClass('open').addClass('closed')
-
-  }
-
-  addProductToActiveMap (evt) {
-
-    var parent = $(evt.target).closest('.fmi-metweb-productgroup-product')
-
-    var title = parent.find('.fmi-metweb-product-title').html()
-    var layer = parent.data('layer')
-    var type = parent.data('type')
-    var source = parent.data('source')
-
-    if (!layer)
+    if(!config)
       return
 
-    var config = this.generateConfigForProduct(title, layer, type, source)
+    // After resetting the values to inactive, set active products
+    Object.keys(config.layers).forEach((key) => {
+      this.state.menu.menu.forEach((menu, menuIndex) => {
+        menu.items.forEach((item, itemIndex) => {
+          if(key == item.layer){
+            item.active = true
+          }
+        })
+      })
+    });
 
-    this.windows.set(this.windows.getSelected(), config)
+  }
+
+  // Received a change event from the lower hierarchy. Add/remove layer from the relevant map
+  handleProductStateChange (productComponent) {
+    if (!productComponent.props.product.layer || !this.state.windows){
+      return
+    }
+    if(productComponent.state.active){
+      this.addProductToActiveMap (productComponent.props.product)
+    }else{
+      this.removeProductFromActiveMap (productComponent.props.product)
+    }
     this.updateActiveProducts()
   }
 
-  removeProductFromActiveMap (evt) {
-    var parent = $(evt.target).closest('.fmi-metweb-productgroup-product')
+  addProductToActiveMap (product) {
 
-    var title = parent.find('.fmi-metweb-product-title').html()
-    var layer = parent.data('layer')
-    var type = parent.data('type')
-    var source = parent.data('source')
+    var config = this.generateConfigForProduct(product.title, product.layer, product.type, product.source)
 
-    if (!layer)
+    this.state.windows.set(this.state.windows.getSelected(), config)
+
+  }
+
+  removeProductFromActiveMap (product) {
+
+    var config = this.state.windows.get(this.state.windows.getSelected())
+    if(!config)
       return
 
-    var config = this.windows.get(this.windows.getSelected())
-    delete config.layers[layer]
+    delete config.layers[product.layer]
 
-    this.windows.set(this.windows.getSelected(), config)
-    this.updateActiveProducts()
+    this.state.windows.set(this.state.windows.getSelected(), config)
 
   }
 
   generateConfigForProduct (title, layer, type, source) {
-    var config = this.windows.get(this.windows.getSelected())
+    var config = this.state.windows.get(this.state.windows.getSelected())
 
     var sourcecfg = MenuReader.getSource(source)
 
@@ -309,7 +222,7 @@ class Sidebar {
           tileSize: 1024
         }
       },
-      //"tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
+      "tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
       'timeCapabilities': sourcecfg.timeCapabilities,
       animation: {
         hasLegend: true
@@ -322,6 +235,33 @@ class Sidebar {
 
   }
 
+  render(){
+    var productLists = [];
+
+    // Build an array of productLists
+    if(this.state.menu){
+
+      this.state.menu.menu.forEach((productList, index) => {
+        var products = productList.items;
+        var title = productList.title ? productList.title : "Untitled"
+
+        // Set product source fallbacks
+        products.forEach((product, index) => {
+          if(!product.source){
+            product.source = this.state.menu.source[0].name
+          }
+        });
+        productLists.push(<ProductList key={'pl'+index} title={title} products={products} onChange={this.handleProductStateChange.bind(this)} />)
+      });
+
+    }
+    return (
+      <div>
+        {productLists}
+      </div>
+    )
+  }
+
 }
 
-export default (new Sidebar)
+export default Sidebar

@@ -23,7 +23,7 @@ const appHtmlTitle = 'MetWeb';
  */
 module.exports = {
     entry: {
-        bundle: path.join(dirApp, 'views/home/home.js')
+        bundle: path.join(dirApp, 'views/home/home.jsx')
     },
     resolve: {
         modules: [
