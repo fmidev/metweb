@@ -16,10 +16,6 @@ export class Sidebar extends React.Component{
     Metadata.resolveMetadataForMenu(this.state.menu)
   }
 
-  componentDidUpdate(){
-    this.updateActiveProducts()
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState({ windows: nextProps.windows }, function(){
       this.updateActiveProducts()
@@ -40,6 +36,17 @@ export class Sidebar extends React.Component{
 
   }
 
+  // Temporary helpers that Redux should make redundant
+  getSelectedWindowConfig(){
+    var selectedWindowId = this.state.windows.getSelected();
+    var config = this.state.windows.get(selectedWindowId)
+    return config;
+  }
+  setSelectedWindowConfig(config){
+    var selectedWindowId = this.state.windows.getSelected();
+    this.state.windows.set(selectedWindowId, config)
+  }
+
   updateActiveProducts (){
 
     if(!this.state.windows){
@@ -55,23 +62,22 @@ export class Sidebar extends React.Component{
         })
       })
 
-      // Get config object of selected window. the .get() method uses ID, while .getSelected() returns index
-      var selectedWindowId = this.state.windows.getSelected() + 1;
-      var config = this.state.windows.get(selectedWindowId)
-
-      if(!config)
-        return
+      var config = this.getSelectedWindowConfig();
 
       // After resetting the values to inactive, set active products
-      Object.keys(config.layers).forEach((key) => {
-        this.state.menu.menu.forEach((menu, menuIndex) => {
-          menu.items.forEach((item, itemIndex) => {
-            if(key == item.layer){
-              item.active = true
-            }
+      if(config){
+        Object.keys(config.layers).forEach((key) => {
+          this.state.menu.menu.forEach((menu, menuIndex) => {
+            menu.items.forEach((item, itemIndex) => {
+              if(key == item.layer){
+                item.active = true
+              }
+            })
           })
-        })
-      });
+        });
+      }
+
+      this.forceUpdate()
 
     }catch(e){ /* Most errors here are the Layout component saying findItemById is null */ }
 
@@ -95,20 +101,19 @@ export class Sidebar extends React.Component{
   addProductToActiveMap (product) {
 
     var config = this.generateConfigForProduct(product.title, product.layer, product.type, product.source)
-
-    this.state.windows.set(this.state.windows.getSelected(), config)
+    this.setSelectedWindowConfig(config);
 
   }
 
   removeProductFromActiveMap (product) {
 
-    var config = this.state.windows.get(this.state.windows.getSelected())
+    var config = this.getSelectedWindowConfig()
     if(!config)
       return
 
     delete config.layers[product.layer]
 
-    this.state.windows.set(this.state.windows.getSelected(), config)
+    this.setSelectedWindowConfig(config)
 
   }
 

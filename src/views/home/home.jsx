@@ -65,7 +65,8 @@ class MainView extends React.Component{
 
       /* Force update so Sidebar also updates */
       .onSelectionChanged(function(id){
-        this.forceUpdate();
+        //setTimeout(function(){ this.forceUpdate() }.bind(this), 200);
+        this.forceUpdate()
       }.bind(this))
 
       /* More available methods */
