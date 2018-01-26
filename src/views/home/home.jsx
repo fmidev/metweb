@@ -16,12 +16,7 @@ import { Layout } from 'metoclient/apps/layout'
 import 'metoclient/apps/layout/dist/layout.css'
 import Sidebar from './Sidebar.jsx'
 
-var workspaceCount = 0
-var workspaces = {}
-
 $(document).ready(function () {
-
-  // TODO Footer component: $('#fmi-metweb-footer-new-workspace').on('click', createWorkspace)
 
   ReactDOM.render(<MainView />, document.getElementById("fmi-metweb-react-app-container"));
 
@@ -32,38 +27,54 @@ class MainView extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
+      workspaces: [],
       selectedWorkspace: false
     };
   }
 
   componentDidMount() {
-    $('#fmi-metweb-sidebar').on('click', toggleSidebar)
     this.createWorkspace()
   }
 
+  /* Temporary jQuery hack */
+  componentDidUpdate() {
+    this.state.workspaces.forEach((workspace, workspaceIndex) => {
+      var workspaceElement = $('#fmi-metweb-windows' + (workspaceIndex + 1))
+      if(workspaceIndex == this.state.selectedWorkspace){
+        workspaceElement.show();
+      } else{
+        workspaceElement.hide()
+      }
+    })
+  }
+
   createWorkspace () {
-    workspaceCount++
-    var baseId = 'fmi-metweb-windows'
-    var workspaceIndex = workspaceCount.toString()
-    var containerId = baseId + workspaceIndex
+
+    var workspaceIndex = this.state.workspaces.length
+    var workspaceId = (workspaceIndex + 1).toString()
+    var containerId = 'fmi-metweb-windows' + workspaceId
     var newWorkspaceContainer = document.createElement('div')
     newWorkspaceContainer.id = containerId
-    newWorkspaceContainer.dataset.workspaceId = workspaceIndex
+    newWorkspaceContainer.dataset.workspaceId = workspaceId
     newWorkspaceContainer.classList.add('workspace-container')
-    var baseWorkspaceContainer = document.getElementById(baseId)
-    this.selectWorkspaceByIndex()
+
+    var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)
+
     let workspace = new Layout(containerId)
-    workspace.onWindowCreated(function (id) {
 
-    }).onSelectionChanged(function(id){
-      this.setState({selectedWorkspace: workspaces[workspaceIndex]})
-    }.bind(this)).onBookmarkAdded(function (id) {
+      /* Force update so Sidebar also updates */
+      .onSelectionChanged(function(id){
+        this.forceUpdate();
+      }.bind(this))
 
-    }).onDestroyed(function (id) {
+      /* More available methods */
+      .onWindowCreated(function (id) { })
+      .onBookmarkAdded(function (id) { })
+      .onDestroyed(function (id) { })
+      .create('Työpöytä ' + workspaceId)
 
-    }).create('Työpöytä ' + workspaceIndex)
-    workspaces[workspaceIndex] = workspace
+    this.state.workspaces[workspaceIndex] = workspace
     this.selectWorkspaceByIndex(workspaceIndex)
   }
 
@@ -71,37 +82,26 @@ class MainView extends React.Component{
     if (workspaceIndex === undefined) {
       workspaceIndex = null
     }
-    this.setState({selectedWorkspace: workspaces[workspaceIndex]})
+    this.setState({selectedWorkspace: workspaceIndex})
   }
 
   render(){
+
+    var workspaces = [];
+    var workspaceNav = [];
+
+    this.state.workspaces.forEach((workspace, workspaceIndex) => {
+
+      workspaceNav.push(
+        <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(this.state.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspaceByIndex.bind(this, workspaceIndex)}></div>
+      )
+    })
+
+
     return (
       <div id="fmi-metweb-sidebar-windows-and-footer">
-        <div id="fmi-metweb-sidebar">
-      	</div>
 
-      	<div id="fmi-metweb-sidebar-menu">
-
-          <div id="fmi-metweb-sidebar-menu-title">
-      		{"Tuotevalikko"}
-      		</div>
-
-      		<div id="fmi-metweb-sidebar-menu-filters">
-        		<div className="fmi-metweb-title">{"Filtterit"}</div>
-
-        		<div className="fmi-metweb-wrappable-container">
-        			<div className="fmi-metweb-filter-button">{"Filtteri 1"}</div>
-        			<div className="fmi-metweb-filter-button">{"Filtteri 2"}</div>
-        			<div className="fmi-metweb-filter-button">{"Filtteri 3"}</div>
-        			<div className="fmi-metweb-filter-button">{"Filtteri 4"}</div>
-        		</div>
-      		</div>
-
-      		<div id="fmi-metweb-productgroup-container">
-      	     <Sidebar windows={this.state.selectedWorkspace} />
-      		</div>
-
-      	</div>
+        <Sidebar windows={this.state.workspaces[this.state.selectedWorkspace]} />
 
       	<div id="fmi-metweb-windows-and-footer">
 
@@ -113,9 +113,10 @@ class MainView extends React.Component{
       			</div>
 
       			<div id="fmi-metweb-footer-workspaces">
+              {workspaceNav}
       			</div>
 
-      			<div id="fmi-metweb-footer-new-workspace">
+      			<div id="fmi-metweb-footer-new-workspace" onClick={this.createWorkspace.bind(this)}>
       			</div>
 
       		</div>
@@ -125,16 +126,4 @@ class MainView extends React.Component{
     )
   }
 
-}
-
-function toggleSidebar () {
-  if ($('#fmi-metweb-sidebar-menu').is(':visible')) {
-    $('#fmi-metweb-sidebar').removeClass('open')
-    $('#fmi-metweb-sidebar-menu').css('display', 'none')
-    $('#fmi-metweb-windows-and-footer').css('width', 'calc(100vw - 50px)')
-  } else {
-    $('#fmi-metweb-sidebar').addClass('open')
-    $('#fmi-metweb-sidebar-menu').css('display', 'flex')
-    $('#fmi-metweb-windows-and-footer').css('width', 'calc(100vw - 320px)')
-  }
 }

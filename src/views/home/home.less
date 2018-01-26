@@ -48,6 +48,10 @@ html, body {
 }
 
 #fmi-metweb-sidebar {
+  display:flex;
+}
+
+#fmi-metweb-sidebar-toggle {
   width: 50px;
   height: 100%;
   background-color: #ffffff;
@@ -59,7 +63,7 @@ html, body {
   cursor: pointer;
 }
 
-#fmi-metweb-sidebar.open {
+.open #fmi-metweb-sidebar-toggle {
   background-image: url('../../assets/images/light-theme/product-folder-icon-b.svg');
 }
 
@@ -72,11 +76,19 @@ html, body {
   border-right: 2px solid #eceded;
 }
 
+#fmi-metweb-sidebar.open #fmi-metweb-sidebar-menu {
+  display: flex;
+}
+
 #fmi-metweb-windows-and-footer {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   width: ~"calc(100vw - 50px)";
+}
+
+#fmi-metweb-sidebar.open + #fmi-metweb-windows-and-footer {
+  width: ~"calc(100vw - 320px)";
 }
 
 #fmi-metweb-windows {

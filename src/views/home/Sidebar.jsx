@@ -9,23 +9,30 @@ export class Sidebar extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
+      open: false,
       windows: false,
       menu: MenuReader.getMenuJson(this.getApiKey())
     };
     Metadata.resolveMetadataForMenu(this.state.menu)
   }
 
-  componentWillMount(){
+  componentDidUpdate(){
     if(this.state.windows){
       try{
         this.updateActiveProducts()
-      }catch(e){ /* Some kind of error handling fault in the Layout component produces errors here */ }
+      }catch(e){ /* Most errors here are the Layout component saying findItemById is null */ }
     }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ windows: nextProps.windows });
   }
+
+  toggleOpen() {
+    const currentState = this.state.open;
+    this.setState({ open: !currentState });
+
+  };
 
   getApiKey () {
     if (window.location.search.match(/(\?|&)apikey\=([^&]*)/) == null)
@@ -40,10 +47,13 @@ export class Sidebar extends React.Component{
     // By default everything all products be inactive
     this.state.menu.menu.forEach((menu, menuIndex) => {
       menu.items.forEach((item, itemIndex) => {
-          item.active = false
+        item.active = false
       })
     })
-    var config = this.state.windows.get(this.state.windows.getSelected())
+
+    // Get config object of selected window. the .get() method uses ID, while .getSelected() returns index
+    var selectedWindowId = this.state.windows.getSelected() + 1;
+    var config = this.state.windows.get(selectedWindowId)
 
     if(!config)
       return
@@ -63,6 +73,7 @@ export class Sidebar extends React.Component{
 
   // Received a change event from the lower hierarchy. Add/remove layer from the relevant map
   handleProductStateChange (productComponent) {
+
     if (!productComponent.props.product.layer || !this.state.windows){
       return
     }
@@ -72,6 +83,7 @@ export class Sidebar extends React.Component{
       this.removeProductFromActiveMap (productComponent.props.product)
     }
     this.updateActiveProducts()
+
   }
 
   addProductToActiveMap (product) {
@@ -256,8 +268,29 @@ export class Sidebar extends React.Component{
 
     }
     return (
-      <div>
-        {productLists}
+      <div id="fmi-metweb-sidebar" className={this.state.open ? "open" : ""}>
+        <div id="fmi-metweb-sidebar-toggle" onClick={this.toggleOpen.bind(this)} >
+        </div>
+
+        <div id="fmi-metweb-sidebar-menu">
+
+          <div id="fmi-metweb-sidebar-menu-title">{"Tuotevalikko"}</div>
+
+          <div id="fmi-metweb-sidebar-menu-filters">
+            <div className="fmi-metweb-title">{"Filtterit"}</div>
+
+            <div className="fmi-metweb-wrappable-container">
+              <div className="fmi-metweb-filter-button">{"Filtteri 1"}</div>
+              <div className="fmi-metweb-filter-button">{"Filtteri 2"}</div>
+              <div className="fmi-metweb-filter-button">{"Filtteri 3"}</div>
+              <div className="fmi-metweb-filter-button">{"Filtteri 4"}</div>
+            </div>
+          </div>
+
+          <div id="fmi-metweb-productgroup-container">
+             {productLists}
+          </div>
+        </div>
       </div>
     )
   }

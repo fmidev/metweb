@@ -34,7 +34,7 @@ export class Product extends React.Component{
       <div className="fmi-metweb-productgroup-product">
         <div className="fmi-metweb-product-title">{this.props.product.title}</div>
         <label className="fmi-metweb-switch">
-          <input type="checkbox" checked={this.state.active} onChange={this.toggleActive.bind(this)} /><span className="fmi-metweb-slider"></span>
+          <input type="checkbox" checked={this.state.active ? this.state.active : false} onChange={this.toggleActive.bind(this)} /><span className="fmi-metweb-slider"></span>
         </label>
       </div>
 
