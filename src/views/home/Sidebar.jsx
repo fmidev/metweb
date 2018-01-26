@@ -17,15 +17,13 @@ export class Sidebar extends React.Component{
   }
 
   componentDidUpdate(){
-    if(this.state.windows){
-      try{
-        this.updateActiveProducts()
-      }catch(e){ /* Most errors here are the Layout component saying findItemById is null */ }
-    }
+    this.updateActiveProducts()
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ windows: nextProps.windows });
+    this.setState({ windows: nextProps.windows }, function(){
+      this.updateActiveProducts()
+    });
   }
 
   toggleOpen() {
@@ -44,30 +42,38 @@ export class Sidebar extends React.Component{
 
   updateActiveProducts (){
 
-    // By default everything all products be inactive
-    this.state.menu.menu.forEach((menu, menuIndex) => {
-      menu.items.forEach((item, itemIndex) => {
-        item.active = false
-      })
-    })
-
-    // Get config object of selected window. the .get() method uses ID, while .getSelected() returns index
-    var selectedWindowId = this.state.windows.getSelected() + 1;
-    var config = this.state.windows.get(selectedWindowId)
-
-    if(!config)
+    if(!this.state.windows){
       return
+    }
 
-    // After resetting the values to inactive, set active products
-    Object.keys(config.layers).forEach((key) => {
+    try{
+
+      // By default everything all products be inactive
       this.state.menu.menu.forEach((menu, menuIndex) => {
         menu.items.forEach((item, itemIndex) => {
-          if(key == item.layer){
-            item.active = true
-          }
+          item.active = false
         })
       })
-    });
+
+      // Get config object of selected window. the .get() method uses ID, while .getSelected() returns index
+      var selectedWindowId = this.state.windows.getSelected() + 1;
+      var config = this.state.windows.get(selectedWindowId)
+
+      if(!config)
+        return
+
+      // After resetting the values to inactive, set active products
+      Object.keys(config.layers).forEach((key) => {
+        this.state.menu.menu.forEach((menu, menuIndex) => {
+          menu.items.forEach((item, itemIndex) => {
+            if(key == item.layer){
+              item.active = true
+            }
+          })
+        })
+      });
+
+    }catch(e){ /* Most errors here are the Layout component saying findItemById is null */ }
 
   }
 
@@ -248,9 +254,9 @@ export class Sidebar extends React.Component{
   }
 
   render(){
-    var productLists = [];
 
     // Build an array of productLists
+    var productLists = [];
     if(this.state.menu){
 
       this.state.menu.menu.forEach((productList, index) => {
