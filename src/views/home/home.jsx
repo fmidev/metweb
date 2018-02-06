@@ -12,8 +12,8 @@ import '../../styles/timeSliderRotated.less'
 // React & component imports
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Layout } from 'metoclient/apps/layout'
-import 'metoclient/apps/layout/dist/layout.css'
+import { Layout } from 'metoclient-layout'
+import 'metoclient-layout/dist/layout.css'
 import Sidebar from './Sidebar.jsx'
 
 $(document).ready(function () {
