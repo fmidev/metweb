@@ -12,13 +12,24 @@ import '../../styles/timeSliderRotated.less'
 // React & component imports
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import { combineReducers } from 'redux'
+import { connect } from 'react-redux'
+
 import { Layout } from 'metoclient-layout'
 import 'metoclient-layout/dist/layout.css'
+import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
+
 import Sidebar from './Sidebar.jsx'
+import sidebarReducer from './SidebarReducer.js'
+
+const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
+let store = createStore(metwebReducer)
 
 $(document).ready(function () {
 
-  ReactDOM.render(<MainView />, document.getElementById("fmi-metweb-react-app-container"));
+  ReactDOM.render(<Provider store={store}><MainView /></Provider>, document.getElementById("fmi-metweb-react-app-container"));
 
 })
 
@@ -26,10 +37,6 @@ class MainView extends React.Component{
 
   constructor(props) {
     super(props);
-    this.state = {
-      workspaces: [],
-      selectedWorkspace: false
-    };
   }
 
   componentDidMount() {
@@ -38,9 +45,11 @@ class MainView extends React.Component{
 
   /* Temporary jQuery hack */
   componentDidUpdate() {
-    this.state.workspaces.forEach((workspace, workspaceIndex) => {
+    var currentState = store.getState().sidebarReducer;
+    var selectedWorkspaceIndex = currentState.selectedWorkspace;
+    currentState.workspaces.forEach((workspace, workspaceIndex) => {
       var workspaceElement = $('#fmi-metweb-windows' + (workspaceIndex + 1))
-      if(workspaceIndex == this.state.selectedWorkspace){
+      if(workspaceIndex == currentState.selectedWorkspace){
         workspaceElement.show();
       } else{
         workspaceElement.hide()
@@ -50,7 +59,7 @@ class MainView extends React.Component{
 
   createWorkspace () {
 
-    var workspaceIndex = this.state.workspaces.length
+    var workspaceIndex = store.getState().sidebarReducer.workspaces.length
     var workspaceId = (workspaceIndex + 1).toString()
     var containerId = 'fmi-metweb-windows' + workspaceId
     var newWorkspaceContainer = document.createElement('div')
@@ -65,8 +74,8 @@ class MainView extends React.Component{
 
       /* Force update so Sidebar also updates */
       .onSelectionChanged(function(id){
-        //setTimeout(function(){ this.forceUpdate() }.bind(this), 200);
-        this.forceUpdate()
+        // Timeout is back. TODO: ditch timeout
+        setTimeout(function(){ this.props.changeWindow() }.bind(this), 500)
       }.bind(this))
 
       /* More available methods */
@@ -75,26 +84,23 @@ class MainView extends React.Component{
       .onDestroyed(function (id) { })
       .create('Työpöytä ' + workspaceId)
 
-    this.state.workspaces[workspaceIndex] = workspace
-    this.selectWorkspaceByIndex(workspaceIndex)
+    this.props.addWorkspace(workspace, workspaceIndex)
+    this.selectWorkspace(workspaceIndex)
+
   }
 
-  selectWorkspaceByIndex (workspaceIndex) {
-    if (workspaceIndex === undefined) {
-      workspaceIndex = null
-    }
-    this.setState({selectedWorkspace: workspaceIndex})
+  selectWorkspace (workspaceIndex) {
+    this.props.selectWorkSpace(workspaceIndex)
   }
 
   render(){
 
-    var workspaces = [];
-    var workspaceNav = [];
+    var workspaceNav = []
+    var currentState = store.getState().sidebarReducer;
 
-    this.state.workspaces.forEach((workspace, workspaceIndex) => {
-
+    store.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
       workspaceNav.push(
-        <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(this.state.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspaceByIndex.bind(this, workspaceIndex)}></div>
+        <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspace.bind(this, workspaceIndex)}></div>
       )
     })
 
@@ -102,7 +108,7 @@ class MainView extends React.Component{
     return (
       <div id="fmi-metweb-sidebar-windows-and-footer">
 
-        <Sidebar windows={this.state.workspaces[this.state.selectedWorkspace]} />
+        <Sidebar open={false} />
 
       	<div id="fmi-metweb-windows-and-footer">
 
@@ -128,3 +134,30 @@ class MainView extends React.Component{
   }
 
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    workspaces: state.sidebarReducer.workspaces,
+    selectedWorkspace: state.sidebarReducer.selectedWorkspace
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    addWorkspace: (workspace, workspaceIndex) => {
+      dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
+    },
+    selectWorkSpace: (workspaceIndex) => {
+      dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
+    },
+    changeWindow: () => {
+      dispatch({type: "CHANGE_WINDOW_SELECTION"})
+    }
+  }
+}
+
+MainView = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MainView)
