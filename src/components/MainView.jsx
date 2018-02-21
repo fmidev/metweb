@@ -3,11 +3,11 @@
  */
 
 // Load application styles
-import './home.less'
-import '../../styles/base.less'
-import '../../styles/map.less'
-import '../../styles/timeSlider.less'
-import '../../styles/timeSliderRotated.less'
+import '../styles/home.less'
+import '../styles/base.less'
+import '../styles/map.less'
+import '../styles/timeSlider.less'
+import '../styles/timeSliderRotated.less'
 
 // React & component imports
 import React from 'react'
@@ -22,16 +22,10 @@ import 'metoclient-layout/dist/layout.css'
 import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
 
 import Sidebar from './Sidebar.jsx'
-import sidebarReducer from './SidebarReducer.js'
+import sidebarReducer from '../app/sidebarReducer.js'
 
 const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
 let store = createStore(metwebReducer)
-
-$(document).ready(function () {
-
-  ReactDOM.render(<Provider store={store}><MainView /></Provider>, document.getElementById("fmi-metweb-react-app-container"));
-
-})
 
 class MainView extends React.Component{
 
@@ -91,12 +85,13 @@ class MainView extends React.Component{
 
   selectWorkspace (workspaceIndex) {
     this.props.selectWorkSpace(workspaceIndex)
+    setTimeout(function(){ this.props.changeWindow() }.bind(this), 500)
   }
 
   render(){
 
     var workspaceNav = []
-    var currentState = store.getState().sidebarReducer;
+    var currentState = store.getState().sidebarReducer; // TODO ditch
 
     store.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
       workspaceNav.push(
@@ -136,6 +131,8 @@ class MainView extends React.Component{
 }
 
 
+/* MainView functionality */
+
 const mapStateToProps = (state) => {
   return {
     workspaces: state.sidebarReducer.workspaces,
@@ -149,7 +146,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
     },
     selectWorkSpace: (workspaceIndex) => {
-      dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
+      let woot = dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
     },
     changeWindow: () => {
       dispatch({type: "CHANGE_WINDOW_SELECTION"})
@@ -157,7 +154,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-MainView = connect(
+const MetWeb = connect(
   mapStateToProps,
   mapDispatchToProps
 )(MainView)
+
+ReactDOM.render(<Provider store={store}><MetWeb /></Provider>, document.getElementById("fmi-metweb-react-app-container"));

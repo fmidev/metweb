@@ -4,6 +4,8 @@ import Metadata from './Metadata.js'
 
 /* Application core functions */
 
+
+// Get API key from a) get param or b) environment variable
 export const getApiKey = () => {
   if (window.location.search.match(/(\?|&)apikey\=([^&]*)/) == null)
     return APIKEY
@@ -13,7 +15,9 @@ export const getApiKey = () => {
 }
 
 
+// Update menu tree based on GoldenLayout state
 export const updateActiveProducts = (menuObject, windows) => {
+
   // By default everything all products be inactive
   menuObject.menu.forEach((menu, menuIndex) => {
     menu.items.forEach((item, itemIndex) => {
@@ -40,7 +44,7 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 }
 
-
+// Hekpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
   var selectedWindowId = windows.getSelected();
   var config = windows.get(selectedWindowId)
@@ -51,15 +55,14 @@ export const setSelectedWindowConfig = (windows, config) => {
   windows.set(selectedWindowId, config)
 }
 
-
-export const addProductToActiveMap = (product, windows) => {
-
+// Activate product in selected window
+export const activateProductInSelectedWindow = (product, windows) => {
   var config = generateConfigForProduct(product.title, product.layer, product.type, product.source, windows)
   setSelectedWindowConfig(windows, config);
-
 }
 
-export const removeProductFromActiveMap = (product, windows) => {
+// Deactivate product in selected window
+export const deactivateProductInSelectedWindow = (product, windows) => {
 
   var config = getSelectedWindowConfig(windows)
   if(!config)
@@ -71,9 +74,13 @@ export const removeProductFromActiveMap = (product, windows) => {
 
 }
 
+// Generate MetOClient config object based on the less verbose TOML config
+// NOTE: "Append" type function.
+// In Metweb terms, _product object_ is _added_ to _currently selected window_.
+// In MetOClient terms, _config object_ is _modified_ by appending a _layer_
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
-  var config = windows.get(windows.getSelected())
 
+  var config = windows.get(windows.getSelected())
   var sourcecfg = MenuReader.getSource(source)
 
   if (!sourcecfg) {
@@ -156,7 +163,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       autoReplay: true,
       refreshInterval: 5 * 60 * 1000,
       frameRate: 500,
-//            resolutionTime: resolutionTime,
+      // resolutionTime: resolutionTime,
       defaultAnimationTime: beginTime,
       beginTime: beginTime,
       endTime: endTime,

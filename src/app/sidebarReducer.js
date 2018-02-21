@@ -5,13 +5,11 @@ import Metadata from './Metadata.js'
 import {
   getApiKey,
   updateActiveProducts,
-  addProductToActiveMap,
-  removeProductFromActiveMap
-} from './core.js'
+  activateProductInSelectedWindow,
+  deactivateProductInSelectedWindow
+} from './coreFunctions.js'
 
-
-/* Initialize state */
-
+// Initialize state: store.getState().sidebarReducer
 const initialState = {
   open: false,
   workspaces: [],
@@ -20,10 +18,10 @@ const initialState = {
 }
 Metadata.resolveMetadataForMenu(initialState.menu)
 
+// Handle dispatched actions
 const sidebarReducer = (state = initialState, action) => {
 
   let newState = Object.assign({}, state)
-  console.log(action);
 
   switch(action.type){
 
@@ -49,12 +47,12 @@ const sidebarReducer = (state = initialState, action) => {
 
     case 'PRODUCT_ON':
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = true
-      addProductToActiveMap(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
+      activateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState
 
     case 'PRODUCT_OFF':
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = false
-      removeProductFromActiveMap(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
+      deactivateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState
 
     default:

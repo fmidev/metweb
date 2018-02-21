@@ -4,7 +4,7 @@ function importAll (r) {
   r.keys().forEach(key => menufiles[key] = r(key))
 }
 
-importAll(require.context('../../assets/conf', true, /\.toml$/))
+importAll(require.context('../assets/conf', true, /\.toml$/))
 
 String.prototype.replaceAll = function (search, replacement) {
   var target = this
