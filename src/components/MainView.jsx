@@ -66,10 +66,10 @@ class MainView extends React.Component{
 
     let workspace = new Layout(containerId)
 
-      /* Force update so Sidebar also updates */
       .onSelectionChanged(function(id){
-        // Timeout is back. TODO: ditch timeout
-        setTimeout(function(){ this.props.changeWindow() }.bind(this), 500)
+        // Dispatch action to update Sidebar
+        // 0ms  timeout to wait for goldenLayout updates
+        setTimeout(function(){ this.props.changeWindow() }.bind(this), 0)
       }.bind(this))
 
       /* More available methods */
@@ -85,7 +85,8 @@ class MainView extends React.Component{
 
   selectWorkspace (workspaceIndex) {
     this.props.selectWorkSpace(workspaceIndex)
-    setTimeout(function(){ this.props.changeWindow() }.bind(this), 500)
+    // 100ms timeout to wait for goldenLayout updates
+    setTimeout(function(){ this.props.changeWindow() }.bind(this), 100)
   }
 
   render(){
@@ -146,7 +147,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
     },
     selectWorkSpace: (workspaceIndex) => {
-      let woot = dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
+      dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
     },
     changeWindow: () => {
       dispatch({type: "CHANGE_WINDOW_SELECTION"})
