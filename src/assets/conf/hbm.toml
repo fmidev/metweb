@@ -1,0 +1,7 @@
+[[item]]
+title = "Meren lämpötila"
+layer = "fmi:hbm:temperaturesea"
+
+[[item]]
+title = "Suolaisuus"
+layer = "fmi:hbm:salinity"

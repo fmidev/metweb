@@ -1,0 +1,35 @@
+[[item]]
+title = "Tuulinuolet"
+layer = "fmi:pal:testieditointi:arrows:wind"
+
+[[item]]
+title = "Kastepiste"
+layer = "fmi:pal:testieditointi:dewpoint"
+
+[[item]]
+title = "Yläpilvet"
+layer = "fmi:pal:testieditointi:highcloudcover"
+
+[[item]]
+title = "Keskipilvet"
+layer = "fmi:pal:testieditointi:mediumcloudcover"
+
+[[item]]
+title = "Alapilvet"
+layer = "fmi:pal:testieditointi:lowcloudcover"
+
+[[item]]
+title = "Ala- ja keskipilvet"
+layer = "fmi:pal:testieditointi:middleandlowcloudcover"
+
+[[item]]
+title = "Ilmankosteus"
+layer = "fmi:pal:testieditointi:humidity"
+
+[[item]]
+title = "Ilmankosteus"
+layer = "fmi:pal:testieditointi:humidity"
+
+[[item]]
+title = "Sade 1h"
+layer = "fmi:pal:testieditointi:precipitation1h"

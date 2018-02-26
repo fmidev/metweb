@@ -1,0 +1,11 @@
+[[item]]
+title = "Jään paksuus"
+layer = "fmi:helmi:icethickness"
+
+[[item]]
+title = "Jään suunta"
+layer = "fmi:helmi:icedirection"
+
+[[item]]
+title = "Jään tiheys"
+layer = "fmi:helmi:iceconcentration"

@@ -1,0 +1,27 @@
+[[item]]
+title = "Tuuli"
+layer = "fmi:pal:wind"
+
+[[item]]
+title = "Tuuli (puuskat)"
+layer = "fmi:pal:windgust"
+
+[[item]]
+title = "Pilvisyys"
+layer = "fmi:pal:totalcloudcover"
+
+[[item]]
+title = "Lämpötila"
+layer = "fmi:pal:temperature"
+
+[[item]]
+title = "Sääsymbolit"
+layer = "fmi:pal:symbols:weather"
+
+[[item]]
+title = "Ukkosen mahdollisuus"
+layer = "fmi:pal:probabilitythunderstorm"
+
+[[item]]
+title = "Kastepiste"
+layer = "fmi:pal:dewpoint"

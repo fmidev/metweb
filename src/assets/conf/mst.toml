@@ -1,0 +1,23 @@
+[[item]]
+title = "Ruodan mahdollisuus"
+layer = "mst:frostprobability"
+
+[[item]]
+title = "Maan lämpötila"
+layer = "mst:groundtemperature"
+
+[[item]]
+title = "Sade 1t"
+layer = "mst:precipitation1h"
+
+[[item]]
+title = "Sade 5pv"
+layer = "mst:precipitation5d"
+
+[[item]]
+title = "Lumen paksuus"
+layer = "mst:snowdepth"
+
+[[item]]
+title = "Lämpötila"
+layer = "mst:temperature"
