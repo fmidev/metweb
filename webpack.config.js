@@ -23,7 +23,7 @@ const appHtmlTitle = 'MetWeb';
  */
 module.exports = {
     entry: {
-        bundle: path.join(dirApp, 'views/home/home.jsx')
+        bundle: path.join(dirApp, 'components/MainView.jsx')
     },
     resolve: {
         modules: [
@@ -31,9 +31,6 @@ module.exports = {
             dirApp,
             dirAssets
         ],
-		alias: {
-			openlayers4: path.join(dirApp, 'views/home/ol.js')
-		},
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -46,7 +43,7 @@ module.exports = {
         }),
 
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, 'src/views/home/home.handlebars'),
+            template: path.join(__dirname, 'src/templates/home.handlebars'),
             title: appHtmlTitle
         }),
 
