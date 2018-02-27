@@ -6,8 +6,6 @@ const webpackConfig = require('./webpack.config')
 
 module.exports = Object.assign(webpackConfig, {
 
-  devtool: 'cheap-module-source-map',
-
   output: {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js'

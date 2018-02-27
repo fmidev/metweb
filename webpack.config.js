@@ -59,9 +59,9 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|layout\.js)/,
+                exclude: /node_modules\/(?!metoclient-layout)/,
                 query: {
-                  presets: ['react']
+                  presets: ['env', 'react']
                 }
             },
 
