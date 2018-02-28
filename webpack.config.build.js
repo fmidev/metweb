@@ -1,6 +1,5 @@
 const path = require('path')
 const webpack = require('webpack')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin
 const webpackConfig = require('./webpack.config')
 
@@ -12,10 +11,6 @@ module.exports = Object.assign(webpackConfig, {
   },
 
   plugins: webpackConfig.plugins.concat([
-    new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest']
-    }),
-    new CleanWebpackPlugin(['dist']),
     new LicenseWebpackPlugin({
       pattern: /.*/,
       licenseFilenames: [ // list of filenames to search for in each package

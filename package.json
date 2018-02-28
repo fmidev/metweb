@@ -6,6 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/fmidev/",
   "scripts": {
+    "dev-temp": "cross-env NODE_ENV=development webpack --progress --config webpack.config.dev.js",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --progress --config webpack.config.dev.js",
     "build": "cross-env NODE_ENV=production webpack -p --progress --config webpack.config.build.js"
   },
@@ -26,15 +27,14 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.2.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
-    "extract-text-webpack-plugin": "^3.0.1",
-    "file-loader": "^0.11.2",
+    "extract-text-webpack-plugin": "^4.0.0-alpha.0",
+    "file-loader": "^1.1.10",
     "handlebars": "^4.0.10",
-    "handlebars-loader": "^1.6.0",
-    "html-webpack-plugin": "^2.30.1",
+    "handlebars-loader": "github:Waavi/handlebars-loader",
+    "html-webpack-plugin": "github:webpack-contrib/html-webpack-plugin",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "license-webpack-plugin": "^1.1.1",
@@ -43,7 +43,8 @@
     "svg-url-loader": "^2.2.0",
     "toml": "^2.3.3",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.5",
+    "webpack": "^4.0.0",
+    "webpack-cli": "^2.0.9",
     "webpack-dev-server": "^2.7.1"
   }
 }
