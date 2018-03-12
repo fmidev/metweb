@@ -109,6 +109,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   else
     var resolutionTime = 60 * 60 * 1000
 
+  // TODO use Metadata class
   if (type == 'obs') {
     var beginTime = currentTime - 10 * resolutionTime
     var endTime = currentTime
