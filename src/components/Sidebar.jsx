@@ -19,17 +19,17 @@ class Sidebar extends React.Component{
 
     // Build an array of productLists
     var productLists = [];
-    if(this.props.menu){
-
+    if(this.props.menu.menu){
       this.props.menu.menu.forEach((productList, index) => {
-        productList.items.forEach((product, index) => {
-          if(!product.source){
-            product.source = this.props.menu.source[0].name
-          }
-        });
-        productLists.push(<ProductList key={'pl'+index} menuIndex={index} title={productList.title ? productList.title : "Untitled"} products={productList.items} />)
+        if(productList.items && productList.title){
+          productList.items.forEach((product, index) => {
+            if(!product.source){
+              product.source = this.props.menu.source[0].name
+            }
+          });
+          productLists.push(<ProductList key={'pl'+index} menuIndex={index} title={productList.title ? productList.title : "Untitled"} products={productList.items} />)
+        }
       });
-
     }
     return (
       <div id="fmi-metweb-sidebar" className={this.props.open ? "open" : ""}>

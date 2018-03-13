@@ -1,5 +1,5 @@
 
-import MenuReader from './MenuReader.js'
+import SourceCapabilitiesReader from './SourceCapabilitiesReader.js'
 import Metadata from './Metadata.js'
 
 import {
@@ -14,9 +14,8 @@ const initialState = {
   open: false,
   workspaces: [],
   selectedWorkspace: false,
-  menu: MenuReader.getMenuJson(getApiKey())
+  menu: {}
 }
-Metadata.resolveMetadataForMenu(initialState.menu)
 
 // Handle dispatched actions
 const sidebarReducer = (state = initialState, action) => {
@@ -24,6 +23,11 @@ const sidebarReducer = (state = initialState, action) => {
   let newState = Object.assign({}, state)
 
   switch(action.type){
+
+    case 'MENU_UPDATED':
+      newState.menu = SourceCapabilitiesReader.getMenuJson()
+      console.log(newState.menu);
+      return newState
 
     case 'TOGGLE_SIDEBAR':
       newState.open = !newState.open
@@ -60,5 +64,9 @@ const sidebarReducer = (state = initialState, action) => {
   }
 
 }
+
+SourceCapabilitiesReader.setMenuJson(getApiKey(), function(){
+  sidebarReducer(undefined, {type: "MENU_UPDATED"})
+})
 
 export default sidebarReducer

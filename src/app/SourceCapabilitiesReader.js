@@ -1,3 +1,5 @@
+import Metadata from './Metadata.js'
+
 var menufiles = {}
 
 function importAll (r) {
@@ -17,31 +19,48 @@ class SourceCapabilitiesReader {
     this.menu = {}
   }
 
-  getMenuJson (apikey) {
+  setMenuJson(apikey, callback){
 
     // Read main menu
-
     var toml = require('toml')
 
     try {
       var menucfg = menufiles['./menu.toml']
 
       // Replace apikey if given
-
       if (apikey)
         menucfg = menucfg.replaceAll('{APIKEY}', apikey)
 
       var data = toml.parse(menucfg)
+      data.menu = []
+
+      this.menu = data
+
+      Metadata.resolveMetadataForMenu(data, function(){
+
+        // Read sub menus
+        this.menu.source.forEach((source) => {
+          this.menu.menu.push( {
+            title : source.name,
+            items : Metadata.getWMSLayersAsMenuProducts(source.name)
+          } );
+        })
+
+        if(typeof callback === "function"){
+          callback()
+        }
+
+      }.bind(this, callback))
+
     } catch (e) {
-      return false
+      // Error
     }
 
-    // Read sub menus
+  }
 
-    // Todo: drop menu listing, replace with all layers from Metadata.js
+  getMenuJson () {
 
-    this.menu = data
-    return data
+    return this.menu
 
   }
 

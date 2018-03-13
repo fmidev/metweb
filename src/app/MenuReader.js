@@ -17,23 +17,23 @@ class MenuReader {
     this.menu = {}
   }
 
-  getMenuJson (apikey) {
+  setMenuJson (apikey) {
 
     // Read main menu
-
     var toml = require('toml')
 
     try {
       var menucfg = menufiles['./menu.toml']
 
       // Replace apikey if given
-
       if (apikey)
         menucfg = menucfg.replaceAll('{APIKEY}', apikey)
 
       var data = toml.parse(menucfg)
+      Metadata.resolveMetadataForMenu(data)
+      
     } catch (e) {
-      return false
+      // Error
     }
 
     // Read sub menus
@@ -52,8 +52,11 @@ class MenuReader {
     }
 
     this.menu = data
-    return data
 
+  }
+
+  getMenuJson(){
+    return this.menu
   }
 
   getSource (name) {

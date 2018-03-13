@@ -1,5 +1,5 @@
 
-import MenuReader from './MenuReader.js'
+import SourceCapabilitiesReader from './SourceCapabilitiesReader.js'
 import Metadata from './Metadata.js'
 
 /* Application core functions */
@@ -81,7 +81,7 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
 
   var config = windows.get(windows.getSelected())
-  var sourcecfg = MenuReader.getSource(source)
+  var sourcecfg = SourceCapabilitiesReader.getSource(source)
 
   if (!sourcecfg) {
     alert('Missing source information for the product')
