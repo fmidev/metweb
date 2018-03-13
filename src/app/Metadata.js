@@ -74,7 +74,8 @@ class Metadata {
     this.capabilities[source].Capability.Layer.Layer.forEach((layer) => {
       products.push({
         title : layer.Title,
-        layer : layer.Name
+        layer : layer.Name,
+        source : source
       })
     })
 

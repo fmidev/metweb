@@ -26,7 +26,6 @@ const sidebarReducer = (state = initialState, action) => {
 
     case 'MENU_UPDATED':
       newState.menu = SourceCapabilitiesReader.getMenuJson()
-      console.log(newState.menu);
       return newState
 
     case 'TOGGLE_SIDEBAR':

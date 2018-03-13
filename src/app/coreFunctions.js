@@ -46,12 +46,13 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 // Hekpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
-  var selectedWindowId = windows.getSelected();
-  var config = windows.get(selectedWindowId)
+  var selectedWindowId = windows.getSelected()
+  console.log(selectedWindowId);
+  var config = selectedWindowId == null ? windows.get(selectedWindowId) : false
   return config;
 }
 export const setSelectedWindowConfig = (windows, config) => {
-  var selectedWindowId = windows.getSelected();
+  var selectedWindowId = windows.getSelected()
   windows.set(selectedWindowId, config)
 }
 
