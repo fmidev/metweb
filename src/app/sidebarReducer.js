@@ -1,5 +1,5 @@
 
-import SourceCapabilitiesReader from './SourceCapabilitiesReader.js'
+import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
 
 import {
@@ -25,7 +25,7 @@ const sidebarReducer = (state = initialState, action) => {
   switch(action.type){
 
     case 'MENU_UPDATED':
-      newState.menu = SourceCapabilitiesReader.getMenuJson()
+      newState.menu = MenuReader.getMenuJson()
       return newState
 
     case 'TOGGLE_SIDEBAR':
@@ -64,7 +64,8 @@ const sidebarReducer = (state = initialState, action) => {
 
 }
 
-SourceCapabilitiesReader.setMenuJson(getApiKey(), function(){
+// Request metadata and dispatch action. Needs refactoring, as this kind of a dispatch doesn't seem to update the view.
+MenuReader.setMenuJson(getApiKey(), function(){
   sidebarReducer(undefined, {type: "MENU_UPDATED"})
 })
 

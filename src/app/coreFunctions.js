@@ -1,5 +1,5 @@
 
-import SourceCapabilitiesReader from './SourceCapabilitiesReader.js'
+import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
 
 /* Application core functions */
@@ -47,7 +47,6 @@ export const updateActiveProducts = (menuObject, windows) => {
 // Hekpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
   var selectedWindowId = windows.getSelected()
-  console.log(selectedWindowId);
   var config = selectedWindowId == null ? windows.get(selectedWindowId) : false
   return config;
 }
@@ -82,7 +81,7 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
 
   var config = windows.get(windows.getSelected())
-  var sourcecfg = SourceCapabilitiesReader.getSource(source)
+  var sourcecfg = MenuReader.getSource(source)
 
   if (!sourcecfg) {
     alert('Missing source information for the product')

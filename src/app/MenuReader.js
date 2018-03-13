@@ -1,3 +1,5 @@
+import Metadata from './Metadata.js'
+
 var menufiles = {}
 
 function importAll (r) {
@@ -17,7 +19,7 @@ class MenuReader {
     this.menu = {}
   }
 
-  setMenuJson (apikey) {
+  setMenuJson(apikey, callback){
 
     // Read main menu
     var toml = require('toml')
@@ -30,33 +32,67 @@ class MenuReader {
         menucfg = menucfg.replaceAll('{APIKEY}', apikey)
 
       var data = toml.parse(menucfg)
-      Metadata.resolveMetadataForMenu(data)
-      
+
+      var tomlMenu = false;
+      if(tomlMenu) {
+
+        // Read sub menus
+        for (var i = 0; i < data.menu.length; i++) {
+
+          try {
+            var items = toml.parse(menufiles['./' + data.menu[i].file])
+            data.menu[i].items = items.item
+            data.menu[i].error = false
+          } catch (e) {
+            data.menu[i].error = true
+            data.menu[i].items = []
+          }
+
+        }
+
+        this.menu = data
+        Metadata.resolveMetadataForMenu(data)
+
+      } else {
+
+        // Clear manually configured menu
+        data.menu = []
+        this.menu = data
+
+        // Read sub menus
+        Metadata.resolveMetadataForMenu(data, function(){
+
+          this.menu.source.forEach((source) => {
+
+            switch (source.server){
+              case "smartmet":
+              case "geoserver":
+              default:
+                this.menu.menu.push( {
+                  title : source.name,
+                  items : Metadata.getWMSLayersAsMenuProducts(source.name)
+                } );
+            }
+
+          })
+
+          if(typeof callback === "function"){
+            callback()
+          }
+
+        }.bind(this, callback))
+      }
+
     } catch (e) {
       // Error
     }
 
-    // Read sub menus
-
-    for (var i = 0; i < data.menu.length; i++) {
-
-      try {
-        var items = toml.parse(menufiles['./' + data.menu[i].file])
-        data.menu[i].items = items.item
-        data.menu[i].error = false
-      } catch (e) {
-        data.menu[i].error = true
-        data.menu[i].items = []
-      }
-
-    }
-
-    this.menu = data
-
   }
 
-  getMenuJson(){
+  getMenuJson () {
+
     return this.menu
+
   }
 
   getSource (name) {
