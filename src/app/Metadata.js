@@ -61,6 +61,27 @@ class Metadata {
 
   }
 
+  getWMSLayersAsMenuProducts (source) {
+    
+    if (!this.capabilities[source]) {
+      console.log('not loaded: ' + source)
+      alert('Metadata has not loaded yet. Please check the FMI API key and try again.')
+      return
+    }
+
+    let products = []
+
+    this.capabilities[source].Capability.Layer.Layer.forEach((layer) => {
+      products.push({
+        title : layer.Title,
+        layer : layer.Name,
+        source : source
+      })
+    })
+
+    return products
+  }
+
   getTimeResolutionForLayer (source, layer) {
 
     if (!this.capabilities[source]) {
@@ -73,7 +94,7 @@ class Metadata {
 
       var current = this.capabilities[source].Capability.Layer.Layer[i]
 
-      if (current.Name == layer) {
+      if (current.Name == layer && typeof current.Dimension !== "undefined") {
 
         for (var n = 0; n < current.Dimension.length; n++) {
           var dimension = current.Dimension[n]
@@ -91,7 +112,6 @@ class Metadata {
           }
 
         }
-
       }
     }
 

@@ -14,9 +14,8 @@ const initialState = {
   open: false,
   workspaces: [],
   selectedWorkspace: false,
-  menu: MenuReader.getMenuJson(getApiKey())
+  menu: {}
 }
-Metadata.resolveMetadataForMenu(initialState.menu)
 
 // Handle dispatched actions
 const sidebarReducer = (state = initialState, action) => {
@@ -24,6 +23,10 @@ const sidebarReducer = (state = initialState, action) => {
   let newState = Object.assign({}, state)
 
   switch(action.type){
+
+    case 'MENU_UPDATED':
+      newState.menu = MenuReader.getMenuJson()
+      return newState
 
     case 'TOGGLE_SIDEBAR':
       newState.open = !newState.open
@@ -60,5 +63,10 @@ const sidebarReducer = (state = initialState, action) => {
   }
 
 }
+
+// Request metadata and dispatch action. Needs refactoring, as this kind of a dispatch doesn't seem to update the view.
+MenuReader.setMenuJson(getApiKey(), function(){
+  sidebarReducer(undefined, {type: "MENU_UPDATED"})
+})
 
 export default sidebarReducer

@@ -35,6 +35,7 @@ class MainView extends React.Component{
 
   componentDidMount() {
     this.createWorkspace()
+    this.props.initializeMenu()
   }
 
   /* Temporary jQuery hack */
@@ -143,6 +144,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    initializeMenu: () => {
+      // If asynchronously fetching the WMS layers, menu will be empty at this point of lifecycle
+      dispatch({type: "MENU_UPDATED"})
+    },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
     },
