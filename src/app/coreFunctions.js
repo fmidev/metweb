@@ -65,6 +65,7 @@ export const activateProductInSelectedWindow = (product, windows) => {
 export const deactivateProductInSelectedWindow = (product, windows) => {
 
   var config = getSelectedWindowConfig(windows)
+
   if(!config)
     return
 
