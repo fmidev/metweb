@@ -96,7 +96,7 @@ class Metadata {
       var current = this.capabilities[sourcecfg.name].Capability.Layer.Layer[i]
 
       if (current.Name == layer && typeof current.Dimension !== "undefined") {
-
+        console.log(current);
         for (var n = 0; n < current.Dimension.length; n++) {
           var dimension = current.Dimension[n]
 
@@ -111,7 +111,6 @@ class Metadata {
             console.log(items);
 
             var containsInterval = isNaN(moment(items[items.length-1]).valueOf)
-            //var interval = containsInterval ? moment.duration(items[items.length-1]) : undefined
 
             var indexOfLastTimeStep = containsInterval ? items.length-2 : items.length-1
             var indexOfBeginning = Math.max(0, indexOfLastTimeStep - 5)
@@ -120,29 +119,30 @@ class Metadata {
             // If non-ISO8601 dates have to be supported, the format must be found in getCapabilities response
             if(moment(items[indexOfBeginning]).isValid() && moment(items[indexOfLastTimeStep]).isValid()){
 
+              var timeData = {}
+              var currentTime = new Date().getTime()
 
-              return {
-                beginTime: moment(items[indexOfBeginning]).valueOf(), // Moment will do its best to parse anything, but also throws warnings on weird formats
-                endTime: moment(items[indexOfLastTimeStep]).valueOf(),
-                resolutionTime: "todo :^)"
+              if(moment(items[indexOfLastTimeStep]).valueOf() > new Date().getTime()){
+                timeData.type = "for" }else{
+                timeData.type = "obs" }
+
+              timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 60000
+
+              /*
+              timeData.beginTime = moment(items[indexOfBeginning]).valueOf() // Moment will do its best to parse anything, but also throws warnings on weird formats
+              timeData.endTime = moment(items[indexOfLastTimeStep]).valueOf()
               }
+              */
+
+              timeData.beginTime = currentTime - (timeData.type === "obs" ? timeData.resolutionTime * 10 : 0)
+              timeData.endTime = currentTime + (timeData.type === "for" ? timeData.resolutionTime * 10 : 0)
               
-
               /*
-              return {
-                beginTime: new Date().getTime() - (10 * 60 * 60 * 1000),
-                endTime:  new Date().getTime(),
-                resolutionTime: "todo :^)"
+              timeData.beginTime: undefined
+              timeData.endTime =  undefined
               }
               */
-
-              /*
-              return {
-                beginTime: undefined,
-                endTime:  undefined,
-                resolutionTime: "todo :^)"
-              }
-              */
+              return timeData;
 
             }else{
               console.log("Fishy dates in getCapabilities for layer "+layer);

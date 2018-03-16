@@ -103,7 +103,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   // {beginTime, endTime, resolutionTime (unimplemented)}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
-  console.log(timeData);
+
   if (config == null) {
 
     config = {
@@ -176,7 +176,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     title: title,
     visible: true,
     opacity: 1.0,
-    type: type,
+    type: type || timeData.type,
     source: {
       url: wmsBaseUrl,
       params: {
