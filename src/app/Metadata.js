@@ -1,4 +1,5 @@
 import WMSCapabilities from 'ol/format/wmscapabilities'
+import moment from 'moment'
 
 class Metadata {
 
@@ -62,7 +63,7 @@ class Metadata {
   }
 
   getWMSLayersAsMenuProducts (source) {
-    
+
     if (!this.capabilities[source]) {
       console.log('not loaded: ' + source)
       alert('Metadata has not loaded yet. Please check the FMI API key and try again.')
@@ -82,17 +83,17 @@ class Metadata {
     return products
   }
 
-  getTimeResolutionForLayer (source, layer) {
+  getTimeDataForLayer (sourcecfg, layer) {
 
-    if (!this.capabilities[source]) {
-      console.log('not loaded: ' + source)
+    if (!this.capabilities[sourcecfg.name]) {
+      console.log('not loaded: ' + sourcecfg.name)
       alert('Metadata has not loaded yet. Please check the FMI API key and try again.')
       return
     }
 
-    for (var i = 0; i < this.capabilities[source].Capability.Layer.Layer.length; i++) {
+    for (var i = 0; i < this.capabilities[sourcecfg.name].Capability.Layer.Layer.length; i++) {
 
-      var current = this.capabilities[source].Capability.Layer.Layer[i]
+      var current = this.capabilities[sourcecfg.name].Capability.Layer.Layer[i]
 
       if (current.Name == layer && typeof current.Dimension !== "undefined") {
 
@@ -100,15 +101,55 @@ class Metadata {
           var dimension = current.Dimension[n]
 
           if (dimension.name == 'time') {
-            var items = dimension.values.split('/')
 
-            // This one is returned when timesteps are listed, not interval (for example some satellite layers)
+            console.log(dimension);
 
-            if (items.length == 1)
-              return 30
+            var items = dimension.values.split("/")
+            if(items.length==1)
+              items = dimension.values.split(",") // Smartmet has no delimiter convention here?! Most layers have slash but some have comma...
 
-            var duration = this.convertDuration(items[2])
-            return parseInt(duration.H) * 60 + parseInt(duration.M)
+            console.log(items);
+
+            var containsInterval = isNaN(moment(items[items.length-1]).valueOf)
+            //var interval = containsInterval ? moment.duration(items[items.length-1]) : undefined
+
+            var indexOfLastTimeStep = containsInterval ? items.length-2 : items.length-1
+            var indexOfBeginning = Math.max(0, indexOfLastTimeStep - 5)
+
+            // Validate dates here. It could be due to a mistake above, or due to non-ISO8601 format.
+            // If non-ISO8601 dates have to be supported, the format must be found in getCapabilities response
+            if(moment(items[indexOfBeginning]).isValid() && moment(items[indexOfLastTimeStep]).isValid()){
+
+
+              return {
+                beginTime: moment(items[indexOfBeginning]).valueOf(), // Moment will do its best to parse anything, but also throws warnings on weird formats
+                endTime: moment(items[indexOfLastTimeStep]).valueOf(),
+                resolutionTime: "todo :^)"
+              }
+              
+
+              /*
+              return {
+                beginTime: new Date().getTime() - (10 * 60 * 60 * 1000),
+                endTime:  new Date().getTime(),
+                resolutionTime: "todo :^)"
+              }
+              */
+
+              /*
+              return {
+                beginTime: undefined,
+                endTime:  undefined,
+                resolutionTime: "todo :^)"
+              }
+              */
+
+            }else{
+              console.log("Fishy dates in getCapabilities for layer "+layer);
+              return false
+            }
+
+
           }
 
         }
@@ -116,76 +157,6 @@ class Metadata {
     }
 
     return false
-
-  }
-
-  convertDuration (t) {
-    // From: http://jsfiddle.net/zu8kL/1/
-    //dividing period from time
-    var x = t.split('T'),
-      duration = '',
-      time = {},
-      period = {},
-      //just shortcuts
-      s = 'string',
-      v = 'variables',
-      l = 'letters',
-      // store the information about ISO8601 duration format and the divided strings
-      d = {
-        period: {
-          string: x[0].substring(1, x[0].length),
-          len: 4,
-          // years, months, weeks, days
-          letters: ['Y', 'M', 'W', 'D'],
-          variables: {}
-        },
-        time: {
-          string: x[1],
-          len: 3,
-          // hours, minutes, seconds
-          letters: ['H', 'M', 'S'],
-          variables: {}
-        }
-      }
-    //in case the duration is a multiple of one day
-    if (!d.time.string) {
-      d.time.string = ''
-    }
-
-    for (var i in d) {
-      var len = d[i].len
-      for (var j = 0; j < len; j++) {
-        d[i][s] = d[i][s].split(d[i][l][j])
-        if (d[i][s].length > 1) {
-          d[i][v][d[i][l][j]] = parseInt(d[i][s][0], 10)
-          d[i][s] = d[i][s][1]
-        } else {
-          d[i][v][d[i][l][j]] = 0
-          d[i][s] = d[i][s][0]
-        }
-      }
-    }
-    period = d.period.variables
-    time = d.time.variables
-    time.H += 24 * period.D +
-      24 * 7 * period.W +
-      24 * 7 * 4 * period.M +
-      24 * 7 * 4 * 12 * period.Y
-
-    if (time.H) {
-      duration = time.H + ':'
-      if (time.M < 10) {
-        time.M = '0' + time.M
-      }
-    }
-
-    if (time.S < 10) {
-      time.S = '0' + time.S
-    }
-
-    duration += time.M + ':' + time.S
-
-    return time
 
   }
 

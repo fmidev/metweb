@@ -101,24 +101,9 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
   var extent = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
 
-  // Resolve correct time resolution from metadata
-
-  var minutes = Metadata.getTimeResolutionForLayer(source, layer)
-
-  if (minutes)
-    var resolutionTime = minutes * 60 * 1000
-  else
-    var resolutionTime = 60 * 60 * 1000
-
-  // TODO use Metadata class
-  if (type == 'obs') {
-    var beginTime = currentTime - 10 * resolutionTime
-    var endTime = currentTime
-  } else {
-    var beginTime = currentTime
-    var endTime = currentTime + 10 * resolutionTime
-  }
-
+  // {beginTime, endTime, resolutionTime (unimplemented)}
+  var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
+  console.log(timeData);
   if (config == null) {
 
     config = {
@@ -155,7 +140,6 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       noLegendText: 'None',
       showLayerSwitcher: true,
       showLoadProgress: true,
-      ignoreObsOffset: 5 * 60 * 1000,
       maxAsyncLoadCount: 5,
       // Disable panning and zooming
       staticControls: false,
@@ -165,10 +149,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       autoReplay: true,
       refreshInterval: 5 * 60 * 1000,
       frameRate: 500,
-      // resolutionTime: resolutionTime,
-      defaultAnimationTime: beginTime,
-      beginTime: beginTime,
-      endTime: endTime,
+      // resolutionTime: timeData.resolutionTime,
+      defaultAnimationTime: timeData.beginTime,
+      beginTime: timeData.beginTime,
+      endTime: timeData.endTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
       timeZone: 'Europe/Helsinki'
@@ -178,10 +162,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
     // Update time options
 
-    if (config.beginTime > beginTime)
-      config.beginTime = beginTime
-    if (config.endTime < endTime)
-      config.endTime = endTime
+    if (config.beginTime > timeData.beginTime)
+      config.beginTime = timeData.beginTime
+    if (config.endTime < timeData.endTime)
+      config.endTime = timeData.endTime
 
   }
 
