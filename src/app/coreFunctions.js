@@ -71,6 +71,12 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 
   delete config.layers[product.layer]
 
+  // If config contains only base map, reset config
+  if(Object.keys(config.layers).length == 1)
+    config.defaultAnimationTime = undefined
+    config.beginTime = undefined
+    config.timeData.endTime = undefined
+
   setSelectedWindowConfig(windows, config)
 
 }
@@ -162,9 +168,9 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
     // Update time options
 
-    if (config.beginTime > timeData.beginTime)
+    if (config.beginTime == undefined || config.beginTime > timeData.beginTime)
       config.beginTime = timeData.beginTime
-    if (config.endTime < timeData.endTime)
+    if (config.endTime == undefined || config.endTime < timeData.endTime)
       config.endTime = timeData.endTime
 
   }

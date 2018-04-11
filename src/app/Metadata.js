@@ -96,21 +96,19 @@ class Metadata {
       var current = this.capabilities[sourcecfg.name].Capability.Layer.Layer[i]
 
       if (current.Name == layer && typeof current.Dimension !== "undefined") {
-        console.log(current);
+
         for (var n = 0; n < current.Dimension.length; n++) {
           var dimension = current.Dimension[n]
 
           if (dimension.name == 'time') {
 
-            console.log(dimension);
-
             var items = dimension.values.split("/")
             if(items.length==1)
-              items = dimension.values.split(",") // Smartmet has no delimiter convention here?! Most layers have slash but some have comma...
+              items = dimension.values.split(",")
 
             console.log(items);
 
-            var containsInterval = isNaN(moment(items[items.length-1]).valueOf)
+            var containsInterval = !moment(items[items.length-1]).isValid()
 
             var indexOfLastTimeStep = containsInterval ? items.length-2 : items.length-1
             var indexOfBeginning = Math.max(0, indexOfLastTimeStep - 5)
@@ -126,7 +124,7 @@ class Metadata {
                 timeData.type = "for" }else{
                 timeData.type = "obs" }
 
-              timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 60000
+              timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
 
               /*
               timeData.beginTime = moment(items[indexOfBeginning]).valueOf() // Moment will do its best to parse anything, but also throws warnings on weird formats
@@ -136,12 +134,13 @@ class Metadata {
 
               timeData.beginTime = currentTime - (timeData.type === "obs" ? timeData.resolutionTime * 10 : 0)
               timeData.endTime = currentTime + (timeData.type === "for" ? timeData.resolutionTime * 10 : 0)
-              
+
               /*
               timeData.beginTime: undefined
               timeData.endTime =  undefined
               }
               */
+              console.log(timeData)
               return timeData;
 
             }else{
