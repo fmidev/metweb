@@ -96,42 +96,58 @@ class Metadata {
       var current = this.capabilities[sourcecfg.name].Capability.Layer.Layer[i]
 
       if (current.Name == layer && typeof current.Dimension !== "undefined") {
-        console.log(current);
+
         for (var n = 0; n < current.Dimension.length; n++) {
           var dimension = current.Dimension[n]
 
-          if (dimension.name == 'time') { console.log(dimension)
+          if (dimension.name == 'time') {
 
-            // Prepare generic helper variables
-            var timeData = {}
-            var currentTime = new Date().getTime()
-
-            // Prepare layer specific helper variables
             var items = dimension.values.split("/")
-            var containsInterval = true
-            if(items.length==1){ // If delimiter is not slash, the time dimension values are listed explicitly and delimited with comma
+            if(items.length==1)
               items = dimension.values.split(",")
-              containsInterval = false
-            }
+
+            console.log(items);
+
+            var containsInterval = !moment(items[items.length-1]).isValid()
+
             var indexOfLastTimeStep = containsInterval ? items.length-2 : items.length-1
-            var indexOfFirstTimeStep = Math.max(0, indexOfLastTimeStep - 5)
+            var indexOfBeginning = Math.max(0, indexOfLastTimeStep - 5)
 
-            // Prepare layer time data
-            timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 60000
+            // Validate dates here. It could be due to a mistake above, or due to non-ISO8601 format.
+            // If non-ISO8601 dates have to be supported, the format must be found in getCapabilities response
+            if(moment(items[indexOfBeginning]).isValid() && moment(items[indexOfLastTimeStep]).isValid()){
 
-            if(moment(items[indexOfLastTimeStep]).valueOf() > currentTime){
-              timeData.type = "for" }else{
-              timeData.type = "obs" }
+              var timeData = {}
+              var currentTime = new Date().getTime()
 
-            if(containsInterval){
+              if(moment(items[indexOfLastTimeStep]).valueOf() > new Date().getTime()){
+                timeData.type = "for" }else{
+                timeData.type = "obs" }
+
+              timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
+
+              /*
+              timeData.beginTime = moment(items[indexOfBeginning]).valueOf() // Moment will do its best to parse anything, but also throws warnings on weird formats
+              timeData.endTime = moment(items[indexOfLastTimeStep]).valueOf()
+              }
+              */
+
               timeData.beginTime = currentTime - (timeData.type === "obs" ? timeData.resolutionTime * 10 : 0)
               timeData.endTime = currentTime + (timeData.type === "for" ? timeData.resolutionTime * 10 : 0)
+
+              /*
+              timeData.beginTime: undefined
+              timeData.endTime =  undefined
+              }
+              */
+              console.log(timeData)
+              return timeData;
+
             }else{
-              timeData.beginTime = moment(items[indexOfFirstTimeStep]).valueOf()
-              timeData.endTime = moment(items[indexOfLastTimeStep]).valueOf()
+              console.log("Fishy dates in getCapabilities for layer "+layer);
+              return false
             }
 
-            return timeData;
 
           }
 
