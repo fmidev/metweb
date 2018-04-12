@@ -71,11 +71,14 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 
   delete config.layers[product.layer]
 
-  // If config contains only base map, reset config
-  if(Object.keys(config.layers).length == 1)
-    config.defaultAnimationTime = undefined
-    config.beginTime = undefined
-    config.timeData.endTime = undefined
+  // If config contains only base map, reset time config
+  if(Object.keys(config.layers).length == 1){
+    var currentDate = new Date()
+    var currentTime = currentDate.getTime()
+    config.defaultAnimationTime = currentTime
+    config.beginTime = currentTime
+    config.endTime = currentTime
+  }
 
   setSelectedWindowConfig(windows, config)
 

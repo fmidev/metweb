@@ -102,52 +102,59 @@ class Metadata {
 
           if (dimension.name == 'time') {
 
+            var timeData = {}
+            var currentTime = new Date().getTime()
+
+            // Try slash and comma delimited values. By WMS standards, slash means implicit timesteps, comma means explicit timesteps.
             var items = dimension.values.split("/")
             if(items.length==1)
               items = dimension.values.split(",")
+            // However, to form boolean about explicit/implicit timesteps, moment().isValid() is more robust. See below.
 
-            console.log(items);
-
+            // If the last item is not a valid date, assume it is a valid duration
             var containsInterval = !moment(items[items.length-1]).isValid()
 
-            var indexOfLastTimeStep = containsInterval ? items.length-2 : items.length-1
-            var indexOfBeginning = Math.max(0, indexOfLastTimeStep - 5)
-
-            // Validate dates here. It could be due to a mistake above, or due to non-ISO8601 format.
-            // If non-ISO8601 dates have to be supported, the format must be found in getCapabilities response
-            if(moment(items[indexOfBeginning]).isValid() && moment(items[indexOfLastTimeStep]).isValid()){
-
-              var timeData = {}
-              var currentTime = new Date().getTime()
-
-              if(moment(items[indexOfLastTimeStep]).valueOf() > new Date().getTime()){
-                timeData.type = "for" }else{
-                timeData.type = "obs" }
-
-              timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
-
-              /*
-              timeData.beginTime = moment(items[indexOfBeginning]).valueOf() // Moment will do its best to parse anything, but also throws warnings on weird formats
-              timeData.endTime = moment(items[indexOfLastTimeStep]).valueOf()
+            // Format and sort explicit timesteps
+            var itemsAsMilliseconds = [];
+            items.forEach(function(value, index){
+              if(!containsInterval || (containsInterval && index != items.length - 1)){
+                itemsAsMilliseconds.push(moment(value).valueOf())
               }
-              */
+            })
+            itemsAsMilliseconds.sort(function(a,b){ return a - b })
 
-              timeData.beginTime = currentTime - (timeData.type === "obs" ? timeData.resolutionTime * 10 : 0)
-              timeData.endTime = currentTime + (timeData.type === "for" ? timeData.resolutionTime * 10 : 0)
+            // Forecast or observation data?
+            if(itemsAsMilliseconds[itemsAsMilliseconds.length - 1] > currentTime){
+              timeData.type = "for" }else{
+              timeData.type = "obs" }
 
-              /*
-              timeData.beginTime: undefined
-              timeData.endTime =  undefined
-              }
-              */
-              console.log(timeData)
-              return timeData;
+            timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
 
-            }else{
-              console.log("Fishy dates in getCapabilities for layer "+layer);
-              return false
+            /* beginTime rules */
+            if(timeData.type === "obs" && containsInterval){
+              // Observation. No explicit timesteps, start animation from 10 explicit intervals back
+              timeData.beginTime = currentTime - (timeData.resolutionTime * 10)
+            }else if(timeData.type === "obs" && !containsInterval){
+              // Observation. Got explicit timesteps, start animation from a) the 10th last timestep or b) if there's under 10 timesteps, the first one
+              timeData.beginTime = itemsAsMilliseconds[Math.max(0, itemsAsMilliseconds.length - 10)]
+            }else if(timeData.type === "for"){
+              // Forecast. Start animation from currentTime
+              timeData.beginTime = currentTime
             }
 
+            /* endTime rules */
+            if(timeData.type === "for" && containsInterval){
+              // Forecast. No explicit timesteps, end animation 10 explicit intervals away
+              timeData.endTime = currentTime + (timeData.resolutionTime * 10)
+            }else if(timeData.type === "for" && !containsInterval){
+              // Forecast. Got explicit timesteps, end animation at last available point in time
+              timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
+            }else if(timeData.type === "obs"){
+              // Observation. end animation at currentTime
+              timeData.endTime = currentTime
+            }
+
+            return timeData;
 
           }
 
