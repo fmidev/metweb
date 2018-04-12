@@ -23,9 +23,12 @@ import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
 
 import Sidebar from './Sidebar.jsx'
 import sidebarReducer from '../app/sidebarReducer.js'
+import MenuReader from '../app/MenuReader.js'
+import { getApiKey } from '../app/coreFunctions.js'
 
 const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
 let store = createStore(metwebReducer)
+
 
 class MainView extends React.Component{
 
@@ -145,8 +148,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     initializeMenu: () => {
-      // If asynchronously fetching the WMS layers, menu will be empty at this point of lifecycle
-      dispatch({type: "MENU_UPDATED"})
+      MenuReader.setMenuJson(getApiKey(), function(){
+        dispatch({type: "MENU_UPDATED"})
+      })
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})

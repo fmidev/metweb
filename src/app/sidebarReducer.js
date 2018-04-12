@@ -64,9 +64,4 @@ const sidebarReducer = (state = initialState, action) => {
 
 }
 
-// Request metadata and dispatch action. Needs refactoring, as this kind of a dispatch doesn't seem to update the view.
-MenuReader.setMenuJson(getApiKey(), function(){
-  sidebarReducer(undefined, {type: "MENU_UPDATED"})
-})
-
 export default sidebarReducer
