@@ -29,6 +29,7 @@ pipeline {
         stage('Install') {
             steps {
                 sh "env"
+                sh "rm -rf node_modules"
                 sh "npm install"
             }
         }
