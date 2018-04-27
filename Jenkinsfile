@@ -29,6 +29,8 @@ pipeline {
         stage('Install') {
             steps {
                 sh "env"
+                sh "rm -rf dist"
+                sh "rm -rf package-lock.json"
                 sh "rm -rf node_modules"
                 sh "npm install"
             }
