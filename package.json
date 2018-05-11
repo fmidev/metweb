@@ -15,7 +15,7 @@
     "url": ""
   },
   "dependencies": {
-    "@fmidev/metoclient": "1.0.0",
+    "@fmidev/metoclient": "1.0.1",
     "jquery": "^3.2.1",
     "metoclient-layout": "github:fmidev/metoclient-goldenlayout",
     "ol": "^4.4.1",
