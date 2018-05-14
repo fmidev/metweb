@@ -5,7 +5,7 @@ import Metadata from './Metadata.js'
 /* Application core functions */
 
 // Cookie getter
-function getCookie(cname) {
+export const getCookie = (cname) => {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');

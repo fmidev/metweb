@@ -15,7 +15,8 @@ const initialState = {
   open: false,
   workspaces: [],
   selectedWorkspace: false,
-  menu: {}
+  menu: {},
+  user: { userName: "Guest" }
 }
 
 // Handle dispatched actions
@@ -26,7 +27,11 @@ const sidebarReducer = (state = initialState, action) => {
   switch(action.type){
 
     case 'LOGGED_IN':
-      newState.crowdToken = getCookie("crowd.token_key")
+      newState.user.crowdToken = getCookie("crowd.token_key")
+      if(newState.user.crowdToken){
+        // Ideally, get user info from backend here
+        newState.user.userName = "Logged in"
+      }
       return newState
 
     case 'MENU_UPDATED':
