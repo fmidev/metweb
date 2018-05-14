@@ -3,6 +3,7 @@ import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
 
 import {
+  getCookie,
   getApiKey,
   updateActiveProducts,
   activateProductInSelectedWindow,
@@ -23,6 +24,10 @@ const sidebarReducer = (state = initialState, action) => {
   let newState = Object.assign({}, state)
 
   switch(action.type){
+
+    case 'LOGGED_IN':
+      newState.crowdToken = getCookie("crowd.token_key")
+      return newState
 
     case 'MENU_UPDATED':
       newState.menu = MenuReader.getMenuJson()

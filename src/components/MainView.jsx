@@ -39,6 +39,7 @@ class MainView extends React.Component{
   componentDidMount() {
     this.createWorkspace()
     this.props.initializeMenu()
+    this.props.loadUserFromBasicAuth()
   }
 
   /* Temporary jQuery hack */
@@ -151,6 +152,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
       })
+    },
+    loadUserFromBasicAuth: () => {
+      dispatch({type: "LOGGED_IN"})
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
