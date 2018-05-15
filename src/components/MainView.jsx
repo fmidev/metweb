@@ -21,6 +21,7 @@ import { Layout } from 'metoclient-layout'
 import 'metoclient-layout/dist/layout.css'
 import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
 
+import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
 import sidebarReducer from '../app/sidebarReducer.js'
 import MenuReader from '../app/MenuReader.js'
@@ -39,6 +40,7 @@ class MainView extends React.Component{
   componentDidMount() {
     this.createWorkspace()
     this.props.initializeMenu()
+    this.props.loadUserFromBasicAuth()
   }
 
   /* Temporary jQuery hack */
@@ -106,30 +108,48 @@ class MainView extends React.Component{
 
 
     return (
-      <div id="fmi-metweb-sidebar-windows-and-footer">
 
-        <Sidebar open={false} />
+      <div id="fmi-metweb-react-app-container">
 
-      	<div id="fmi-metweb-windows-and-footer">
+        <div id="fmi-metweb-header">
 
-      		<div id="fmi-metweb-windows">
-      		</div>
+          <div id="fmi-metweb-header-title">
+            MetWeb
+          </div>
+          <div id="fmi-metweb-header-other">
+          </div>
+          <UserInfo />
 
-      		<div id="fmi-metweb-footer">
-      			<div id="fmi-metweb-footer-empty">
-      			</div>
+        </div>
 
-      			<div id="fmi-metweb-footer-workspaces">
-              {workspaceNav}
-      			</div>
+        <div id="fmi-metweb-sidebar-windows-and-footer">
 
-      			<div id="fmi-metweb-footer-new-workspace" onClick={this.createWorkspace.bind(this)}>
-      			</div>
+          <Sidebar open={false} />
 
-      		</div>
+        	<div id="fmi-metweb-windows-and-footer">
 
-      	</div>
+        		<div id="fmi-metweb-windows">
+        		</div>
+
+        		<div id="fmi-metweb-footer">
+        			<div id="fmi-metweb-footer-empty">
+        			</div>
+
+        			<div id="fmi-metweb-footer-workspaces">
+                {workspaceNav}
+        			</div>
+
+        			<div id="fmi-metweb-footer-new-workspace" onClick={this.createWorkspace.bind(this)}>
+        			</div>
+
+        		</div>
+
+        	</div>
+
+        </div>
+
       </div>
+
     )
   }
 
@@ -152,6 +172,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch({type: "MENU_UPDATED"})
       })
     },
+    loadUserFromBasicAuth: () => {
+      dispatch({type: "LOGGED_IN"})
+    },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
     },
@@ -169,4 +192,4 @@ const MetWeb = connect(
   mapDispatchToProps
 )(MainView)
 
-ReactDOM.render(<Provider store={store}><MetWeb /></Provider>, document.getElementById("fmi-metweb-react-app-container"));
+ReactDOM.render(<Provider store={store}><MetWeb /></Provider>, document.getElementById("fmi-metweb-entry"));
