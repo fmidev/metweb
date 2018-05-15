@@ -132,7 +132,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
             layer: 'KAP:Europe_basic_EurefFIN',
             format: 'image/png'
           },
-          tileCapabilities: 'http://wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
+          tileCapabilities: '//wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
           animation: {
             hasLegend: false
           }
@@ -201,7 +201,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         tileSize: 1024
       }
     },
-    "tileCapabilities": "http://wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
+    "tileCapabilities": "//wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
     'timeCapabilities': sourcecfg.timeCapabilities,
     animation: {
       hasLegend: true
