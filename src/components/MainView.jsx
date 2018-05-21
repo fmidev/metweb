@@ -13,22 +13,17 @@ import '../styles/timeSliderRotated.less'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import { combineReducers } from 'redux'
 import { connect } from 'react-redux'
 
 import { Layout } from 'metoclient-layout'
 import 'metoclient-layout/dist/layout.css'
-import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
 
 import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
-import sidebarReducer from '../app/sidebarReducer.js'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
 
-const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
-let store = createStore(metwebReducer)
+import mainStore from '../app/mainStore.js'
 
 
 class MainView extends React.Component{
@@ -45,7 +40,7 @@ class MainView extends React.Component{
 
   /* Temporary jQuery hack */
   componentDidUpdate() {
-    var currentState = store.getState().sidebarReducer;
+    var currentState = mainStore.metStore.getState().sidebarReducer;
     var selectedWorkspaceIndex = currentState.selectedWorkspace;
     currentState.workspaces.forEach((workspace, workspaceIndex) => {
       var workspaceElement = $('#fmi-metweb-windows' + (workspaceIndex + 1))
@@ -59,7 +54,7 @@ class MainView extends React.Component{
 
   createWorkspace () {
 
-    var workspaceIndex = store.getState().sidebarReducer.workspaces.length
+    var workspaceIndex = mainStore.metStore.getState().sidebarReducer.workspaces.length
     var workspaceId = (workspaceIndex + 1).toString()
     var containerId = 'fmi-metweb-windows' + workspaceId
     var newWorkspaceContainer = document.createElement('div')
@@ -98,9 +93,9 @@ class MainView extends React.Component{
   render(){
 
     var workspaceNav = []
-    var currentState = store.getState().sidebarReducer; // TODO ditch
+    var currentState = mainStore.metStore.getState().sidebarReducer; // TODO ditch
 
-    store.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
+    mainStore.metStore.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
       workspaceNav.push(
         <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspace.bind(this, workspaceIndex)}></div>
       )
@@ -170,7 +165,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
-        dispatch({type: "SAVE_SESSION"}) // Todo: this shouldn't be here
       })
     },
     loadUserFromBasicAuth: () => {
@@ -178,6 +172,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
+      dispatch({type: "SAVE_SESSION"}) // Todo: this shouldn't be here
     },
     selectWorkSpace: (workspaceIndex) => {
       dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
@@ -193,4 +188,4 @@ const MetWeb = connect(
   mapDispatchToProps
 )(MainView)
 
-ReactDOM.render(<Provider store={store}><MetWeb /></Provider>, document.getElementById("fmi-metweb-entry"));
+ReactDOM.render(<Provider store={mainStore.metStore}><MetWeb /></Provider>, document.getElementById("fmi-metweb-entry"));

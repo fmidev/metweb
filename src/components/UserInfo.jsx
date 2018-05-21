@@ -22,7 +22,7 @@ class UserInfo extends React.Component{
 
 const mapStateToProps = (state) => {
   return {
-    userName: state.sidebarReducer.user.userName
+    userName: state.mainReducer.user.userName
   }
 }
 
