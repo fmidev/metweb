@@ -170,6 +170,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
+        dispatch({type: "SAVE_SESSION"}) // Todo: this shouldn't be here
       })
     },
     loadUserFromBasicAuth: () => {

@@ -32,6 +32,13 @@ export const getApiKey = () => {
 }
 
 
+export const genericCRUD = (type = 'GET', endpoint = '/', payload = {}, callback = null) => {
+	// Todo: GET, POST, PUT and DELETE generics using some XHR library. Axios?
+	console.log("Imagining HTTP call...", payload)
+	return callback("Imagined HTTP response")
+}
+
+
 // Update menu tree based on GoldenLayout state
 export const updateActiveProducts = (menuObject, windows) => {
 

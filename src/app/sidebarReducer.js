@@ -7,7 +7,8 @@ import {
   getApiKey,
   updateActiveProducts,
   activateProductInSelectedWindow,
-  deactivateProductInSelectedWindow
+  deactivateProductInSelectedWindow,
+  genericCRUD
 } from './coreFunctions.js'
 
 // Initialize state: store.getState().sidebarReducer
@@ -15,7 +16,7 @@ const initialState = {
   open: false,
   workspaces: [],
   selectedWorkspace: false,
-  menu: {},
+  menu: { menu: [] },
   user: { userName: "Guest" }
 }
 
@@ -32,6 +33,22 @@ const sidebarReducer = (state = initialState, action) => {
         // Ideally, get user info from backend here
         newState.user.userName = "Logged in"
       }
+      return newState
+
+    case 'SAVE_SESSION':
+      console.log(newState);
+      genericCRUD('GET', '/save', newState, function(res){
+        console.log("Got imagined HTTP response.", res)
+
+        // dispatch({type: 'SAVED_SESSION'})
+        // Dispatching inside action. Do we need redux-thunk for this?
+      })
+      // Save session as is.
+      return newState
+
+    case 'SAVED_SESSION':
+      // Question: update session with server data always? How to make sure view doesn't get tangled
+      console.log("Callback triggered: "+action.type);
       return newState
 
     case 'MENU_UPDATED':

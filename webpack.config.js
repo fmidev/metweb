@@ -23,7 +23,7 @@ const appHtmlTitle = 'MetWeb';
  */
 module.exports = {
     entry: {
-        bundle: path.join(dirApp, 'components/MainView.jsx')
+        bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
     },
     resolve: {
         modules: [
