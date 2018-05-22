@@ -231,4 +231,16 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
 }
 
-
+export const notify = (notificationString) => {
+  if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(notificationString);
+  }else if (Notification.permission !== "denied") {
+    Notification.requestPermission(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(notificationString);
+      }
+    });
+  }
+}

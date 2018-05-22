@@ -1,6 +1,6 @@
 
 import mainStore from './mainStore.js'
-import { getCookie } from './coreFunctions.js'
+import { getCookie, notify } from './coreFunctions.js'
 
 // Handle dispatched actions
 const mainReducer = (state, action) => {
@@ -39,8 +39,16 @@ const mainReducer = (state, action) => {
       return newState
 
     case 'HTTP_ERROR':
-      newState.errors.push = action.err
-      console.log("new HTTP_ERROR", newState.errors);
+      let newError = action.err || {msg: "💥 Failed" + (action.response && action.response.config.method ? " "+action.response.config.method.toUpperCase() : " request" ) + (action.response && action.response.config.url ? " to "+action.response.config.url : "" )}
+      let errorList = ""
+      newError.read = false
+      newState.errors.push(newError)
+      newState.errors.forEach((error) => {
+        if(!error.read){
+          notify(error.msg)
+          error.read = true
+        }
+      })
       return newState
 
     default:

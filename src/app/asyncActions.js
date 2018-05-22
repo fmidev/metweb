@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-export function authorize(user) {
+export function authorize() {
   // POST /authorize
-  return (dispatch) => {
+  return (dispatch, getState) => {
     return axios.post(USERAPI+'/authorize', {
-      user: user
+      user: getState().mainReducer.user
     })
     .then((response) => dispatch({
       type: 'AUTHORIZED', data: response.data
@@ -15,11 +15,11 @@ export function authorize(user) {
   }
 }
 
-export function loadSession(user){
+export function loadSession(){
   // GET /session
-  return (dispatch) => {
+  return (dispatch, getState) => {
     return axios.get(USERAPI+'/session', {
-      user: user
+      user: getState().mainReducer.user
     })
     .then((response) => dispatch({
       type: 'SESSION_LOADED', data: response.data
@@ -30,18 +30,19 @@ export function loadSession(user){
   }
 }
 
-export function saveSession(user, session){
+export function saveSession(){
   // POST /session
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    console.log(getState().goldenLayoutReducer)
     return axios.post(USERAPI+'/session', {
-      user: state.user,
-      sessionData: {}
+      user: getState().mainReducer.user,
+      sessionData: getState().goldenLayoutReducer
     })
     .then((response) => dispatch({
       type: 'SESSION_SAVED', data: response.data
     }))
-    .catch((response) => dispatch({
-      type: 'HTTP_ERROR', err: response.err
+    .catch((response) => dispatch({ 
+      type: 'HTTP_ERROR', err: response.err, response: response
     }))
   }
 }

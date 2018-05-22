@@ -99,6 +99,7 @@ class MainView extends React.Component{
       )
     })
 
+    this.props.saveSession()
 
     return (
 
@@ -154,12 +155,16 @@ class MainView extends React.Component{
 const mapStateToProps = (state) => {
   return {
     workspaces: state.sidebarReducer.workspaces,
-    selectedWorkspace: state.sidebarReducer.selectedWorkspace
+    selectedWorkspace: state.sidebarReducer.selectedWorkspace,
+    errors: state.mainReducer.errors
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    saveSession: () =>{
+      dispatch(saveSession())
+    },
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
@@ -171,7 +176,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
-      dispatch({type: "SAVE_SESSION"}) // Todo: this shouldn't be here
     },
     selectWorkSpace: (workspaceIndex) => {
       dispatch({type: "CHANGE_SIDEBAR_TARGET", index: workspaceIndex})
