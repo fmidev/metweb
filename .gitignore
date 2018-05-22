@@ -125,3 +125,6 @@ pinegrow.json
 
 #KDE
 .directory
+
+#OSx
+.DS_Store
