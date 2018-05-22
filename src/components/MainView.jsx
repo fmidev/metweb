@@ -12,8 +12,7 @@ import '../styles/timeSliderRotated.less'
 // React & component imports
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { connect } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 
 import { Layout } from 'metoclient-layout'
 import 'metoclient-layout/dist/layout.css'
@@ -22,9 +21,8 @@ import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
-
 import mainStore from '../app/mainStore.js'
-
+import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 
 class MainView extends React.Component{
 
@@ -168,7 +166,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       })
     },
     loadUserFromBasicAuth: () => {
-      dispatch({type: "LOGGED_IN"})
+      dispatch({type: "LOG_IN"})
+      dispatch(authorize())
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})

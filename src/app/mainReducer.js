@@ -1,67 +1,46 @@
 
-
-import store from './mainStore.js'
-
-import {
-  getCookie,
-  genericCRUD
-} from './coreFunctions.js'
-
-// Initialize state: store.getState().mainReducer
-const initialState = {
-  user: { userName: "Guest" }
-}
+import mainStore from './mainStore.js'
+import { getCookie } from './coreFunctions.js'
 
 // Handle dispatched actions
-const mainReducer = (state = initialState, action) => {
+const mainReducer = (state, action) => {
 
-  let newState = Object.assign({}, state)
-  let payLoad = {}
+  let newState = {
+    user: { userName: "Guest" },
+    errors: [],
+    ...state
+  }
+
+  console.log(action)
+  console.log(state)
+  console.log(newState)
 
   switch(action.type){
 
     /* Backend talk */
-
-    case 'AUTHORIZE':
-      // POST /authorize
-      /*
-        example payload:
-        { user: { userToken: user.userToken } }
-      */
+    case 'LOG_IN':
+      newState.user.crowdToken = getCookie("crowd.token_key")
+      if(newState.user.crowdToken){
+        newState.user.userName = "Authorizing..."
+      }
       return newState
 
     case 'AUTHORIZED':
       // Change state (user's name)
-      return newState
-
-    case 'LOAD_SESSION':
-      // GET /session
+      newState.user = { ...state.user, name: action.data.user.userName }
       return newState
 
     case 'SESSION_LOADED':
       // Change state
       return newState
 
-    case 'SAVE_SESSION':
-      // PUT /session
-      genericCRUD('PUT', '/session', action.payload, function(res){
-        console.log("Got imagined HTTP response:", res)
-        // dispatch({type: 'SAVED_SESSION'})
-        // Dispatching inside action. We probably need redux-thunk for this?
-      })
-      return newState
-
     case 'SESSION_SAVED':
-      // Question: update session with server data always? How to make sure view doesn't get tangled
-      console.log("Callback triggered: "+action.type);
+      console.log("SESSION_SAVED", action.data);
       return newState
 
-    case 'LOG_IN':
-      newState.user.crowdToken = getCookie("crowd.token_key")
-      if(newState.user.crowdToken){
-        newState.user.userName = "Authorizing..."
-      }
-      // dispatch({type: 'AUTHORIZE', payload: newState.user})
+    case 'HTTP_ERROR':
+      newState.errors.push = action.err
+      console.log("new HTTP_ERROR", newState.errors);
       return newState
 
     default:
@@ -71,4 +50,4 @@ const mainReducer = (state = initialState, action) => {
 
 }
 
-export default mainReducer
+export default mainReducer;

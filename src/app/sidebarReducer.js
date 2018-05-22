@@ -7,23 +7,24 @@ import {
   getApiKey,
   updateActiveProducts,
   activateProductInSelectedWindow,
-  deactivateProductInSelectedWindow,
-  genericCRUD
+  deactivateProductInSelectedWindow
 } from './coreFunctions.js'
 
-// Initialize state: store.getState().sidebarReducer
-const initialState = {
-  open: false,
-  workspaces: [],
-  selectedWorkspace: false,
-  menu: { menu: [] }
-}
-
 // Handle dispatched actions
-const sidebarReducer = (state = initialState, action) => {
+const sidebarReducer = (state, action) => {
 
-  let newState = Object.assign({}, state)
+  let newState = {
+    open: false,
+    workspaces: [],
+    selectedWorkspace: false,
+    menu: { menu: [] },
+    ...state
+  }
   let payLoad = {}
+
+  if(!action){
+    return newState;
+  }
 
   switch(action.type){
 
@@ -70,4 +71,4 @@ const sidebarReducer = (state = initialState, action) => {
 
 }
 
-export default sidebarReducer
+export default sidebarReducer;

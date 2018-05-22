@@ -35,12 +35,13 @@ module.exports = {
     plugins: [
 
         new webpack.DefinePlugin({
-            APIKEY: JSON.stringify('insert-your-apikey-here')
+            APIKEY: JSON.stringify('insert-your-apikey-here'),
+            USERAPI: JSON.stringify('https://localhost:3001')
         }),
 
         new webpack.ProvidePlugin({
 	        $: 'jquery',
-          jQuery: 'jquery'
+            jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
