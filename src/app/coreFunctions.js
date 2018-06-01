@@ -133,9 +133,9 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
   var endTime = timeData.endTime
   var beginTime = timeData.beginTime
-  if (timeData.type == 'for') {
+  if (timeData.type === "for") {
     endTime = timeData.beginTime + (timeData.resolutionTime * 10)
-  } else if (timeData.type == 'obs') {
+  } else if (timeData.type === "obs") {
     beginTime = timeData.endTime - (timeData.resolutionTime * 10)
   }
 
@@ -197,11 +197,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   } else {
 
     // Update time options
-
-    if (config.beginTime == undefined || config.beginTime > timeData.beginTime)
-      config.beginTime = timeData.beginTime
-    if (config.endTime == undefined || config.endTime < timeData.endTime)
-      config.endTime = timeData.endTime
+    if (config.firstDataPointTime == undefined || config.firstDataPointTime > timeData.beginTime)
+      config.firstDataPointTime = timeData.beginTime
+    if (config.lastDataPointTime == undefined || config.lastDataPointTime < timeData.endTime)
+      config.lastDataPointTime = timeData.endTime
 
   }
 
@@ -236,7 +235,6 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   }
 
   config.layers[layer] = layerConfig
-
   return config
 
 }
