@@ -26,6 +26,7 @@ import Sidebar from './Sidebar.jsx'
 import sidebarReducer from '../app/sidebarReducer.js'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
+import { version } from '../../package.json'
 
 const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
 let store = createStore(metwebReducer)
@@ -69,6 +70,7 @@ class MainView extends React.Component{
 
     var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)
+    document.getElementById("version").innerHTML = version;
 
     let workspace = new Layout(containerId)
 
@@ -114,7 +116,7 @@ class MainView extends React.Component{
         <div id="fmi-metweb-header">
 
           <div id="fmi-metweb-header-title">
-            MetWeb
+            MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="img/link.png"></img></a>
           </div>
           <div id="fmi-metweb-header-other">
           </div>
