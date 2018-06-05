@@ -18,6 +18,7 @@ const sidebarReducer = (state, action) => {
     workspaces: [],
     selectedWorkspace: false,
     menu: { menu: [] },
+    worthwhile: false, // Worthwhile to save session, that is. Important because false here means it will crash metoclient-goldenlayout
     ...state
   }
   let payLoad = {}
@@ -55,6 +56,7 @@ const sidebarReducer = (state, action) => {
       return newState
 
     case 'PRODUCT_ON':
+      newState.worthwhile = true;
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = true
       activateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState

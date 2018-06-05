@@ -30,14 +30,17 @@ export function loadSession(){
   }
 }
 
-export function saveSession(){
+export function saveSession(workspaces){
   // POST /session
-  return (dispatch, getState) => {
-    console.log(getState().goldenLayoutReducer)
-    return axios.post(USERAPI+'/session', {
-      user: getState().mainReducer.user,
-      sessionData: getState().goldenLayoutReducer
+  return (dispatch) => {
+    let sessionData = [];
+    workspaces.forEach((workspace) => {
+      sessionData["Työpöydän titteli tähän"] = [];
+      for(var i = 0; i < workspace.getNumWindows(); i++){
+        sessionData["Työpöydän titteli tähän"].push(workspace.get(i)); // One metoclient config per loop
+      }
     })
+    return axios.post(USERAPI+'/session', sessionData)
     .then((response) => dispatch({
       type: 'SESSION_SAVED', data: response.data
     }))

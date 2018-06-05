@@ -23,6 +23,7 @@ import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
 import mainStore from '../app/mainStore.js'
 import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
+import { version } from '../../package.json'
 
 class MainView extends React.Component{
 
@@ -62,6 +63,7 @@ class MainView extends React.Component{
 
     var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)
+    document.getElementById("version").innerHTML = version;
 
     let workspace = new Layout(containerId)
 
@@ -99,7 +101,7 @@ class MainView extends React.Component{
       )
     })
 
-    this.props.saveSession()
+    this.props.saveSession(this.props.workspaces)
 
     return (
 
@@ -108,7 +110,7 @@ class MainView extends React.Component{
         <div id="fmi-metweb-header">
 
           <div id="fmi-metweb-header-title">
-            MetWeb
+            MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="img/link.png"></img></a>
           </div>
           <div id="fmi-metweb-header-other">
           </div>
@@ -156,14 +158,15 @@ const mapStateToProps = (state) => {
   return {
     workspaces: state.sidebarReducer.workspaces,
     selectedWorkspace: state.sidebarReducer.selectedWorkspace,
-    errors: state.mainReducer.errors
+    errors: state.mainReducer.errors,
+    gotContentInSomeWindow: state.sidebarReducer.worthwhile
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    saveSession: () =>{
-      dispatch(saveSession())
+    saveSession: (workspaces) => {
+      dispatch(saveSession(workspaces))
     },
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
