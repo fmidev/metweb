@@ -155,6 +155,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
           }
         }
       },
+      mapLoader: 'all',
       projection: 'EPSG:3857',
       extent: [-500000, 5000000, 5000000, 20000000],
       resolutions: resolutions,
