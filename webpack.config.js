@@ -36,7 +36,7 @@ module.exports = {
 
         new webpack.DefinePlugin({
             APIKEY: JSON.stringify('insert-your-apikey-here'),
-            USERAPI: JSON.stringify('https://localhost:3001')
+            USERAPI: JSON.stringify('http://localhost:3001')
         }),
 
         new webpack.ProvidePlugin({
@@ -136,5 +136,8 @@ module.exports = {
                 //}
             }
         ]
+    },
+    devServer: {
+      disableHostCheck: true // We have more pride than localhos! Add your hostname (like metweb.local) to dev api's CORS whitelist
     }
 };

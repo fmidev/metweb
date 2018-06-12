@@ -35,16 +35,17 @@ export function saveSession(workspaces){
   return (dispatch) => {
     let sessionData = [];
     workspaces.forEach((workspace) => {
-      sessionData["Työpöydän titteli tähän"] = [];
+      sessionData[workspace.title] = [];
       for(var i = 0; i < workspace.getNumWindows(); i++){
-        sessionData["Työpöydän titteli tähän"].push(workspace.get(i)); // One metoclient config per loop
+        sessionData[workspace.title].push(workspace.get(i)); // One metoclient config per loop
       }
     })
+    console.log("DB-ready cake", sessionData);
     return axios.post(USERAPI+'/session', sessionData)
     .then((response) => dispatch({
       type: 'SESSION_SAVED', data: response.data
     }))
-    .catch((response) => dispatch({ 
+    .catch((response) => dispatch({
       type: 'HTTP_ERROR', err: response.err, response: response
     }))
   }
