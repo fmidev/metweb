@@ -13,7 +13,7 @@ class UserInfo extends React.Component{
 
     return (
       <div id="fmi-metweb-header-user">
-        {this.props.userName}
+        {this.props.user.name}
       </div>
     )
   }
@@ -22,7 +22,9 @@ class UserInfo extends React.Component{
 
 const mapStateToProps = (state) => {
   return {
-    userName: state.mainReducer.user.userName
+    user: {
+      name: state.mainReducer.user.name,
+    }
   }
 }
 

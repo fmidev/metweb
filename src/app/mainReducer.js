@@ -6,7 +6,7 @@ import { getCookie, notify } from './coreFunctions.js'
 const mainReducer = (state, action) => {
 
   let newState = {
-    user: { userName: "Guest" },
+    user: { name: "Guest" },
     errors: [],
     ...state
   }
@@ -21,13 +21,13 @@ const mainReducer = (state, action) => {
     case 'LOG_IN':
       newState.user.crowdToken = getCookie("crowd.token_key")
       if(newState.user.crowdToken){
-        newState.user.userName = "Authorizing..."
+        newState.user.name = "Authorizing..."
       }
       return newState
 
     case 'AUTHORIZED':
       // Change state (user's name)
-      newState.user = { ...state.user, name: action.data.user.userName }
+      newState.user = { ...state.user, name: action.data.user.name }
       return newState
 
     case 'SESSION_LOADED':

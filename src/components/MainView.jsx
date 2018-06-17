@@ -29,12 +29,28 @@ class MainView extends React.Component{
 
   constructor(props) {
     super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   componentDidMount() {
     this.createWorkspace()
     this.props.initializeMenu()
     this.props.loadUserFromBasicAuth()
+    document.addEventListener('keypress', this.handleKeyPress);
+  }
+
+  handleKeyPress(event) {
+    event.preventDefault();
+    if (event.which == 115 || event.ctrlKey || event.which == 19)
+    alert("Ctrl-S pressed");
+    this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
+    this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
+    return false;
+  }
+
+
+  componentWillUnmount() {
+     document.removeEventListener('keypress', this.handleKeyPress);
   }
 
   /* Temporary jQuery hack */
@@ -101,7 +117,7 @@ class MainView extends React.Component{
       )
     })
 
-    this.props.saveSession(this.props.workspaces)
+    console && console.log("Rendering Mainview. This should happen every now and then, but not all the time as it consumes browser juice");
 
     return (
 
@@ -158,24 +174,32 @@ const mapStateToProps = (state) => {
   return {
     workspaces: state.sidebarReducer.workspaces,
     selectedWorkspace: state.sidebarReducer.selectedWorkspace,
+    user: {
+      name: state.mainReducer.user.name,
+    },
     errors: state.mainReducer.errors,
-    gotContentInSomeWindow: state.sidebarReducer.worthwhile
+    gotContentInSomeWindow: state.sidebarReducer.worthwhile // worthwhile to save, i.e. is data empty. could be just an explicit check in where used
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    saveSession: (workspaces) => {
-      dispatch(saveSession(workspaces))
+    saveSession: (workspaces, user) => {
+      console && console.log("savesesh", workspaces, user);
+      dispatch(saveSession(workspaces, user))
+    },
+    loadSession: (user) => {
+      console && console.log("loadsesh", user);
+      dispatch(loadSession(user))
     },
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
       })
     },
-    loadUserFromBasicAuth: () => {
+    loadUserFromBasicAuth: (user) => {
       dispatch({type: "LOG_IN"})
-      dispatch(authorize())
+      dispatch(authorize(user))
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})

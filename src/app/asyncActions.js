@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-export function authorize() {
+export function authorize(user) {
   // POST /authorize
   return (dispatch, getState) => {
     return axios.post(USERAPI+'/authorize', {
-      user: getState().mainReducer.user
+      user: user
     })
     .then((response) => dispatch({
       type: 'AUTHORIZED', data: response.data
@@ -15,22 +15,20 @@ export function authorize() {
   }
 }
 
-export function loadSession(){
-  // GET /session
-  return (dispatch, getState) => {
-    return axios.get(USERAPI+'/session', {
-      user: getState().mainReducer.user
-    })
+export function loadSession(user){
+  return (dispatch) => {
+    console && console.log("DB-ready user", user);
+    return axios.get(USERAPI+'/session', {user: user})
     .then((response) => dispatch({
-      type: 'SESSION_LOADED', data: response.data
+      type: 'SESSION_SAVED', data: response.data
     }))
     .catch((response) => dispatch({
-      type: 'HTTP_ERROR', err: response.err
+      type: 'HTTP_ERROR', err: response.err, response: response
     }))
   }
 }
 
-export function saveSession(workspaces){
+export function saveSession(workspaces, user){
   // POST /session
   return (dispatch) => {
     let sessionData = [];
@@ -40,8 +38,9 @@ export function saveSession(workspaces){
         sessionData[workspace.title].push(workspace.get(i)); // One metoclient config per loop
       }
     })
-    console.log("DB-ready cake", sessionData);
-    return axios.post(USERAPI+'/session', sessionData)
+    console && console.log("DB-ready user", user);
+    console && console.log("DB-ready metoclient cake", sessionData);
+    return axios.post(USERAPI+'/session', {sessions: sessionData}, user: user )
     .then((response) => dispatch({
       type: 'SESSION_SAVED', data: response.data
     }))
