@@ -11,10 +11,6 @@ const mainReducer = (state, action) => {
     ...state
   }
 
-  console.log(action)
-  console.log(state)
-  console.log(newState)
-
   switch(action.type){
 
     /* Backend talk */
@@ -32,6 +28,7 @@ const mainReducer = (state, action) => {
 
     case 'SESSION_LOADED':
       // Change state
+      console.log("SESSION_LOADED", action.data);
       return newState
 
     case 'SESSION_SAVED':

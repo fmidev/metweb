@@ -35,16 +35,21 @@ class MainView extends React.Component{
   componentDidMount() {
     this.createWorkspace()
     this.props.initializeMenu()
-    this.props.loadUserFromBasicAuth()
+    this.props.loadUserFromBasicAuth(mainStore.metStore.getState().mainReducer.user)
     document.addEventListener('keypress', this.handleKeyPress);
   }
 
   handleKeyPress(event) {
     event.preventDefault();
-    if (event.which == 115 || event.ctrlKey || event.which == 19)
-    alert("Ctrl-S pressed");
-    this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
-    this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
+    console.log(event.which);
+    if ((event.which == 115 || event.which == 19) && event.ctrlKey){
+      alert("Ctrl-S pressed");
+      this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
+    }
+    if (event.which == 76 && event.ctrlKey){
+      alert("Ctrl-L pressed");
+      this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
+    }
     return false;
   }
 
