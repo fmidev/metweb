@@ -46,7 +46,7 @@ class MainView extends React.Component{
       alert("Ctrl-S pressed");
       this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
     }
-    if (event.which == 76 && event.ctrlKey){
+    if (event.which == 108 && event.ctrlKey){
       alert("Ctrl-L pressed");
       this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
     }
