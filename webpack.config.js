@@ -23,7 +23,7 @@ const appHtmlTitle = 'MetWeb';
  */
 module.exports = {
     entry: {
-        bundle: path.join(dirApp, 'components/MainView.jsx')
+        bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
     },
     resolve: {
         modules: [
@@ -35,12 +35,13 @@ module.exports = {
     plugins: [
 
         new webpack.DefinePlugin({
-            APIKEY: JSON.stringify('insert-your-apikey-here')
+            APIKEY: JSON.stringify('insert-your-apikey-here'),
+            USERAPI: JSON.stringify('http://metweb.fmi.fi/api')
         }),
 
         new webpack.ProvidePlugin({
 	        $: 'jquery',
-          jQuery: 'jquery'
+            jQuery: 'jquery'
         }),
 
         new HtmlWebpackPlugin({
@@ -135,5 +136,8 @@ module.exports = {
                 //}
             }
         ]
+    },
+    devServer: {
+      disableHostCheck: true // We have more pride than localhos! Add your hostname (like metweb.local) to dev api's CORS whitelist
     }
 };

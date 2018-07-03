@@ -12,41 +12,54 @@ import '../styles/timeSliderRotated.less'
 // React & component imports
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import { combineReducers } from 'redux'
-import { connect } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 
 import { Layout } from 'metoclient-layout'
 import 'metoclient-layout/dist/layout.css'
-import goldenLayoutReducer from 'metoclient-layout/src/reducer.js'
 
 import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
-import sidebarReducer from '../app/sidebarReducer.js'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
+import mainStore from '../app/mainStore.js'
+import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
-
-const metwebReducer = combineReducers({sidebarReducer, goldenLayoutReducer})
-let store = createStore(metwebReducer)
-
 
 class MainView extends React.Component{
 
   constructor(props) {
     super(props);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   componentDidMount() {
     this.createWorkspace()
     this.props.initializeMenu()
-    this.props.loadUserFromBasicAuth()
+    this.props.loadUserFromBasicAuth(mainStore.metStore.getState().mainReducer.user)
+    document.addEventListener('keypress', this.handleKeyPress);
+  }
+
+  handleKeyPress(event) {
+    event.preventDefault();
+    if ((event.which == 115 || event.which == 19) && event.ctrlKey){
+      alert("Saving session");
+      this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
+    }
+    if (event.which == 108 && event.ctrlKey){
+      alert("Loading previous session");
+      this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
+    }
+    return false;
+  }
+
+
+  componentWillUnmount() {
+     document.removeEventListener('keypress', this.handleKeyPress);
   }
 
   /* Temporary jQuery hack */
   componentDidUpdate() {
-    var currentState = store.getState().sidebarReducer;
+    var currentState = mainStore.metStore.getState().sidebarReducer;
     var selectedWorkspaceIndex = currentState.selectedWorkspace;
     currentState.workspaces.forEach((workspace, workspaceIndex) => {
       var workspaceElement = $('#fmi-metweb-windows' + (workspaceIndex + 1))
@@ -60,7 +73,7 @@ class MainView extends React.Component{
 
   createWorkspace () {
 
-    var workspaceIndex = store.getState().sidebarReducer.workspaces.length
+    var workspaceIndex = mainStore.metStore.getState().sidebarReducer.workspaces.length
     var workspaceId = (workspaceIndex + 1).toString()
     var containerId = 'fmi-metweb-windows' + workspaceId
     var newWorkspaceContainer = document.createElement('div')
@@ -100,14 +113,13 @@ class MainView extends React.Component{
   render(){
 
     var workspaceNav = []
-    var currentState = store.getState().sidebarReducer; // TODO ditch
+    var currentState = mainStore.metStore.getState().sidebarReducer; // TODO ditch
 
-    store.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
+    mainStore.metStore.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
       workspaceNav.push(
         <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspace.bind(this, workspaceIndex)}></div>
       )
     })
-
 
     return (
 
@@ -163,19 +175,31 @@ class MainView extends React.Component{
 const mapStateToProps = (state) => {
   return {
     workspaces: state.sidebarReducer.workspaces,
-    selectedWorkspace: state.sidebarReducer.selectedWorkspace
+    selectedWorkspace: state.sidebarReducer.selectedWorkspace,
+    user: {
+      name: state.mainReducer.user.name,
+    },
+    errors: state.mainReducer.errors,
+    gotContentInSomeWindow: state.sidebarReducer.worthwhile // worthwhile to save, i.e. is data empty. could be just an explicit check in where used
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    saveSession: (workspaces, user) => {
+      dispatch(saveSession(workspaces, user))
+    },
+    loadSession: (user) => {
+      dispatch(loadSession(user))
+    },
     initializeMenu: () => {
       MenuReader.setMenuJson(getApiKey(), function(){
         dispatch({type: "MENU_UPDATED"})
       })
     },
-    loadUserFromBasicAuth: () => {
-      dispatch({type: "LOGGED_IN"})
+    loadUserFromBasicAuth: (user) => {
+      dispatch({type: "LOG_IN"}) // synchronous
+      dispatch(authorize(user)) // asynchronous
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})
@@ -194,4 +218,4 @@ const MetWeb = connect(
   mapDispatchToProps
 )(MainView)
 
-ReactDOM.render(<Provider store={store}><MetWeb /></Provider>, document.getElementById("fmi-metweb-entry"));
+ReactDOM.render(<Provider store={mainStore.metStore}><MetWeb /></Provider>, document.getElementById("fmi-metweb-entry"));

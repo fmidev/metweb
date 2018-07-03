@@ -157,7 +157,6 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
           }
         }
       },
-      mapLoader: 'all',
       projection: 'EPSG:3857',
       extent: extent3857,
       resolutions: resolutions,
@@ -232,4 +231,18 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   return config
 
+}
+
+export const notify = (notificationString) => {
+  if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var notification = new Notification(notificationString);
+  }else if (Notification.permission !== "denied") {
+    Notification.requestPermission(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var notification = new Notification(notificationString);
+      }
+    });
+  }
 }

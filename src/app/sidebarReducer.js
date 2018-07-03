@@ -10,29 +10,26 @@ import {
   deactivateProductInSelectedWindow
 } from './coreFunctions.js'
 
-// Initialize state: store.getState().sidebarReducer
-const initialState = {
-  open: false,
-  workspaces: [],
-  selectedWorkspace: false,
-  menu: {},
-  user: { userName: "Guest" }
-}
-
 // Handle dispatched actions
-const sidebarReducer = (state = initialState, action) => {
+const sidebarReducer = (state, action) => {
 
-  let newState = Object.assign({}, state)
+  let newState = {
+    open: false,
+    workspaces: [],
+    selectedWorkspace: false,
+    menu: { menu: [] },
+    worthwhile: false, // Worthwhile to save session, that is. Important because false here means it will crash metoclient-goldenlayout
+    ...state
+  }
+  let payLoad = {}
+
+  if(!action){
+    return newState;
+  }
 
   switch(action.type){
 
-    case 'LOGGED_IN':
-      newState.user.crowdToken = getCookie("crowd.token_key")
-      if(newState.user.crowdToken){
-        // Ideally, get user info from backend here
-        newState.user.userName = "Logged in"
-      }
-      return newState
+    /* UI actions and WMS talk */
 
     case 'MENU_UPDATED':
       newState.menu = MenuReader.getMenuJson()
@@ -59,6 +56,7 @@ const sidebarReducer = (state = initialState, action) => {
       return newState
 
     case 'PRODUCT_ON':
+      newState.worthwhile = true;
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = true
       activateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState
@@ -70,8 +68,9 @@ const sidebarReducer = (state = initialState, action) => {
 
     default:
       return newState
+
   }
 
 }
 
-export default sidebarReducer
+export default sidebarReducer;

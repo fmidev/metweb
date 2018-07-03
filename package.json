@@ -16,21 +16,25 @@
   },
   "dependencies": {
     "@fmidev/metoclient": "1.0.3",
+    "axios": "^0.18.0",
     "jquery": "^3.2.1",
     "metoclient-layout": "github:fmidev/metoclient-goldenlayout",
     "ol": "^4.4.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.7",
-    "redux": "^4.0.0"
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "copy-webpack-plugin": "^4.2.0",
-    "cross-env": "^5.0.5",
+    "cross-env": "^5.1.6",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^4.0.0-alpha.0",
     "file-loader": "^1.1.10",

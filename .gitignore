@@ -117,14 +117,17 @@ jspm_packages
 .node_repl_history
 
 ### PineGrow ###
-#Pinegrow backup files
+# Pinegrow backup files
 _pgbackup/
 
-#Pinegrow setting file
+# Pinegrow setting file
 pinegrow.json
 
-#KDE
+# KDE
 .directory
 
-#
+# OSx
+.DS_Store
+
+# build
 dist
