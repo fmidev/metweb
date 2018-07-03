@@ -24,7 +24,7 @@ const mainReducer = (state, action) => {
 
     case 'AUTHORIZED':
       // Change state (user's name)
-      newState.user = { ...state.user, name: action.data.user.name }
+      newState.user = { ...state.user, name: action.data.displayname }
       return newState
 
     case 'SESSION_LOADED':
