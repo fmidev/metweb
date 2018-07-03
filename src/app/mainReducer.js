@@ -19,12 +19,11 @@ const mainReducer = (state, action) => {
       if(newState.user.crowdToken){
         newState.user.name = "Authorizing..."
       }
-      console.log("Authed soon", newState.user);
       return newState
 
     case 'AUTHORIZED':
       // Change state (user's name)
-      newState.user = { ...state.user, name: action.data.displayname }
+      newState.user = { ...state.user, name: action.data.displayname, crowdUser: action.data.username }
       return newState
 
     case 'SESSION_LOADED':
