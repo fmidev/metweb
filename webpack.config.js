@@ -36,7 +36,7 @@ module.exports = {
 
         new webpack.DefinePlugin({
             APIKEY: JSON.stringify('insert-your-apikey-here'),
-            USERAPI: JSON.stringify('http://localhost:3001')
+            USERAPI: JSON.stringify('http://metweb.fmi.fi/api')
         }),
 
         new webpack.ProvidePlugin({

@@ -190,11 +190,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     saveSession: (workspaces, user) => {
-      console && console.log("savesesh", workspaces, user);
       dispatch(saveSession(workspaces, user))
     },
     loadSession: (user) => {
-      console && console.log("loadsesh", user);
       dispatch(loadSession(user))
     },
     initializeMenu: () => {
@@ -203,8 +201,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       })
     },
     loadUserFromBasicAuth: (user) => {
-      dispatch({type: "LOG_IN"})
-      dispatch(authorize(user))
+      dispatch({type: "LOG_IN"}) // synchronous
+      dispatch(authorize(user)) // asynchronous
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export function authorize(user) {
-  console.log("User. Should pass auth, if in production.", user);
+  console && console.log("Authorizing", user);
   // POST /authorize
   return (dispatch, getState) => {
     return axios.post(USERAPI+'/authorize',
@@ -25,7 +25,6 @@ export function authorize(user) {
 export function loadSession(user){
 
   return (dispatch) => {
-    console && console.log("Load session. DB-ready user", user);
 
     return axios.get(USERAPI+'/session',
       { /* Options */
@@ -57,8 +56,6 @@ export function saveSession(workspaces, user){
         sessionData[workspace.title].push(workspace.get(i)); // One metoclient config per loop
       }
     })
-    console && console.log("Save session. DB-ready user", user);
-    console && console.log("...and DB-ready metoclient cake", sessionData);
 
     return axios.post(USERAPI+'/session',
       { /* Options */
