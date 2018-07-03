@@ -41,13 +41,12 @@ class MainView extends React.Component{
 
   handleKeyPress(event) {
     event.preventDefault();
-    console.log(event.which);
     if ((event.which == 115 || event.which == 19) && event.ctrlKey){
-      alert("Ctrl-S pressed");
+      alert("Saving session");
       this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
     }
     if (event.which == 108 && event.ctrlKey){
-      alert("Ctrl-L pressed");
+      alert("Loading previous session");
       this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
     }
     return false;
@@ -121,8 +120,6 @@ class MainView extends React.Component{
         <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspace.bind(this, workspaceIndex)}></div>
       )
     })
-
-    console && console.log("Rendering Mainview. This should happen every now and then, but not all the time as it consumes browser juice");
 
     return (
 

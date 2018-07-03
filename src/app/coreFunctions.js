@@ -7,7 +7,7 @@ import Metadata from './Metadata.js'
 // Cookie getter
 export const getCookie = (cname) => {
   var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie); console.log(decodedCookie);
+  var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
   for(var i = 0; i <ca.length; i++) {
     var c = ca[i];
