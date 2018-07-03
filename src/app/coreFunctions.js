@@ -123,9 +123,11 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var currentDate = new Date()
   var currentTime = currentDate.getTime()
 
-  var resolutions = [2048, 1024, 512, 256, 128, 64]
-  var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
-  var extent = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
+  var resolutions = [8192, 4096, 2048, 1024, 512, 256, 128, 64]
+  // What is the reason for origins? Removing them doesn't seem to change anything.
+  var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
+  var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
+  var extent3857 = [-500000, 5000000, 5000000, 20000000]
 
   // {beginTime, endTime, resolutionTime (unimplemented)}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
@@ -156,11 +158,11 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         }
       },
       projection: 'EPSG:3857',
-      extent: [-500000, 5000000, 5000000, 20000000],
+      extent: extent3857,
       resolutions: resolutions,
       defaultCenterLocation: [2750000, 9000000],
       defaultCenterProjection: 'EPSG:3857',
-      defaultZoomLevel: 0,
+      defaultZoomLevel: 2,
       showLegend: true,
       legendTitle: 'Legend',
       noLegendText: 'None',
@@ -210,10 +212,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'TRANSPARENT': 'TRUE',
         'FORMAT': 'image/png'
       },
-      projection: 'EPSG:3067',
+      projection: 'EPSG:3857',
       tileGridOptions: {
         origins: origins1024,
-        extent: extent,
+        extent: extent3857,
         resolutions: resolutions,
         tileSize: 1024
       }
