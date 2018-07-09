@@ -25,6 +25,10 @@ import mainStore from '../app/mainStore.js'
 import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
 
+let firstShownIndex = 0
+let currentWorkspace = 0
+let active_workspaces = []
+
 class MainView extends React.Component{
 
   constructor(props) {
@@ -101,25 +105,94 @@ class MainView extends React.Component{
 
     this.props.addWorkspace(workspace, workspaceIndex)
     this.selectWorkspace(workspaceIndex)
-
+    firstShownIndex = active_workspaces.length - 4
   }
 
   selectWorkspace (workspaceIndex) {
     this.props.selectWorkSpace(workspaceIndex)
+    currentWorkspace = workspaceIndex
     // 100ms timeout to wait for goldenLayout updates
     setTimeout(function(){ this.props.changeWindow() }.bind(this), 100)
   }
 
-  render(){
+  moveWorkspaceIcons (direction) {
+    //console.log(store.getState().sidebarReducer.workspaces)
+    var changed = false
+    var broken = false
+    if (direction == "next") {
+      var index = 0
+      for (let workspaceIndex of active_workspaces) {
+        if (changed) {
+          this.selectWorkspace(workspaceIndex)
+          broken = true
+          break;
+        }
+        if (index > firstShownIndex) {
+          firstShownIndex = Math.min(index, active_workspaces.length - 5)
+        }
+        if (workspaceIndex == currentWorkspace) {
+          changed = true
+        }
+        index++
+      }
+      if(!broken) {
+        this.selectWorkspace(active_workspaces[active_workspaces.length - 1])
+        firstShownIndex = active_workspaces[active_workspaces.length - 5]
+      }
+    } else {
+      var reversed_workspaces = active_workspaces.reverse()
+      var index = reversed_workspaces.length - 1
+      for (let workspaceIndex of reversed_workspaces) {
+        if (changed) {
+          this.selectWorkspace(workspaceIndex)
+          broken = true
+          break;
+        }
+        if (workspaceIndex == currentWorkspace) {
+          changed = true
+        }
+        index--
+        if (index < firstShownIndex) {
+          firstShownIndex = Math.max(index, 0)
+        }
+      }
+      if(!broken) {
+        this.selectWorkspace(active_workspaces[active_workspaces.length - 1])
+        firstShownIndex = active_workspaces[active_workspaces.length - 1]
+      }
+    }
+    this.render()
+  }
 
+  render(){
     var workspaceNav = []
     var currentState = mainStore.metStore.getState().sidebarReducer; // TODO ditch
+    var index = 0;
+    active_workspaces = []
 
     mainStore.metStore.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
-      workspaceNav.push(
-        <div key={"w"+workspaceIndex} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == workspaceIndex ? "selected" : "")} onClick={this.selectWorkspace.bind(this, workspaceIndex)}></div>
-      )
+      if (workspace.golden !== null) {
+        active_workspaces.push(workspaceIndex)
+      }
     })
+    if (firstShownIndex > active_workspaces[active_workspaces.length - 5]){
+      firstShownIndex = active_workspaces[active_workspaces.length - 5]
+    }
+    active_workspaces.forEach((i) => {
+      if (i >= firstShownIndex && workspaceNav.length < 5) {
+        workspaceNav.push(
+          <div key={"w"+i} className={"fmi-metweb-footer-workspace-icon "+(currentState.selectedWorkspace == i ? "selected" : "")} onClick={this.selectWorkspace.bind(this, i)}></div>
+        )
+      }
+    })
+    if (active_workspaces.length > 5) {
+      workspaceNav.push(
+        <div key="next" className="fmi-metweb-footer-workspace-arrow-next" onClick={this.moveWorkspaceIcons.bind(this, "next")}></div>
+      )
+      workspaceNav.unshift(
+        <div key="prev" className="fmi-metweb-footer-workspace-arrow-prev" onClick={this.moveWorkspaceIcons.bind(this, "prev")}></div>
+      )
+    }
 
     return (
 
