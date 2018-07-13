@@ -164,6 +164,34 @@ class MainView extends React.Component{
     this.render()
   }
 
+  toggleFullscreen() {
+     var elem = document.body; // Make the body go full screen.
+     var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !== null) ||  (document.mozFullScreen || document.webkitIsFullScreen);
+
+     if (isInFullScreen) {
+       var requestMethod = document.cancelFullScreen||document.webkitCancelFullScreen||document.mozCancelFullScreen||document.exitFullscreen;
+       if (requestMethod) { // cancel full screen.
+         requestMethod.call(document);
+       } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+         var wscript = new ActiveXObject("WScript.Shell");
+         if (wscript !== null) {
+           wscript.SendKeys("{F11}");
+         }
+       }
+     } else {
+       var requestMethod = elem.requestFullScreen || elem.webkitRequestFullScreen || elem.mozRequestFullScreen || elem.msRequestFullscreen;
+       if (requestMethod) { // Native full screen.
+           requestMethod.call(elem);
+       } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+           var wscript = new ActiveXObject("WScript.Shell");
+           if (wscript !== null) {
+               wscript.SendKeys("{F11}");
+           }
+       }
+     }
+     return false;
+ }
+
   render(){
     var workspaceNav = []
     var currentState = mainStore.metStore.getState().sidebarReducer; // TODO ditch
@@ -201,9 +229,12 @@ class MainView extends React.Component{
         <div id="fmi-metweb-header">
 
           <div id="fmi-metweb-header-title">
-            MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="img/link.png"></img></a>
+            MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="src/assets/images/link.png"></img></a>
           </div>
           <div id="fmi-metweb-header-other">
+
+            <div id="fullscreen-button-container" onClick={this.toggleFullscreen.bind()}><img id="fullscreen" src="src/assets/images/fullscreen.png"></img>
+            </div>
           </div>
           <UserInfo />
 
