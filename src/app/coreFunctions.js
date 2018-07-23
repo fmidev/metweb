@@ -131,13 +131,18 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   // {beginTime, endTime, resolutionTime (unimplemented)}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
+  var endTime = timeData.endTime
+  var beginTime = timeData.beginTime
+  if (timeData.type === "for") {
+    endTime = timeData.beginTime + (timeData.resolutionTime * 10)
+  } else if (timeData.type === "obs") {
+    beginTime = timeData.endTime - (timeData.resolutionTime * 10)
+  }
 
-  if (config == null) {
-
+  if (config == null && timeData.type == 'obs') {
     config = {
       project: 'mymap',
       // Layer configuration
-
       layers: {
         // ---------------------------------------------------------------
         'Taustakartta': {
@@ -177,10 +182,12 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       autoReplay: true,
       refreshInterval: 5 * 60 * 1000,
       frameRate: 500,
-      // resolutionTime: timeData.resolutionTime,
-      defaultAnimationTime: timeData.beginTime,
-      beginTime: timeData.beginTime,
-      endTime: timeData.endTime,
+      resolutionTime: timeData.resolutionTime,
+      defaultAnimationTime: timeData.startFrame,
+      beginTime: beginTime,
+      endTime: endTime,
+      lastDataPointTime: timeData.endTime,
+      firstDataPointTime: timeData.beginTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
       timeZone: 'Europe/Helsinki'
@@ -189,11 +196,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   } else {
 
     // Update time options
-
-    if (config.beginTime == undefined || config.beginTime > timeData.beginTime)
-      config.beginTime = timeData.beginTime
-    if (config.endTime == undefined || config.endTime < timeData.endTime)
-      config.endTime = timeData.endTime
+    if (config.firstDataPointTime == undefined || config.firstDataPointTime > timeData.beginTime)
+      config.firstDataPointTime = timeData.beginTime
+    if (config.lastDataPointTime == undefined || config.lastDataPointTime < timeData.endTime)
+      config.lastDataPointTime = timeData.endTime
 
   }
 
@@ -228,7 +234,6 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   }
 
   config.layers[layer] = layerConfig
-
   return config
 
 }

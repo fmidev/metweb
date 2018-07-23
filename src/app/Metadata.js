@@ -84,7 +84,6 @@ class Metadata {
   }
 
   getTimeDataForLayer (sourcecfg, layer) {
-
     if (!this.capabilities[sourcecfg.name]) {
       console.log('not loaded: ' + sourcecfg.name)
       alert('Metadata has not loaded yet. Please check the FMI API key and try again.')
@@ -101,7 +100,6 @@ class Metadata {
           var dimension = current.Dimension[n]
 
           if (dimension.name == 'time') {
-
             var timeData = {}
             var currentTime = new Date().getTime()
 
@@ -113,7 +111,6 @@ class Metadata {
 
             // If the last item is not a valid date, assume it is a valid duration
             var containsInterval = !moment(items[items.length-1]).isValid()
-
             // Format and sort explicit timesteps
             var itemsAsMilliseconds = [];
             items.forEach(function(value, index){
@@ -122,18 +119,29 @@ class Metadata {
               }
             })
             itemsAsMilliseconds.sort(function(a,b){ return a - b })
-
             // Forecast or observation data?
             if(itemsAsMilliseconds[itemsAsMilliseconds.length - 1] > currentTime){
-              timeData.type = "for" }else{
-              timeData.type = "obs" }
+              timeData.type = "for"
+            }else{
+              timeData.type = "obs"
+              timeData.startFrame = timeData.beginTime
+            }
 
             timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
-
-            /* beginTime rules */
+            timeData.beginTime = itemsAsMilliseconds[0]
+            timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
+            if (timeData.type === 'for') {
+              timeData.startFrame = Math.max(timeData.beginTime, timeData.endTime - (timeData.resolutionTime * 10))
+            } else if (timeData.type === 'obs') {
+              timeData.startFrame = timeData.beginTime
+            } else {
+              console.log("ERROR: SOMETHING BAD JUST HAPPENED")
+            }
+/*
+            // beginTime rules
             if(timeData.type === "obs" && containsInterval){
               // Observation. No explicit timesteps, start animation from 10 explicit intervals back
-              timeData.beginTime = currentTime - (timeData.resolutionTime * 10)
+              timeData.beginTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1] - (timeData.resolutionTime * 10)
             }else if(timeData.type === "obs" && !containsInterval){
               // Observation. Got explicit timesteps, start animation from a) the 10th last timestep or b) if there's under 10 timesteps, the first one
               timeData.beginTime = itemsAsMilliseconds[Math.max(0, itemsAsMilliseconds.length - 10)]
@@ -142,10 +150,10 @@ class Metadata {
               timeData.beginTime = currentTime
             }
 
-            /* endTime rules */
+            // endTime rules
             if(timeData.type === "for" && containsInterval){
               // Forecast. No explicit timesteps, end animation 10 explicit intervals away
-              timeData.endTime = currentTime + (timeData.resolutionTime * 10)
+              timeData.endTime = itemsAsMilliseconds[0] + (timeData.resolutionTime * 10)
             }else if(timeData.type === "for" && !containsInterval){
               // Forecast. Got explicit timesteps, end animation at last available point in time
               timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
@@ -153,7 +161,7 @@ class Metadata {
               // Observation. end animation at currentTime
               timeData.endTime = currentTime
             }
-
+*/
             return timeData;
 
           }
