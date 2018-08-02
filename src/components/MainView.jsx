@@ -44,12 +44,13 @@ class MainView extends React.Component{
   }
 
   handleKeyPress(event) {
-    event.preventDefault();
     if ((event.which == 115 || event.which == 19) && event.ctrlKey){
+      event.preventDefault();
       alert("Saving session");
       this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
     }
     if (event.which == 108 && event.ctrlKey){
+      event.preventDefault();
       alert("Loading previous session");
       this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
     }
