@@ -53,6 +53,10 @@ module.exports = {
           { from: 'src/assets/images/*svg', to: 'src/assets/images', flatten: true, force: true }
         ]),
 
+        new CopyWebpackPlugin([
+          { from: 'src/assets/images/*png', to: 'src/assets/images', flatten: true, force: true }
+        ]),
+
         extractLess
     ],
     module: {
