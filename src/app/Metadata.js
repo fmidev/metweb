@@ -124,7 +124,6 @@ class Metadata {
               timeData.type = "for"
             }else{
               timeData.type = "obs"
-              timeData.startFrame = timeData.beginTime
             }
 
             timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
@@ -137,43 +136,13 @@ class Metadata {
             } else {
               console.log("ERROR: SOMETHING BAD JUST HAPPENED")
             }
-/*
-            // beginTime rules
-            if(timeData.type === "obs" && containsInterval){
-              // Observation. No explicit timesteps, start animation from 10 explicit intervals back
-              timeData.beginTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1] - (timeData.resolutionTime * 10)
-            }else if(timeData.type === "obs" && !containsInterval){
-              // Observation. Got explicit timesteps, start animation from a) the 10th last timestep or b) if there's under 10 timesteps, the first one
-              timeData.beginTime = itemsAsMilliseconds[Math.max(0, itemsAsMilliseconds.length - 10)]
-            }else if(timeData.type === "for"){
-              // Forecast. Start animation from currentTime
-              timeData.beginTime = currentTime
-            }
-
-            // endTime rules
-            if(timeData.type === "for" && containsInterval){
-              // Forecast. No explicit timesteps, end animation 10 explicit intervals away
-              timeData.endTime = itemsAsMilliseconds[0] + (timeData.resolutionTime * 10)
-            }else if(timeData.type === "for" && !containsInterval){
-              // Forecast. Got explicit timesteps, end animation at last available point in time
-              timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
-            }else if(timeData.type === "obs"){
-              // Observation. end animation at currentTime
-              timeData.endTime = currentTime
-            }
-*/
             return timeData;
-
           }
-
         }
       }
     }
-
     return false
-
   }
-
 }
 
 export default (new Metadata)

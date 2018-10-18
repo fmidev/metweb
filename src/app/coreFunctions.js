@@ -87,7 +87,33 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
     return
 
   delete config.layers[product.layer]
-
+  config.resolutionTime = 300000
+  config.modifiedResolutionTime = 300000
+  config.firstDataPointTime = Number.MAX_VALUE
+  config.lastDataPointTime = 0
+  Object.values(config.layers).forEach((layer) => {
+    if (layer.animation.hasLegend) {
+      if (layer.resolutionTime > config.resolutionTime) {
+        config.resolutionTime = layer.resolutionTime
+        config.modifiedResolutionTime = layer.resolutionTime
+      }
+      if (layer.firstDataPointTime < config.firstDataPointTime) {
+        config.firstDataPointTime = layer.firstDataPointTime
+      }
+      if (layer.lastDataPointTime > config.lastDataPointTime) {
+        config.lastDataPointTime = layer.lastDataPointTime
+      }
+    }
+  })
+  var currentDate = new Date()
+  var currentTime = currentDate.getTime()
+  if (config.firstDataPointTime > currentTime) {
+    config.endTime = config.firstDataPointTime + (config.resolutionTime * 24)
+    config.beginTime = config.firstDataPointTime
+  } else if (config.lastDataPointTime < currentTime) {
+    config.beginTime = config.lastDataPointTime - (config.resolutionTime * 24)
+    config.endTime = config.lastDataPointTime
+  }
   // If config contains only base map, reset time config
   if(Object.keys(config.layers).length == 1){
     var currentDate = new Date()
@@ -106,7 +132,6 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 // In Metweb terms, _product object_ is _added_ to _currently selected window_.
 // In MetOClient terms, _config object_ is _modified_ by appending a _layer_
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
-
   var config = windows.get(windows.getSelected())
   var sourcecfg = MenuReader.getSource(source)
 
@@ -129,7 +154,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
   var extent3857 = [-500000, 5000000, 5000000, 20000000]
 
-  // {beginTime, endTime, resolutionTime (unimplemented)}
+  // {beginTime, endTime, resolutionTime}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
   var endTime = timeData.endTime
   var beginTime = timeData.beginTime
@@ -194,17 +219,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       showTimeSlider: true,
       timeZone: 'Europe/Helsinki'
     }
-
-  } else {
-
-    // Update time options
-    if (config.firstDataPointTime == undefined || config.firstDataPointTime > timeData.beginTime)
-      config.firstDataPointTime = timeData.beginTime
-    if (config.lastDataPointTime == undefined || config.lastDataPointTime < timeData.endTime)
-      config.lastDataPointTime = timeData.endTime
-
   }
-
   // Add product to layers
 
   var layerConfig = {
@@ -213,6 +228,9 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     visible: true,
     opacity: 1.0,
     type: type || timeData.type,
+    firstDataPointTime: timeData.beginTime,
+    lastDataPointTime: timeData.endTime,
+    resolutionTime: timeData.resolutionTime,
     source: {
       url: wmsBaseUrl,
       params: {
@@ -236,6 +254,35 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   }
 
   config.layers[layer] = layerConfig
+
+  config.resolutionTime = 300000
+  config.modifiedResolutionTime = 300000
+  config.firstDataPointTime = Number.MAX_VALUE
+  config.lastDataPointTime = 0
+  Object.values(config.layers).forEach((layer) => {
+    if (layer.animation.hasLegend) {
+      if (layer.resolutionTime > config.resolutionTime) {
+        config.resolutionTime = layer.resolutionTime
+        config.modifiedResolutionTime = layer.resolutionTime
+      }
+      if (layer.firstDataPointTime < config.firstDataPointTime) {
+        config.firstDataPointTime = layer.firstDataPointTime
+      }
+      if (layer.lastDataPointTime > config.lastDataPointTime) {
+        config.lastDataPointTime = layer.lastDataPointTime
+      }
+    }
+  })
+  var currentDate = new Date()
+  var currentTime = currentDate.getTime()
+  if (config.firstDataPointTime > currentTime) {
+    config.endTime = config.firstDataPointTime + (config.resolutionTime * 24)
+    config.beginTime = config.firstDataPointTime
+  } else if (config.lastDataPointTime < currentTime) {
+    config.beginTime = config.lastDataPointTime - (config.resolutionTime * 24)
+    config.endTime = config.lastDataPointTime
+  }
+
   return config
 
 }

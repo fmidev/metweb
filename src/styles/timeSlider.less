@@ -298,11 +298,13 @@ div#fmi-metweb-windows {
 
     #beginForm input[type=range]::-webkit-slider-runnable-track, #endForm input[type=range]::-webkit-slider-runnable-track {
       width: 480px;
-      height: 4px;
+      height: 6px;
       cursor: pointer;
       background: #000000;
       border-radius: 1.3px;
       border: 0.2px solid #000000;
+      margin-bottom: 9px;
+      margin-top: 3px;
     }
 
     #beginForm input[type=range]:focus::-webkit-slider-runnable-track, #endForm input[type=range]:focus::-webkit-slider-runnable-track {
@@ -348,13 +350,11 @@ div#fmi-metweb-windows {
       -webkit-appearance: none;
       box-sizing: border-box;
       border-radius: 50%;
-      position: absolute;
-      right: 15px;
-      bottom: -33px;
       width: 20px;
       height: 20px;
       border: 1px solid #000;
       background-color: #fff;
+      margin-top: -10px;
     }
 
     #beginForm input[type=range]::-moz-range-thumb, #endForm input[type=range]::-moz-range-thumb {
@@ -391,6 +391,16 @@ div#fmi-metweb-windows {
 
     #beginForm input[type=range]::-ms-thumb:hover, #endForm input[type=range]::-ms-thumb:hover {
       background: black;
+    }
+
+    #fmi-metoclient-timeslider-menu-exit {
+      background-image: url('../assets/images/menu-close-x.png');
+      height: 23px;
+      width: 23px;
+      margin-left: 6px;
+      float: left;
+      border-style: solid;
+      border-radius: 100%;
     }
 
     output {
