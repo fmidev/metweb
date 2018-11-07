@@ -36,7 +36,7 @@ module.exports = TRANSLATIONS.map(({ language, translation }) => ({
         bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
     },
     output: {
-      filename: `[name].${language}.js`,
+      filename: `${language}/[name].${language}.js`,
     },
     resolve: {
         modules: [
@@ -58,6 +58,13 @@ module.exports = TRANSLATIONS.map(({ language, translation }) => ({
         }),
 
         new HtmlWebpackPlugin({
+            filename: `${language}/index.html`,
+            template: path.join(__dirname, 'src/templates/home.handlebars'),
+            title: appHtmlTitle
+        }),
+
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
             template: path.join(__dirname, 'src/templates/home.handlebars'),
             title: appHtmlTitle
         }),
