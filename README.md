@@ -17,6 +17,11 @@ Run the local webpack-dev-server with livereload and autocompile on [http://loca
 ```sh
 $ npm run dev
 ```
+Run language specific versions with
+```sh
+$ npm run <fi|en>
+```
+
 ## Deployment
 Build the current application
 ```sh
