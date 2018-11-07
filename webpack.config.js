@@ -36,7 +36,7 @@ module.exports = TRANSLATIONS.map(({ language, translation }) => ({
         bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
     },
     output: {
-      filename: `${language}/[name].${language}.js`,
+      filename: `[name].${language}.js`,
     },
     resolve: {
         modules: [
