@@ -3,6 +3,16 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const glob = require("glob");
+const I18nPlugin = require("i18n-webpack-plugin");
+const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin
+
+const TRANSLATIONS = [{ language: "en" }].concat(
+  glob.sync("./src/languages/*.json").map(file => ({
+    language: path.basename(file, path.extname(file)),
+    translation: require(file),
+  }))
+);
 
 // Is the current build a development build
 const IS_DEV = (process.env.NODE_ENV === 'dev');
@@ -21,9 +31,12 @@ const appHtmlTitle = 'MetWeb';
 /**
  * Webpack Configuration
  */
-module.exports = {
+module.exports = TRANSLATIONS.map(({ language, translation }) => ({
     entry: {
         bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
+    },
+    output: {
+      filename: `[name].${language}.js`,
     },
     resolve: {
         modules: [
@@ -56,6 +69,8 @@ module.exports = {
         new CopyWebpackPlugin([
           { from: 'src/assets/images/*png', to: 'src/assets/images', flatten: true, force: true }
         ]),
+
+        new I18nPlugin(translation),
 
         extractLess
     ],
@@ -144,4 +159,4 @@ module.exports = {
     devServer: {
       disableHostCheck: true // We have more pride than localhos! Add your hostname (like metweb.local) to dev api's CORS whitelist
     }
-};
+}));

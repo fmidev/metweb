@@ -46,12 +46,12 @@ class MainView extends React.Component{
   handleKeyPress(event) {
     if ((event.which == 115 || event.which == 19) && event.ctrlKey){
       event.preventDefault();
-      alert("Saving session");
+      alert(__("Saving session"));
       this.props.saveSession(mainStore.metStore.getState().sidebarReducer.workspaces, mainStore.metStore.getState().mainReducer.user);
     }
     if (event.which == 108 && event.ctrlKey){
       event.preventDefault();
-      alert("Loading previous session");
+      alert(__("Loading session"));
       this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
     }
     return false;
@@ -90,7 +90,7 @@ class MainView extends React.Component{
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)
     document.getElementById("version").innerHTML = version;
 
-    let workspace = new Layout(containerId)
+    let workspace = new Layout(containerId, __("en"))
 
       .onSelectionChanged(function(id){
         // Dispatch action to update Sidebar
@@ -102,7 +102,7 @@ class MainView extends React.Component{
       .onWindowCreated(function (id) { })
       .onBookmarkAdded(function (id) { })
       .onDestroyed(function (id) { })
-      .create('Työpöytä ' + workspaceId)
+      .create(__("Workspace") + ' ' + workspaceId)
 
     this.props.addWorkspace(workspace, workspaceIndex)
     this.selectWorkspace(workspaceIndex)
@@ -233,7 +233,6 @@ class MainView extends React.Component{
             MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="src/assets/images/link.png"></img></a>
           </div>
           <div id="fmi-metweb-header-other">
-
             <div id="fullscreen-button-container" onClick={this.toggleFullscreen.bind()}><img id="fullscreen" src="src/assets/images/fullscreen.png"></img>
             </div>
           </div>

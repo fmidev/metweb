@@ -217,7 +217,10 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       firstDataPointTime: timeData.beginTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
-      timeZone: 'Europe/Helsinki'
+      timeZone: 'Europe/Helsinki',
+      localization: {
+        locale: __('en')
+      }
     }
   }
   // Add product to layers
