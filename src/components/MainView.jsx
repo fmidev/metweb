@@ -13,17 +13,18 @@ import '../styles/timeSliderRotated.less'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider, connect } from 'react-redux'
-
-import { Layout } from 'metoclient-layout'
-import 'metoclient-layout/dist/layout.css'
-
+import '../styles/layout.css'
 import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
+import DotsMenu from './DotsMenu.jsx'
+import EditableTitle from './EditableTitle.jsx'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
 import mainStore from '../app/mainStore.js'
 import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
+import Layout from './Layout.jsx'
+import ReactResizeDetector from 'react-resize-detector'
 
 let firstShownIndex = 0
 let currentWorkspace = 0
@@ -33,7 +34,9 @@ class MainView extends React.Component{
 
   constructor(props) {
     super(props);
+    this.workspaceLayouts = []
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.onResize = this.onResize.bind(this);
   }
 
   componentDidMount() {
@@ -81,31 +84,79 @@ class MainView extends React.Component{
     var workspaceIndex = mainStore.metStore.getState().sidebarReducer.workspaces.length
     var workspaceId = (workspaceIndex + 1).toString()
     var containerId = 'fmi-metweb-windows' + workspaceId
+
+/*
     var newWorkspaceContainer = document.createElement('div')
     newWorkspaceContainer.id = containerId
     newWorkspaceContainer.dataset.workspaceId = workspaceId
     newWorkspaceContainer.classList.add('workspace-container')
+*/
 
-    var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
-    baseWorkspaceContainer.appendChild(newWorkspaceContainer)
+//    var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
+//    baseWorkspaceContainer.appendChild(newWorkspaceContainer)
+
     document.getElementById("version").innerHTML = version;
 
+/*
     let workspace = new Layout(containerId)
-
       .onSelectionChanged(function(id){
         // Dispatch action to update Sidebar
         // 0ms  timeout to wait for goldenLayout updates
         setTimeout(function(){ this.props.changeWindow() }.bind(this), 0)
       }.bind(this))
 
-      /* More available methods */
+      // More available methods
       .onWindowCreated(function (id) { })
       .onBookmarkAdded(function (id) { })
       .onDestroyed(function (id) { })
       .create('Työpöytä ' + workspaceId)
+*/
 
+    var workspace = {
+      settings: {
+        hasHeaders: true,
+        constrainDragToContainer: true,
+        reorderEnabled: true,
+        selectionEnabled: true,
+        popoutWholeStack: false,
+        blockedPopoutsThrowError: true,
+        closePopoutsOnUnload: true,
+        showPopoutIcon: false,
+        showMaximiseIcon: false,
+        showCloseIcon: false
+      },
+      dimensions: {
+        borderWidth: 10,
+        minItemHeight: 10,
+        minItemWidth: 10,
+        headerHeight: 40,
+        dragProxyWidth: 300,
+        dragProxyHeight: 200
+      },
+      labels: {
+        close: 'close',
+        maximise: 'maximise',
+        minimise: 'minimise',
+        popout: 'open in new window'
+      },
+      content: [{
+        type: 'column',
+        isClosable: false,
+        content: [{
+          type: 'row',
+          isClosable: false,
+          content: [{
+            type: 'component',
+            componentName: 'metoclient',
+            title: 'Window 1',
+            isClosable: false,
+            index: 0,
+            props: {}
+          }]
+        }]
+      }]
+    }
     this.props.addWorkspace(workspace, workspaceIndex)
-    this.selectWorkspace(workspaceIndex)
     firstShownIndex = active_workspaces.length - 4
   }
 
@@ -223,6 +274,58 @@ class MainView extends React.Component{
       )
     }
 
+    const menuItems = [{
+      title: 'Lisää uusi ali-ikkuna', // Todo: localization
+      callback: () => {
+        self.createWindow()
+      }
+    }, {
+      title: 'Lisää näkymä suosikkeihin', // Todo: localization
+      callback: () => {
+      }
+    }, {
+      title: 'Sulje näkymä', // Todo: localization
+      callback: () => {
+        let background = document.getElementById(self.containerId)
+        let confirmation = document.createElement("div")
+        confirmation.classList = "confirmation_overlay"
+
+        let wrapper = document.createElement("div")
+        let confirmation_text = document.createElement("p")
+        confirmation_text.classList = "confirmation_text"
+        confirmation_text.innerHTML = "Haluatko varmasti poistaa näkymän?"
+
+        let confirmation_button = document.createElement("div")
+        confirmation_button.innerHTML = "Kyllä!"
+        confirmation_button.classList = "fmi-metweb-filter-button"
+        confirmation_button.addEventListener('click', () => {
+          this.golden.destroy()
+          let container = document.getElementById(this.containerId)
+          let id = container.dataset.workspaceId
+          while (container.firstChild) {
+            container.removeChild(container.firstChild)
+          }
+          this.golden.layout.fmi.destroyed(id)
+          this.golden = null
+
+          confirmation.parentNode.removeChild(confirmation)
+        })
+
+        let back_button = document.createElement("div")
+        back_button.innerHTML = "En!"
+        back_button.classList = "fmi-metweb-filter-button"
+        back_button.addEventListener('click', () => {
+          confirmation.parentNode.removeChild(confirmation)
+        })
+
+        wrapper.appendChild(confirmation_text)
+        wrapper.appendChild(confirmation_button)
+        wrapper.appendChild(back_button)
+        confirmation.appendChild(wrapper)
+        background.prepend(confirmation)
+      }
+    }]
+
     return (
 
       <div id="fmi-metweb-react-app-container">
@@ -248,6 +351,30 @@ class MainView extends React.Component{
         	<div id="fmi-metweb-windows-and-footer">
 
         		<div id="fmi-metweb-windows">
+               <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} />
+              {this.props.workspaces.map((workspace, i) => {
+               return (
+                 <div id={`fmi-metweb-windows${i}`} className="workspace-container" data-workspace-id={i}>
+                   <div data-reactroot>
+                     <div>
+                       <header>
+                        <EditableTitle title={`Työpöytä ${i+1}`}
+                                       onChange={val => this.create(val)}/>
+                        <DotsMenu id={`menu-dots-${i}`}
+                                  items={menuItems}
+                        />
+                       </header>
+                       <Layout
+                        config={workspace}
+                        ref={layout => {
+                          this['workspaceLayouts'][`${i}`] = layout
+                        }}
+                       />
+                     </div>
+                   </div>
+                 </div>
+               )
+              })}
         		</div>
 
         		<div id="fmi-metweb-footer">
@@ -270,6 +397,12 @@ class MainView extends React.Component{
       </div>
 
     )
+  }
+
+  onResize() {
+    this.workspaceLayouts.forEach(workspaceLayout => {
+      workspaceLayout.updateSize()
+    })
   }
 
 }
