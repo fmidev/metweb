@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@fmidev/metoclient": "^1.0.13",
-    "goldenlayout-factory": "github:masapu/goldenlayout-factory",
+    "metoclient-goldenlayout": "fmidev/metoclient-goldenlayout#feature/LAYERS-120",
     "axios": "^0.18.0",
     "golden-layout": "^1.5.9",
     "jquery": "^3.2.1",

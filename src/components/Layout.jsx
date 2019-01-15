@@ -1,4 +1,4 @@
-import { FMIGoldenLayout } from 'goldenlayout-factory';
+import { FMIGoldenLayout } from 'metoclient-goldenlayout';
 import React from 'react';
 
 class Layout extends React.PureComponent {
