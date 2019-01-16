@@ -23,7 +23,7 @@ const appHtmlTitle = 'MetWeb';
  */
 module.exports = {
     entry: {
-        bundle: ["babel-polyfill", path.join(dirApp, 'components/MainView.jsx')]
+        bundle: ["@babel/polyfill", path.join(dirApp, 'components/MainView.jsx')]
     },
     resolve: {
         modules: [
@@ -66,10 +66,13 @@ module.exports = {
             // Babel
             {
                 test: /\.jsx?$/,
-                loader: 'babel-loader',
-                exclude: /node_modules\/(?!metoclient-layout)/,
-                query: {
-                  presets: ['env', 'react']
+                exclude: /node_modules\/(?!metoclient)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        babelrc: false,
+                        presets: ['@babel/preset-env', '@babel/preset-react']
+                    }
                 }
             },
 

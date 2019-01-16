@@ -112,6 +112,11 @@ class MainView extends React.Component{
       .create('Työpöytä ' + workspaceId)
 */
 
+
+    var metoclientConfig = {
+      layers: {}
+    }
+
     var workspace = {
       settings: {
         hasHeaders: true,
@@ -151,7 +156,15 @@ class MainView extends React.Component{
             title: 'Window 1',
             isClosable: false,
             index: 0,
-            props: {}
+            props: {},
+            componentState: {
+              config: metoclientConfig,
+              callbacks: {
+                init: function() {},
+                timeSliderCreated: function() {},
+                toolClicked: function() {}
+              }
+            },
           }]
         }]
       }]

@@ -1,5 +1,7 @@
 import { FMIGoldenLayout } from 'metoclient-goldenlayout';
 import React from 'react';
+//import { MetOClient } from '@fmidev/metoclient'
+import { MetOClient } from '../../../metoclient'
 
 class Layout extends React.PureComponent {
   constructor(props) {
@@ -8,6 +10,7 @@ class Layout extends React.PureComponent {
     this.goldenLayout = null
   }
   componentDidMount() {
+    window.metoclient = MetOClient
     /* you can pass config as prop, or use a predefined one */
     this.goldenLayout = new FMIGoldenLayout(this.props.config, this.node);
 
@@ -19,7 +22,9 @@ class Layout extends React.PureComponent {
   }
 
   updateSize() {
-    this.goldenLayout.updateSize()
+    if (this.goldenLayout != null) {
+      this.goldenLayout.updateSize()
+    }
   }
 
   render() {
