@@ -17,10 +17,10 @@
     "url": ""
   },
   "dependencies": {
-    "@fmidev/metoclient": "^1.0.13",
+    "@fmidev/metoclient": "^1.0.15",
     "axios": "^0.18.0",
     "jquery": "^3.2.1",
-    "metoclient-layout": "github:fmidev/metoclient-goldenlayout",
+    "metoclient-layout": "../metoclient-goldenlayout",
     "ol": "^4.4.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

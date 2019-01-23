@@ -22,6 +22,25 @@ export function authorize(user) {
   }
 }
 
+export function logOff(user) {
+  console && console.log("Logging off", user);
+  // POST /logoff
+  return (dispatch, getState) => {
+    return axios.post(USERAPI+'/logoff',
+      {
+        params: {
+          user: user
+        }
+      })
+    .then((response) => dispatch({
+      type: 'LOGGED_OFF', data: response.data
+    }))
+    .catch((response) => dispatch({
+      type: 'HTTP_ERROR', err: response.err
+    }))
+  }
+}
+
 export function loadSession(user){
 
   return (dispatch) => {

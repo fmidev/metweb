@@ -22,7 +22,7 @@ import Sidebar from './Sidebar.jsx'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
 import mainStore from '../app/mainStore.js'
-import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
+import { authorize, logOff, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
 
 let firstShownIndex = 0
@@ -53,6 +53,12 @@ class MainView extends React.Component{
       event.preventDefault();
       alert(__("Loading session"));
       this.props.loadSession(mainStore.metStore.getState().mainReducer.user);
+    }
+    if (event.which == 122 && event.ctrlKey){
+      event.preventDefault();
+      alert("Logging off")
+      this.props.logOffUser(mainStore.metStore.getState().mainReducer.user);
+      document.location.reload()
     }
     return false;
   }
@@ -304,6 +310,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadUserFromBasicAuth: (user) => {
       dispatch({type: "LOG_IN"}) // synchronous
       dispatch(authorize(user)) // asynchronous
+    },
+    logOffUser: (user) => {
+      dispatch(logOff(user))
     },
     addWorkspace: (workspace, workspaceIndex) => {
       dispatch({type: "NEW_WORKSPACE", workspace: workspace, index: workspaceIndex})

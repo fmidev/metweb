@@ -10,6 +10,7 @@ const mainReducer = (state, action) => {
     errors: [],
     ...state
   }
+  const defaultState = newState
 
   switch(action.type){
 
@@ -25,6 +26,10 @@ const mainReducer = (state, action) => {
       // Change state (user's name)
       newState.user = { ...state.user, name: action.data.displayname, crowdUser: action.data.username }
       return newState
+
+    case 'LOGGED_OFF':
+      // Reset state to default
+      return defaultState
 
     case 'SESSION_LOADED':
       // Change state
