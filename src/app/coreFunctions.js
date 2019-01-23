@@ -61,6 +61,37 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 }
 
+const defaultSteps = 10;
+function setTimeParameters(config){
+  config.resolutionTime = 300000
+  config.modifiedResolutionTime = 300000
+  config.firstDataPointTime = Number.MAX_VALUE
+  config.lastDataPointTime = 0
+  Object.values(config.layers).forEach((layer) => {
+    if (layer.animation.hasLegend) {
+      if (layer.resolutionTime > config.resolutionTime) {
+        config.resolutionTime = layer.resolutionTime
+        config.modifiedResolutionTime = layer.resolutionTime
+      }
+      if (layer.firstDataPointTime < config.firstDataPointTime) {
+        config.firstDataPointTime = layer.firstDataPointTime
+      }
+      if (layer.lastDataPointTime > config.lastDataPointTime) {
+        config.lastDataPointTime = layer.lastDataPointTime
+      }
+    }
+  })
+  var currentDate = new Date()
+  var currentTime = currentDate.getTime()
+  if (config.firstDataPointTime > currentTime) {
+    config.endTime = config.firstDataPointTime + (config.resolutionTime * defaultSteps)
+    config.beginTime = config.firstDataPointTime
+  } else if (config.lastDataPointTime < currentTime) {
+    config.beginTime = config.lastDataPointTime - (config.resolutionTime * defaultSteps)
+    config.endTime = config.lastDataPointTime
+  }
+}
+
 // Hekpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
   var selectedWindowId = windows.getSelected()
@@ -87,41 +118,7 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
     return
 
   delete config.layers[product.layer]
-  config.resolutionTime = 300000
-  config.modifiedResolutionTime = 300000
-  config.firstDataPointTime = Number.MAX_VALUE
-  config.lastDataPointTime = 0
-  Object.values(config.layers).forEach((layer) => {
-    if (layer.animation.hasLegend) {
-      if (layer.resolutionTime > config.resolutionTime) {
-        config.resolutionTime = layer.resolutionTime
-        config.modifiedResolutionTime = layer.resolutionTime
-      }
-      if (layer.firstDataPointTime < config.firstDataPointTime) {
-        config.firstDataPointTime = layer.firstDataPointTime
-      }
-      if (layer.lastDataPointTime > config.lastDataPointTime) {
-        config.lastDataPointTime = layer.lastDataPointTime
-      }
-    }
-  })
-  var currentDate = new Date()
-  var currentTime = currentDate.getTime()
-  if (config.firstDataPointTime > currentTime) {
-    config.endTime = config.firstDataPointTime + (config.resolutionTime * 24)
-    config.beginTime = config.firstDataPointTime
-  } else if (config.lastDataPointTime < currentTime) {
-    config.beginTime = config.lastDataPointTime - (config.resolutionTime * 24)
-    config.endTime = config.lastDataPointTime
-  }
-  // If config contains only base map, reset time config
-  if(Object.keys(config.layers).length == 1){
-    var currentDate = new Date()
-    var currentTime = currentDate.getTime()
-    config.defaultAnimationTime = currentTime
-    config.beginTime = currentTime
-    config.endTime = currentTime
-  }
+  setTimeParameters(config)
 
   setSelectedWindowConfig(windows, config)
 
@@ -156,12 +153,13 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   // {beginTime, endTime, resolutionTime}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
+
   var endTime = timeData.endTime
   var beginTime = timeData.beginTime
   if (timeData.type === "for") {
-    endTime = timeData.beginTime + (timeData.resolutionTime * 10)
+    endTime = timeData.beginTime + (timeData.resolutionTime * defaultSteps)
   } else if (timeData.type === "obs") {
-    beginTime = timeData.endTime - (timeData.resolutionTime * 10)
+    beginTime = timeData.endTime - (timeData.resolutionTime * defaultSteps)
   }
 
   if (config == null && timeData.type == 'obs') {
@@ -257,34 +255,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   }
 
   config.layers[layer] = layerConfig
-
-  config.resolutionTime = 300000
-  config.modifiedResolutionTime = 300000
-  config.firstDataPointTime = Number.MAX_VALUE
-  config.lastDataPointTime = 0
-  Object.values(config.layers).forEach((layer) => {
-    if (layer.animation.hasLegend) {
-      if (layer.resolutionTime > config.resolutionTime) {
-        config.resolutionTime = layer.resolutionTime
-        config.modifiedResolutionTime = layer.resolutionTime
-      }
-      if (layer.firstDataPointTime < config.firstDataPointTime) {
-        config.firstDataPointTime = layer.firstDataPointTime
-      }
-      if (layer.lastDataPointTime > config.lastDataPointTime) {
-        config.lastDataPointTime = layer.lastDataPointTime
-      }
-    }
-  })
-  var currentDate = new Date()
-  var currentTime = currentDate.getTime()
-  if (config.firstDataPointTime > currentTime) {
-    config.endTime = config.firstDataPointTime + (config.resolutionTime * 24)
-    config.beginTime = config.firstDataPointTime
-  } else if (config.lastDataPointTime < currentTime) {
-    config.beginTime = config.lastDataPointTime - (config.resolutionTime * 24)
-    config.endTime = config.lastDataPointTime
-  }
+  setTimeParameters(config)
 
   return config
 

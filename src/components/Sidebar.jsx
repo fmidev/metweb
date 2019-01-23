@@ -26,9 +26,7 @@ class Sidebar extends React.Component{
               product.source = this.props.menu.source[0].name
             }
           });
-          if (productList.title == "Radar" || productList.title == "Satellite") {
             productLists.push(<ProductList key={'pl'+index} menuIndex={index} title={productList.title ? productList.title : "Untitled"} products={productList.items} />)
-          }
         }
       });
     }
