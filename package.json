@@ -1,6 +1,6 @@
 {
   "name": "metweb",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Weather map animator",
   "author": "FMI",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "url": ""
   },
   "dependencies": {
-    "@fmidev/metoclient": "^1.0.13",
+    "@fmidev/metoclient": "^1.0.16",
     "axios": "^0.18.0",
     "jquery": "^3.2.1",
     "metoclient-layout": "github:fmidev/metoclient-goldenlayout",
