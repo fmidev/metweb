@@ -129,13 +129,7 @@ class Metadata {
             timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
             timeData.beginTime = itemsAsMilliseconds[0]
             timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
-            if (timeData.type === 'for') {
-              timeData.startFrame = Math.max(timeData.beginTime, timeData.endTime - (timeData.resolutionTime * 10))
-            } else if (timeData.type === 'obs') {
-              timeData.startFrame = timeData.beginTime
-            } else {
-              console.log("ERROR: SOMETHING BAD JUST HAPPENED")
-            }
+            timeData.startFrame = timeData.beginTime
             return timeData;
           }
         }

@@ -162,7 +162,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     beginTime = timeData.endTime - (timeData.resolutionTime * defaultSteps)
   }
 
-  if (config == null && timeData.type == 'obs') {
+  if (config == null) {
     config = {
       project: 'mymap',
       // Layer configuration
@@ -215,6 +215,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       firstDataPointTime: timeData.beginTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
+      timeLimitsForced: true,
       timeZone: 'Europe/Helsinki',
       localization: {
         locale: __('en')
