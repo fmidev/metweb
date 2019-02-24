@@ -149,7 +149,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   // What is the reason for origins? Removing them doesn't seem to change anything.
   var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
   var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
-  var extent3857 = [-500000, 5000000, 5000000, 20000000]
+  var extent3857 = [-20026376.39, -20048966.10, 20026376.39, 20048966.10]
 
   // {beginTime, endTime, resolutionTime}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
