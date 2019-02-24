@@ -168,6 +168,16 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       // Layer configuration
       layers: {
         // ---------------------------------------------------------------
+        'OpenStreetMap': {
+          className: 'OSM',
+          title: 'OpenStreetMap',
+          type: 'map',
+          visible: true,
+          opacity: 1.0,
+          animation: {
+            hasLegend: false
+          }
+        },
         'Taustakartta': {
           className: 'WMTS',
           title: 'Taustakartta',
