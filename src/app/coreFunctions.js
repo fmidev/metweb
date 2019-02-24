@@ -175,11 +175,11 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
           visible: true,
           opacity: 1.0,
           source: {
-            matrixSet: 'ETRS-TM35FIN',
-            layer: 'KAP:Europe_basic_EurefFIN',
+            matrixSet: 'WGS84_Pseudo-Mercator',
+            layer: 'taustakartta',
             format: 'image/png'
           },
-          tileCapabilities: '//wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
+          tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0',
           animation: {
             hasLegend: false
           }
