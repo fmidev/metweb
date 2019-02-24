@@ -9,20 +9,12 @@ default = true
 server = "geoserver"
 
 [[source]]
-name = "fmiwms"
+name = "ecmwf"
 type = "wms"
-url = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/"
-tileCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/gwc/service/wmts?request=GetCapabilities"
-timeCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
+url = "https://apps.ecmwf.int/wms/"
+tileCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
+timeCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
 server = "geoserver"
-
-[[source]]
-name = "fmidaliwms"
-type = "wms"
-url = "https://data.fmi.fi/fmi-apikey/{APIKEY}/"
-timeCapabilities = "https://data.fmi.fi/fmi-apikey/{APIKEY}/wms?request=GetCapabilities&service=WMS"
-tileCapabilities = "https://data.fmi.fi/fmi-apikey/{APIKEY}/wms?request=GetCapabilities&service=WMS"
-server = "smartmet"
 
 [[menu]]
 title = "Tutka"
