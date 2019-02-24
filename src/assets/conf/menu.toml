@@ -1,4 +1,12 @@
 # Main menu configuration
+[[source]]
+name = "fmiopenwms"
+type = "wms"
+url = "https://openwms.fmi.fi/geoserver/"
+tileCapabilities = "https://openwms.fmi.fi/geoserver/gwc/service/wmts?request=GetCapabilities"
+timeCapabilities = "https://openwms.fmi.fi/geoserver/wms?request=GetCapabilities&service=WMS"
+default = true
+server = "geoserver"
 
 [[source]]
 name = "fmiwms"
@@ -6,7 +14,6 @@ type = "wms"
 url = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/"
 tileCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/gwc/service/wmts?request=GetCapabilities"
 timeCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
-default = true
 server = "geoserver"
 
 [[source]]
