@@ -172,24 +172,58 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
           className: 'OSM',
           title: 'OpenStreetMap',
           type: 'map',
-          visible: true,
-          opacity: 1.0,
           animation: {
             hasLegend: false
           }
         },
         'Taustakartta': {
           className: 'WMTS',
-          title: 'Taustakartta',
+          title: 'MML Taustakartta',
           type: 'map',
-          visible: true,
-          opacity: 1.0,
           source: {
             matrixSet: 'WGS84_Pseudo-Mercator',
             layer: 'taustakartta',
-            format: 'image/png'
           },
           tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Ocean_Basemap': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Ocean Map',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Ocean_Basemap',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Ocean_Basemap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Canvas_World_Dark_Gray_Base': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Dark Gray Basemap',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Canvas_World_Dark_Gray_Base',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Canvas_World_Light_Gray_Base': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Light Gray Basemap',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Canvas_World_Light_Gray_Base',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
           animation: {
             hasLegend: false
           }
