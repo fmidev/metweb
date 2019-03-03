@@ -109,6 +109,21 @@ class MenuReader {
                 })
                 break;
 
+              case "generic":
+                sourceItems.forEach((item) => {
+                  let parentTitle = item.category
+                  let parentIdx = this.menu.menu.findIndex(function(m){ return m.title === parentTitle })
+                  if( parentIdx === -1 ){
+                    this.menu.menu.push({
+                      title : parentTitle,
+                      items: []
+                    })
+                    parentIdx = this.menu.menu.length - 1
+                  }
+                  this.menu.menu[parentIdx].items.push(item);
+                })
+                break;
+
               default:
                 this.menu.menu.push( {
                   title : source.name,
