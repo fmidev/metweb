@@ -72,71 +72,82 @@ class Metadata {
 
     let products = []
 
-    this.capabilities[source].Capability.Layer.Layer.forEach((layer) => {
-      products.push({
-        title : layer.Title,
-        layer : layer.Name,
-        source : source
-      })
-    })
-
+    products = this.getLayers(this.capabilities[source].Capability.Layer.Layer, source, source)
+    console.log(products)
     return products
   }
 
-  getTimeDataForLayer (sourcecfg, layer) {
-    if (!this.capabilities[sourcecfg.name]) {
-      console.log('not loaded: ' + sourcecfg.name)
-      alert('Metadata has not loaded yet. Please check the FMI API key and try again.')
-      return
-    }
 
-    for (var i = 0; i < this.capabilities[sourcecfg.name].Capability.Layer.Layer.length; i++) {
-
-      var current = this.capabilities[sourcecfg.name].Capability.Layer.Layer[i]
-
-      if (current.Name == layer && typeof current.Dimension !== "undefined") {
-
-        for (var n = 0; n < current.Dimension.length; n++) {
-          var dimension = current.Dimension[n]
-
-          if (dimension.name == 'time') {
-            var timeData = {}
-            var currentTime = new Date().getTime()
-
-            // Try slash and comma delimited values. By WMS standards, slash means implicit timesteps, comma means explicit timesteps.
-            var items = dimension.values.split("/")
-            if(items.length==1)
-              items = dimension.values.split(",")
-            // However, to form boolean about explicit/implicit timesteps, moment().isValid() is more robust. See below.
-
-            // If the last item is not a valid date, assume it is a valid duration
-            var containsInterval = !moment(items[items.length-1]).isValid()
-            // Format and sort explicit timesteps
-            var itemsAsMilliseconds = [];
-            items.forEach(function(value, index){
-              if(!containsInterval || (containsInterval && index != items.length - 1)){
-                itemsAsMilliseconds.push(moment(value).valueOf())
-              }
-            })
-            itemsAsMilliseconds.sort(function(a,b){ return a - b })
-            // Forecast or observation data?
-            if(itemsAsMilliseconds[itemsAsMilliseconds.length - 1] > currentTime){
-              timeData.type = "for"
-            }else{
-              timeData.type = "obs"
-            }
-
-            timeData.resolutionTime = containsInterval ? moment.duration(items[items.length-1]).asMilliseconds() : 3600000
-            timeData.beginTime = itemsAsMilliseconds[0]
-            timeData.endTime = itemsAsMilliseconds[itemsAsMilliseconds.length - 1]
-            timeData.startFrame = timeData.beginTime
-            return timeData;
-          }
-        }
-      }
-    }
-    return false
+ getLayers(parentlayer, source, category) {
+    let products = []
+    parentlayer.forEach((layer) => {
+	if (Array.isArray(layer.Layer)) {
+	    console.log(layer.Title)
+	    products = products.concat(this.getLayers(layer.Layer, source, category + '/' + layer.Title))
+	} else {
+	    products.push(this.getLayerInfo(layer, source, category))
+	} 
+    })
+    return products
   }
+
+  getLayerInfo(layer, source, category) {
+      console.log('Title: ' + layer.Title + ' Name: ' + layer.Name + ' Category: ' + source)
+      let product = 
+      {
+        category : category,
+        title : layer.Title,
+        layer : layer.Name,
+        abstract: layer.Abstract,
+        source : source
+      }
+      if (typeof layer.Dimension !== "undefined") {
+	  product.time = this.getTimeDimension(layer.Dimension)
+      }
+      return product
+  }
+
+    getTimeDimension(dimensions) {
+	//var time = {}
+	var beginTime
+        var endTime
+        var resolutionTime
+        var prevtime
+	var defaultTime
+
+	dimensions.forEach((dimension) => {
+	    if (dimension.name == 'time') {
+		defaultTime = dimension.default ? moment(dimension.default).valueOf() : NaN
+		dimension.values.split(",").forEach((times) => {
+		    var time = times.split("/")
+		    // Time dimension is list of times separated by comma
+		    if (time.length==1) {
+			// begin time is the smallest of listed times
+			beginTime = beginTime ? beginTime : moment(time[0]).valueOf()
+			beginTime = Math.min(beginTime,moment(time[0]).valueOf())
+			// end time is the bigest of listed times
+			endTime = endTime ? endTime : moment(time[0]).valueOf()
+			endTime = Math.max(endTime,moment(time[0]).valueOf())
+			// resolution is the difference of the last two times listed
+			resolutionTime = prevtime ? (moment(time[0]).valueOf() - prevtime) : 3600000
+			prevtime = moment(time[0]).valueOf()
+		    }
+		    // Time dimension is starttime/endtime/period
+		    else if (time.length==3) {
+			beginTime = moment(time[0]).valueOf()
+			endTime = moment(time[1]).valueOf()
+			resolutionTime = moment.duration(time[2]).asMilliseconds()
+		    }
+		}) // forEach
+	    } // if
+	}) // forEach
+        var currentTime = new Date().getTime()
+	var type = endTime > currentTime ? "for" : "obs"
+        console.log("start: "+beginTime+" end: "+endTime+" resolution: "+resolutionTime+" type: "+type+" default: " + defaultTime)
+	return {start: beginTime, end: endTime, resolution: resolutionTime, type: type, default: defaultTime}
+    }
+
 }
 
 export default (new Metadata)
+
