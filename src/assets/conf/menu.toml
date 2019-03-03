@@ -1,69 +1,76 @@
 # Main menu configuration
+
 [[source]]
-name = "fmiopenwms"
+name = "FMI (Open Data)"
 type = "wms"
-url = "https://openwms.fmi.fi/geoserver/"
+url = "https://openwms.fmi.fi/geoserver/wms"
 tileCapabilities = "https://openwms.fmi.fi/geoserver/gwc/service/wmts?request=GetCapabilities"
-timeCapabilities = "https://openwms.fmi.fi/geoserver/wms?request=GetCapabilities&service=WMS"
-default = true
+timeCapabilities = "https://openwms.fmi.fi/geoserver/wms?service=WMS&request=getCapabilities"
 server = "geoserver"
 
 [[source]]
-name = "ecmwf"
+name = "DWD"
 type = "wms"
-url = "https://apps.ecmwf.int/wms/"
-tileCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
+url = "https://maps.dwd.de/geoserver/wms"
+timeCapabilities = "https://maps.dwd.de/geoserver/wms?service=WMS&request=getCapabilities"
+server = "generic"
+
+[[source]]
+name = "EUMETSAT"
+type = "wms"
+url = "https://eumetview.eumetsat.int/geoserv/wms"
+tileCapabilities = "https://eumetview.eumetsat.int/geoserv/wms?REQUEST=GetCapabilities&version=1.3.0&service=WMS"
+timeCapabilities = "https://eumetview.eumetsat.int/geoserv/wms?REQUEST=GetCapabilities&version=1.3.0&service=WMS"
+server = "generic"
+
+#[[source]]
+#name = "NASA"
+#type = "wms"
+#url = "https://neo.sci.gsfc.nasa.gov/wms/wms"
+#tileCapabilities = "https://neo.sci.gsfc.nasa.gov/wms/wms?version=1.3.0&service=WMS&request=GetCapabilities"
+#timeCapabilities = "https://neo.sci.gsfc.nasa.gov/wms/wms?version=1.3.0&service=WMS&request=GetCapabilities"
+#server = "generic"
+
+#[[source]]
+#name = "SMHI"
+#type = "wms"
+#url = "https://opendata-view.smhi.se/met-obs/wms"
+#tileCapabilities = "https://opendata-view.smhi.se/met-obs/wms?service=wms&request=getCapabilities"
+#timeCapabilities = "https://opendata-view.smhi.se/met-obs/wms?service=wms&request=getCapabilities"
+#server = "geoserver"
+
+[[source]]
+name = "ECMWF"
+type = "wms"
+url = "https://apps.ecmwf.int/wms/?token=public"
 timeCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
-server = "geoserver"
+server = "generic"
 
-[[menu]]
-title = "Tutka"
-type = "obs"
-file = "radar.toml"
+[[source]]
+name = "IBL"
+type = "wms"
+url = "https://ogcie.iblsoft.com/observations"
+timeCapabilities = "https://ogcie.iblsoft.com/observations?SERVICE=WMS&REQUEST=GetCapabilities"
+server = "generic"
 
-[[menu]]
-title = "Satelliitti"
-type = "obs"
-file = "satellite.toml"
+#[[source]]
+#name = "Canada"
+#type = "wms"
+#url = "https://geo.weather.gc.ca/geomet/"
+#tileCapabilities = "https://geo.weather.gc.ca/geomet/?SERVICE=WMS&REQUEST=GetCapabilities"
+#timeCapabilities = "https://geo.weather.gc.ca/geomet/?SERVICE=WMS&REQUEST=GetCapabilities"
+#server = "generic"
 
-[[menu]]
-title = "Ennusteet"
-type = "for"
-file = "forecasts.toml"
+[[source]]
+name = "MEPS (met.no)"
+type = "wms"
+url = "https://thredds.met.no/thredds/wms/meps25files/meps_det_pp_2_5km_latest.nc"
+timeCapabilities = "https://thredds.met.no/thredds/wms/meps25files/meps_det_pp_2_5km_latest.nc?service=WMS&version=1.3.0&request=GetCapabilities"
+server = "generic"
 
-[[menu]]
-title = "Jääkartta"
-type = "obs"
-file = "icecoverage.toml"
-
-[[menu]]
-title = "ECMWF"
-file = "ecmwf.toml"
-
-[[menu]]
-title = "PAL"
-file = "pal.toml"
-
-[[menu]]
-title = "PAL testieditointi"
-file = "pal_test.toml"
-
-[[menu]]
-title = "Helmi"
-file = "helmi.toml"
-
-[[menu]]
-title = "HBM"
-file = "hbm.toml"
-
-[[menu]]
-title = "Tiesää"
-file = "tiesaa.toml"
-
-[[menu]]
-title = "MST"
-file = "mst.toml"
-
-[[menu]]
-title = "Harmonie"
-file = "harmonie.toml"
+[[source]]
+name = "KNMI (Radar)"
+type = "wms"
+url = "https://geoservices.knmi.nl/cgi-bin/RADNL_OPER_R___25PCPRR_L3.cgi"
+timeCapabilities = "https://geoservices.knmi.nl/cgi-bin/RADNL_OPER_R___25PCPRR_L3.cgi?service=WMS&version=1.3.0&request=GetCapabilities"
+server = "generic"
