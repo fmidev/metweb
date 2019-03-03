@@ -1,6 +1,20 @@
 
 import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
+import * as _ol_extent_ from 'ol/extent.js';
+import _ol_proj_ from 'ol/proj.js';
+
+const defaultSteps = 12;
+const PROJECTION = "EPSG:3857";
+const EXTENT = _ol_proj_.get(PROJECTION).getExtent();
+
+//var startResolution = _ol_extent_.getWidth(EXTENT) / 512;
+//var resolutions = new Array(22);
+//for (var i = 0, ii = resolutions.length; i < ii; ++i) {
+//  resolutions[i] = startResolution / Math.pow(2, i);
+//}
+
+//const RESOLUTIONS = resolutions
 
 /* Application core functions */
 
@@ -61,7 +75,7 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 }
 
-const defaultSteps = 10;
+
 function setTimeParameters(config){
   config.resolutionTime = 300000
   config.modifiedResolutionTime = 300000
@@ -105,32 +119,30 @@ export const setSelectedWindowConfig = (windows, config) => {
 
 // Activate product in selected window
 export const activateProductInSelectedWindow = (product, windows) => {
-  var config = generateConfigForProduct(product.title, product.layer, product.type, product.source, windows)
+  var config = generateConfigForProduct(product.title, product.layer, product.type, product, product.source, windows)
   setSelectedWindowConfig(windows, config);
 }
 
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
-
   var config = getSelectedWindowConfig(windows)
 
   if(!config)
     return
 
-  delete config.layers[product.layer]
-  setTimeParameters(config)
-
-  setSelectedWindowConfig(windows, config)
-
+    delete config.layers[product.layer]
+    config.resolutionTime = getResolution(config)
+    config.modifiedResolutionTime = getResolution(config)
+    setSelectedWindowConfig(windows, config)
 }
 
 // Generate MetOClient config object based on the less verbose TOML config
 // NOTE: "Append" type function.
 // In Metweb terms, _product object_ is _added_ to _currently selected window_.
 // In MetOClient terms, _config object_ is _modified_ by appending a _layer_
-export const generateConfigForProduct = (title, layer, type, source, windows) => {
-  var config = windows.get(windows.getSelected())
-  var sourcecfg = MenuReader.getSource(source)
+export const generateConfigForProduct = (title, layer, type, product, source, windows) => {
+    var config = windows.get(windows.getSelected())
+    var sourcecfg = MenuReader.getSource(source)
 
   if (!sourcecfg) {
     alert('Missing source information for the product')
@@ -139,28 +151,8 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   var apiKey = getApiKey()
 
-  var baseUrl = sourcecfg.url
-  var wmsBaseUrl = baseUrl + 'wms'
-
-  var currentDate = new Date()
-  var currentTime = currentDate.getTime()
-
-  var resolutions = [8192, 4096, 2048, 1024, 512, 256, 128, 64]
   // What is the reason for origins? Removing them doesn't seem to change anything.
   var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
-  var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
-  var extent3857 = [-20026376.39, -20048966.10, 20026376.39, 20048966.10]
-
-  // {beginTime, endTime, resolutionTime}
-  var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
-
-  var endTime = timeData.endTime
-  var beginTime = timeData.beginTime
-  if (timeData.type === "for") {
-    endTime = timeData.beginTime + (timeData.resolutionTime * defaultSteps)
-  } else if (timeData.type === "obs") {
-    beginTime = timeData.endTime - (timeData.resolutionTime * defaultSteps)
-  }
 
   if (config == null) {
     config = {
@@ -168,26 +160,31 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       // Layer configuration
       layers: {
         // ---------------------------------------------------------------
-        'OpenStreetMap': {
+      // ---------------------------------------------------------------
+      'OpenStreetMap': {
           className: 'OSM',
           title: 'OpenStreetMap',
-          type: 'map',
-          animation: {
-            hasLegend: false
-          }
-        },
-        'Taustakartta': {
+          type: 'map'
+      },
+          'MML_Taustakartta': {
           className: 'WMTS',
-          title: 'MML Taustakartta',
+          title: 'MML taustakartta',
           type: 'map',
           source: {
             matrixSet: 'WGS84_Pseudo-Mercator',
             layer: 'taustakartta',
           },
-          tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0',
-          animation: {
-            hasLegend: false
-          }
+          tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0'
+        },
+        'MML_Maastokartta': {
+          className: 'WMTS',
+          title: 'MML maastokartta',
+          type: 'map',
+          source: {
+            matrixSet: 'WGS84_Pseudo-Mercator',
+            layer: 'maastokartta',
+          },
+          tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0'
         },
         'Ocean_Basemap': {
           className: 'WMTS',
@@ -197,10 +194,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
             matrixSet: 'GoogleMapsCompatible',
             layer: 'Ocean_Basemap',
           },
-          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Ocean_Basemap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
-          animation: {
-            hasLegend: false
-          }
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Ocean_Basemap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml'
         },
         'Canvas_World_Dark_Gray_Base': {
           className: 'WMTS',
@@ -210,10 +204,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
             matrixSet: 'GoogleMapsCompatible',
             layer: 'Canvas_World_Dark_Gray_Base',
           },
-          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
-          animation: {
-            hasLegend: false
-          }
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml'
         },
         'Canvas_World_Light_Gray_Base': {
           className: 'WMTS',
@@ -223,18 +214,15 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
             matrixSet: 'GoogleMapsCompatible',
             layer: 'Canvas_World_Light_Gray_Base',
           },
-          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
-          animation: {
-            hasLegend: false
-          }
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml'
         }
       },
-      projection: 'EPSG:3857',
-      extent: extent3857,
-      resolutions: resolutions,
+      projection: PROJECTION,
+      extent: EXTENT,
+//      resolutions: RESOLUTIONS,
       defaultCenterLocation: [2750000, 9000000],
-      defaultCenterProjection: 'EPSG:3857',
-      defaultZoomLevel: 2,
+      defaultCenterProjection: PROJECTION,
+      defaultZoomLevel: 6,
       showLegend: true,
       legendTitle: 'Legend',
       noLegendText: 'None',
@@ -243,20 +231,12 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       maxAsyncLoadCount: 5,
       // Disable panning and zooming
       staticControls: false,
-      // Time configuration
       autoStart: false,
       waitUntilLoaded: false,
       autoReplay: true,
       refreshInterval: 5 * 60 * 1000,
       frameRate: 500,
       showTimeSliderMenu: true,
-      resolutionTime: timeData.resolutionTime,
-      modifiedResolutionTime: timeData.resolutionTime,
-      defaultAnimationTime: timeData.startFrame,
-      beginTime: beginTime,
-      endTime: endTime,
-      lastDataPointTime: timeData.endTime,
-      firstDataPointTime: timeData.beginTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
       timeLimitsForced: true,
@@ -266,45 +246,89 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       }
     }
   }
-  // Add product to layers
 
-  var layerConfig = {
-    className: 'TileWMS',
-    title: title,
-    visible: true,
-    opacity: 1.0,
-    type: type || timeData.type,
-    firstDataPointTime: timeData.beginTime,
-    lastDataPointTime: timeData.endTime,
-    resolutionTime: timeData.resolutionTime,
-    source: {
-      url: wmsBaseUrl,
-      params: {
-        'LAYERS': layer,
-        'TRANSPARENT': 'TRUE',
-        'FORMAT': 'image/png'
-      },
-      projection: 'EPSG:3857',
-      tileGridOptions: {
-        origins: origins1024,
-        extent: extent3857,
-        resolutions: resolutions,
-        tileSize: 1024
-      }
-    },
-    "tileCapabilities": "//wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-    'timeCapabilities': sourcecfg.timeCapabilities,
-    animation: {
-      hasLegend: true
+
+    // Add product to layers
+    config.layers[layer] = getLayerConfig(product)
+
+if (product.time) {
+    var endTime = product.time.end
+    var beginTime = product.time.start
+    if (product.time.type === "for") {
+	endTime = product.time.start + (product.time.resolution * defaultSteps)
+    } else if (product.time.type === "obs") {
+	beginTime = product.time.end - (product.time.resolution * defaultSteps)
     }
-  }
+    config.resolutionTime = getResolution(config)
+    config.modifiedResolutionTime = getResolution(config)
+    config.defaultAnimationTime = product.time.default
+    config.beginTime = beginTime
+    config.endTime = endTime
+    config.lastDataPointTime =  product.time.end
+    config.firstDataPointTime = product.time.start
+}
 
-  config.layers[layer] = layerConfig
-  setTimeParameters(config)
+    
+
 
   return config
 
 }
+
+export const getResolution = (config) => {
+    var resolution = 60
+    if (config.layers) {
+	for (var key in config.layers) {
+	    if (config.layers[key].resolutionTime) {
+		resolution = Math.max(resolution,config.layers[key].resolutionTime)
+	    }
+	}
+	return resolution
+    } else {
+	return NaN
+    }
+}
+
+export const getLayerConfig = (product) => {
+    var sourcecfg = MenuReader.getSource(product.source)
+
+    var layerConfig = {
+	className: 'TileWMS',
+	title: product.title,
+	visible: true,
+	opacity: 0.9,
+	source: {
+	    url: sourcecfg.url,
+	    params: {
+		'LAYERS': product.layer,
+		'TRANSPARENT': 'TRUE',
+		'FORMAT': 'image/png'
+	    },
+	    projection: PROJECTION,
+//	    tileGridOptions: {
+//		origins: origins1024,
+//		extent: EXTENT,
+//		resolutions: RESOLUTIONS,
+//		tileSize: 1024
+//	    }
+	},
+	'timeCapabilities': sourcecfg.timeCapabilities,
+	animation: {
+	    hasLegend: true
+	}
+    }
+
+
+    if (product.time) {
+	layerConfig.type = product.time.type
+	layerConfig.firstDataPointTime = product.time.start
+	layerConfig.lastDataPointTime =  product.time.end
+	layerConfig.resolutionTime = product.time.resolution
+    }
+
+    return layerConfig
+}
+
 
 export const notify = (notificationString) => {
   if (Notification.permission === "granted") {
