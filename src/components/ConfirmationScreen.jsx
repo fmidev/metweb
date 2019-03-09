@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../style/main.scss';
+import '../styles/layout.css';
 
 export class ConfirmationScreen extends React.Component {
 
@@ -11,7 +11,7 @@ export class ConfirmationScreen extends React.Component {
 
   handleConfirmation() {
     // Calculates if only 1 component is remaining, so it disables dragging
-    let column = this.props.self.layout.root.contentItems[0]
+    let column = this.props.self.goldenLayout.root.contentItems[0]
     let rows = column.contentItems
     let sl = 0
     let x = 0
@@ -20,12 +20,12 @@ export class ConfirmationScreen extends React.Component {
       x++
     }
     if (sl === 1) {
-      this.props.self.layout.config.settings.reorderEnabled = false
+      this.props.self.goldenLayout.config.settings.reorderEnabled = false
     }
 
     // Actual removal of component
     this.props.tab.contentItem.remove()
-    column = this.props.self.layout.root.contentItems[0]
+    column = this.props.self.goldenLayout.root.contentItems[0]
     rows = column.contentItems
 
     let i = 1 // Blocks removal of last row --> layout hiararchy doesn't break

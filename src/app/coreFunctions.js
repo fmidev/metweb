@@ -62,23 +62,27 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 // Helpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
+  console.log("getSelectedWindowConfig: ", windows)
   var selectedWindowId = windows.getSelected()
   var config = selectedWindowId !== null && selectedWindowId !== undefined ? windows.get(selectedWindowId) : false
   return config;
 }
 export const setSelectedWindowConfig = (windows, config) => {
+  console.log("setSelectedWindowConfig: ", windows)
   var selectedWindowId = windows.getSelected()
   windows.set(selectedWindowId, config)
 }
 
 // Activate product in selected window
 export const activateProductInSelectedWindow = (product, windows) => {
+  console.log("activateProductInSelectedWindow: ", windows)
   var config = generateConfigForProduct(product.title, product.layer, product.type, product.source, windows)
   setSelectedWindowConfig(windows, config);
 }
 
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
+  console.log("deactivateProductInSelectedWindow: ", windows)
 
   var config = getSelectedWindowConfig(windows)
 
@@ -131,6 +135,7 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 // In Metweb terms, _product object_ is _added_ to _currently selected window_.
 // In MetOClient terms, _config object_ is _modified_ by appending a _layer_
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
+  console.log("generateConfigForProduct: ", windows)
   var config = windows.get(windows.getSelected())
   var sourcecfg = MenuReader.getSource(source)
 

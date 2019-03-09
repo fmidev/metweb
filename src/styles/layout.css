@@ -161,7 +161,7 @@
   top: 0;
   bottom: 0;
   background: #f7f7f7;
-  background-image: url("../img/background-text.png");
+  background-image: url("../assets/images/golden/background-text-en.png");
   background-position: center;
   background-repeat: no-repeat; }
 
@@ -248,13 +248,13 @@
   z-index: 1000000; }
 
 #fmi-metweb-windows .menu-dots.light-theme {
-  background-image: url("../img/light-window-menu-gray.png"); }
+  background-image: url("../assets/images/golden/light-window-menu-gray.png"); }
 
 #fmi-metweb-windows .menu-dots.light-theme:not(selected).hover {
-  background-image: url("../img/light-window-menu-blue.png"); }
+  background-image: url("../assets/images/golden/light-window-menu-blue.png"); }
 
 #fmi-metweb-windows .lm_selected .menu-dots.light-theme:not(selected).hover {
-  background-image: url("../img/light-window-menu-white.png"); }
+  background-image: url("../assets/images/golden/light-window-menu-white.png"); }
 
 #fmi-metweb-windows .menu-dots {
   z-index: 40;
