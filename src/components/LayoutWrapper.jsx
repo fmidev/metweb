@@ -30,13 +30,12 @@ class Layout {
     let container = document.getElementById(this.containerId)
     let customFmi = this.golden.goldenLayout.fmi
     this.title = title
-    console.log("store", store)
     ReactDOM.render(
       <div>
         <div>
           {this.createHeader()}
           <Provider store={store}>
-            <GoldenLayout ref={wrapper => { this.golden = wrapper }} containerId={this.containerId}/>
+            <GoldenLayout ref={wrapper => { this.golden = wrapper }} containerId={this.containerId} store={store}/>
           </Provider>
         </div>
       </div>,
@@ -93,8 +92,8 @@ class Layout {
           }
         }
         let newItemConfig = {
-          type: 'component',
-          componentName: 'metoclient',
+          type: 'react-component',
+          component: 'WeatherMapContainer',
           title: title,
           isClosable: false,
           index: numWindowsCreated,
@@ -143,7 +142,7 @@ class Layout {
         confirmation_button.innerHTML = "Kyllä!"
         confirmation_button.classList = "fmi-metweb-filter-button"
         confirmation_button.addEventListener('click', () => {
-          this.golden.destroy()
+          this.golden.goldenLayout.destroy()
           let container = document.getElementById(this.containerId)
           let id = container.dataset.workspaceId
           while (container.firstChild) {
@@ -193,7 +192,6 @@ class Layout {
 
   get (index) {
     let id = this.containerId + '-' + index.toString() + '-mapConfig'
-    console.log("get-id: ", id)
     let data = store.getState().get(id)
     if (data != null) {
       return JSON.parse(data)
@@ -273,9 +271,7 @@ class Layout {
   }
 
   getSelected () {
-    console.log("getSelected, this.containerId: ", this.containerId)
-    console.log("getSelected, store: ", store)
-    let selectedId = store.getState().get(this.containerId + '-0-selected')
+    let selectedId = store.getState().get(this.containerId + '-selected')
     let item = this.findItemById("fmi-metweb-windows1-0")
     return item.config.index
   }

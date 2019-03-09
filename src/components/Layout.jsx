@@ -1,12 +1,11 @@
 import { FMIGoldenLayout } from 'metoclient-goldenlayout';
 import React from 'react';
-import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
 //import { MetOClient } from '@fmidev/metoclient'
 import { MetOClient } from '../../../metoclient'
 import { createMenu } from '../../../metoclient/src/utils'
 import { setState } from '../app/ActionCreators.js'
-import WeatherMapContainer from './WeatherMap.jsx'
+import { WeatherMapContainer } from './WeatherMap.jsx'
 import EditableTitle from './EditableTitle.jsx'
 import ConfirmationScreen from './ConfirmationScreen.jsx'
 import elementResizeDetectorMaker from 'element-resize-detector'
@@ -20,8 +19,7 @@ class GoldenLayout extends React.Component {
   }
   componentDidMount() {
     let self = this;
-    console.log("self", self)
-    self.context.store.dispatch(setState({
+    self.props.store.dispatch(setState({
       [self.props.containerId + '-numWindowsCreated']: 0
     }))
     window.metoclient = MetOClient
@@ -64,8 +62,8 @@ class GoldenLayout extends React.Component {
           type: 'row',
           isClosable: false,
           content: [{
-            type: 'component',
-            componentName: 'metoclient',
+            type: 'react-component',
+            component: 'WeatherMapContainer',
             title: 'Ikkuna 1',
             isClosable: false,
             index: 0,
@@ -118,13 +116,13 @@ class GoldenLayout extends React.Component {
         let id = item.config.props.id
         item.addId(id)
         item.parent.select()
-        if (id === self.context.store.getState().get(self.props.containerId + '-selected')) {
+        if (id === self.props.store.getState().get(self.props.containerId + '-selected')) {
           self.goldenLayout.selectItem(item.parent)
         }
         // Todo: increment function
         let stateKey = self.props.containerId + '-numWindowsCreated'
-        let numWindowsCreated = self.context.store.getState().get(stateKey)
-        self.context.store.dispatch(setState({
+        let numWindowsCreated = self.props.store.getState().get(stateKey)
+        self.props.store.dispatch(setState({
           [stateKey]: numWindowsCreated + 1
         }))
       }
@@ -132,7 +130,7 @@ class GoldenLayout extends React.Component {
 
     this.goldenLayout.on('tabCreated', (tab) => {
       let id = tab.contentItem.config.props.id
-      if ((id != null) && (id === self.context.store.getState().get(self.props.containerId + '-selected'))) {
+      if ((id != null) && (id === self.props.store.getState().get(self.props.containerId + '-selected'))) {
         self.goldenLayout.selectItem(tab.contentItem.parent)
       }
 
@@ -286,21 +284,19 @@ class GoldenLayout extends React.Component {
 
     this.goldenLayout.on('selectionChanged', function (selectedItem) {
       let selectedId = selectedItem.contentItems[0].config.id
-      if (self.context.store.getState().get(self.props.containerId + '-selected') === selectedId) {
+      if (self.props.store.getState().get(self.props.containerId + '-selected') === selectedId) {
         return
       }
-      self.context.store.dispatch(setState({
+      self.props.store.dispatch(setState({
         [self.props.containerId + '-selected']: selectedId
       }))
-      console.log("SELECTEDID", selectedId)
-      console.log("SELECTEDID", self.context.store.getState().get(self.props.containerId + '-selected'))
       if(typeof self.goldenLayout.fmi.selectionChanged == "function"){
         self.goldenLayout.fmi.selectionChanged(selectedId)
       }
     })
 
     this.goldenLayout.registerComponent('WeatherMapContainer',
-      wrapComponent(WeatherMapContainer, self.context.store)
+      wrapComponent(WeatherMapContainer, self.props.store)
     )
 
     this.goldenLayout.init()
@@ -348,10 +344,6 @@ class GoldenLayout extends React.Component {
   render() {
     return <div class="goldenLayout" ref={this.setNode} />;
   }
-}
-
-GoldenLayout.contextTypes = {
-  store: PropTypes.object.isRequired
 }
 
 export default GoldenLayout

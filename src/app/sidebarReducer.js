@@ -58,8 +58,6 @@ const sidebarReducer = (state, action) => {
     case 'PRODUCT_ON':
       newState.worthwhile = true;
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = true
-      console.log(newState.workspaces[newState.selectedWorkspace])
-      console.log(newState)
       activateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState
 
