@@ -13,7 +13,7 @@ import '../styles/timeSliderRotated.less'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider, connect } from 'react-redux'
-import '../styles/layout.css'
+
 import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
 import DotsMenu from './DotsMenu.jsx'
@@ -25,7 +25,6 @@ import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
 import Layout from './LayoutWrapper.jsx'
 import { setState } from '../app/ActionCreators.js'
-import ReactResizeDetector from 'react-resize-detector'
 
 let firstShownIndex = 0
 let currentWorkspace = 0
@@ -85,14 +84,10 @@ class MainView extends React.Component{
     var workspaceIndex = mainStore.metStore.getState().sidebarReducer.workspaces.length
     var workspaceId = (workspaceIndex + 1).toString()
     var containerId = 'fmi-metweb-windows' + workspaceId
-    this.containerId = containerId
-    this.workspaceIndex = workspaceIndex
-
     var newWorkspaceContainer = document.createElement('div')
     newWorkspaceContainer.id = containerId
     newWorkspaceContainer.dataset.workspaceId = workspaceId
     newWorkspaceContainer.classList.add('workspace-container')
-
 
     var baseWorkspaceContainer = document.getElementById('fmi-metweb-windows')
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)

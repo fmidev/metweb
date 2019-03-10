@@ -35,7 +35,7 @@ class Layout {
         <div>
           {this.createHeader()}
           <Provider store={store}>
-            <GoldenLayout ref={wrapper => { this.golden = wrapper }} containerId={this.containerId} store={store}/>
+            <GoldenLayout ref={wrapper => { this.golden = wrapper }} containerId={this.containerId}/>
           </Provider>
         </div>
       </div>,
@@ -80,17 +80,6 @@ class Layout {
         let numWindowsCreated = store.getState().get(this.containerId + '-numWindowsCreated')
         let id = numWindowsCreated.toString()
         let title = 'Ikkuna ' + (numWindowsCreated + 1).toString()
-        let oldItemConfig = {
-          type: 'react-component',
-          component: 'WeatherMapContainer',
-          title: title,
-          isClosable: false,
-          index: numWindowsCreated,
-          props: {
-            id: this.containerId + '-' + id,
-            container: this.containerId + '-map-container-' + id
-          }
-        }
         let newItemConfig = {
           type: 'react-component',
           component: 'WeatherMapContainer',
@@ -272,7 +261,7 @@ class Layout {
 
   getSelected () {
     let selectedId = store.getState().get(this.containerId + '-selected')
-    let item = this.findItemById("fmi-metweb-windows1-0")
+    let item = this.findItemById(selectedId)
     return item.config.index
   }
 
