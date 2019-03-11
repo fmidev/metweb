@@ -1,21 +1,20 @@
 # Main menu configuration
-
 [[source]]
-name = "fmiwms"
+name = "fmiopenwms"
 type = "wms"
-url = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/"
-tileCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/gwc/service/wmts?request=GetCapabilities"
-timeCapabilities = "https://wms.fmi.fi/fmi-apikey/{APIKEY}/geoserver/wms?request=GetCapabilities&service=WMS"
+url = "https://openwms.fmi.fi/geoserver/"
+tileCapabilities = "https://openwms.fmi.fi/geoserver/gwc/service/wmts?request=GetCapabilities"
+timeCapabilities = "https://openwms.fmi.fi/geoserver/wms?request=GetCapabilities&service=WMS"
 default = true
 server = "geoserver"
 
 [[source]]
-name = "fmidaliwms"
+name = "ecmwf"
 type = "wms"
-url = "https://data.fmi.fi/fmi-apikey/{APIKEY}/"
-timeCapabilities = "https://data.fmi.fi/fmi-apikey/{APIKEY}/wms?request=GetCapabilities&service=WMS"
-tileCapabilities = "https://data.fmi.fi/fmi-apikey/{APIKEY}/wms?request=GetCapabilities&service=WMS"
-server = "smartmet"
+url = "https://apps.ecmwf.int/wms/"
+tileCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
+timeCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
+server = "geoserver"
 
 [[menu]]
 title = "Tutka"

@@ -147,7 +147,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   // What is the reason for origins? Removing them doesn't seem to change anything.
   var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
   var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
-  var extent3857 = [-500000, 5000000, 5000000, 20000000]
+  var extent3857 = [-20026376.39, -20048966.10, 20026376.39, 20048966.10]
 
   // {beginTime, endTime, resolutionTime}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
@@ -166,18 +166,62 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       // Layer configuration
       layers: {
         // ---------------------------------------------------------------
+        'OpenStreetMap': {
+          className: 'OSM',
+          title: 'OpenStreetMap',
+          type: 'map',
+          animation: {
+            hasLegend: false
+          }
+        },
         'Taustakartta': {
           className: 'WMTS',
-          title: 'Taustakartta',
+          title: 'MML Taustakartta',
           type: 'map',
-          visible: true,
-          opacity: 1.0,
           source: {
-            matrixSet: 'ETRS-TM35FIN',
-            layer: 'KAP:Europe_basic_EurefFIN',
-            format: 'image/png'
+            matrixSet: 'WGS84_Pseudo-Mercator',
+            layer: 'taustakartta',
           },
-          tileCapabilities: '//wms.fmi.fi/fmi-apikey/' + apiKey + '/geoserver/gwc/service/wmts?request=GetCapabilities',
+          tileCapabilities: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts?service=WMTS&request=GetCapabilities&version=1.0.0',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Ocean_Basemap': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Ocean Map',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Ocean_Basemap',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Ocean_Basemap/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Canvas_World_Dark_Gray_Base': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Dark Gray Basemap',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Canvas_World_Dark_Gray_Base',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
+          animation: {
+            hasLegend: false
+          }
+        },
+        'Canvas_World_Light_Gray_Base': {
+          className: 'WMTS',
+          title: 'ESRI ArcGIS Light Gray Basemap',
+          type: 'map',
+          source: {
+            matrixSet: 'GoogleMapsCompatible',
+            layer: 'Canvas_World_Light_Gray_Base',
+          },
+          tileCapabilities: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/WMTS/1.0.0/WMTSCapabilities.xml',
           animation: {
             hasLegend: false
           }
