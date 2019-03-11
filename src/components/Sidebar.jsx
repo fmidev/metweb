@@ -8,7 +8,6 @@ class Sidebar extends React.Component{
 
   constructor(props) {
     super(props);
-
   }
 
   handleClick(){
@@ -27,9 +26,7 @@ class Sidebar extends React.Component{
               product.source = this.props.menu.source[0].name
             }
           });
-          if (productList.title == "Radar" || productList.title == "Satellite") {
             productLists.push(<ProductList key={'pl'+index} menuIndex={index} title={productList.title ? productList.title : "Untitled"} products={productList.items} />)
-          }
         }
       });
     }
@@ -40,19 +37,14 @@ class Sidebar extends React.Component{
 
         <div id="fmi-metweb-sidebar-menu">
 
-          <div id="fmi-metweb-sidebar-menu-title">{"Tuotevalikko"}</div>
-
-          <div id="fmi-metweb-sidebar-menu-filters">
-            <div className="fmi-metweb-title">{"Filtterit"}</div>
-
-            <div className="fmi-metweb-wrappable-container">
-              <div className="fmi-metweb-filter-button">{"Filtteri 1"}</div>
-              <div className="fmi-metweb-filter-button">{"Filtteri 2"}</div>
-              <div className="fmi-metweb-filter-button">{"Filtteri 3"}</div>
-              <div className="fmi-metweb-filter-button">{"Filtteri 4"}</div>
+          <div id="fmi-metweb-sidebar-menu-title">{__("Product list")}</div>
+            <div id="fmi-metweb-sidebar-menu-filters">
+              <div className="fmi-metweb-title">{__("Filters")}</div><div className="fmi-metweb-wrappable-container">
+                <div className="fmi-metweb-filter-button">{__("Filter")} 1</div>
+                <div className="fmi-metweb-filter-button">{__("Filter")} 2</div>
+                <div className="fmi-metweb-filter-button">{__("Filter")} 3</div>
+              </div>
             </div>
-          </div>
-
           <div id="fmi-metweb-productgroup-container">
              {productLists}
           </div>
