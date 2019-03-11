@@ -55,9 +55,9 @@ export class ConfirmationScreen extends React.Component {
     return (
       <div className="confirmation_overlay">
         <div>
-          <p className="confirmation_text">Haluatko varmasti poistaa ikkunan?</p>
-          <div id="confirmation_button" className="fmi-metweb-filter-button" onClick={() => this.handleConfirmation()}>Kyllä!</div>
-          <div id="cancel_button" className="fmi-metweb-filter-button" onClick={() => this.handleCancel()}>En!</div>
+          <p className="confirmation_text">{__("Are you sure you want to delete the window")}</p>
+          <div id="confirmation_button" className="fmi-metweb-filter-button" onClick={() => this.handleConfirmation()}>{__("Yes!")}</div>
+          <div id="cancel_button" className="fmi-metweb-filter-button" onClick={() => this.handleCancel()}>{__("No!")}</div>
         </div>
       </div>
 

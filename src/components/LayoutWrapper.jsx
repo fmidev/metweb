@@ -48,7 +48,7 @@ class Layout {
 
   createHeader () {
     const menuItems = [{
-      title: "Lisää uusi ali-ikkuna",
+      title: __("Add new sub window"),
       callback: () => {
         // Calculates if layout already has components before adding new one, so it allows dragging
         let layout = this.golden.goldenLayout
@@ -79,7 +79,7 @@ class Layout {
         }
         let numWindowsCreated = store.getState().get(this.containerId + '-numWindowsCreated')
         let id = numWindowsCreated.toString()
-        let title = 'Ikkuna ' + (numWindowsCreated + 1).toString()
+        let title = __("Window") + " " + (numWindowsCreated + 1).toString()
         let newItemConfig = {
           type: 'react-component',
           component: 'WeatherMapContainer',
@@ -112,11 +112,11 @@ class Layout {
         }
       }
     }, {
-      title: "Lisää suosikkeihin",
+      title: __("Add to favorites"),
       callback: () => {
       }
     }, {
-      title: "Sulje näkymä",
+      title: __("Close view"),
       callback: () => {
         let background = document.getElementById("fmi-metweb-windows")
         let confirmation = document.createElement("div")
@@ -125,10 +125,10 @@ class Layout {
         let wrapper = document.createElement("div")
         let confirmation_text = document.createElement("p")
         confirmation_text.classList = "confirmation_text"
-        confirmation_text.innerHTML = "Haluatko varmasti poistaa näkymän?"
+        confirmation_text.innerHTML = __("Are you sure you want to delete the view")
 
         let confirmation_button = document.createElement("div")
-        confirmation_button.innerHTML = "Kyllä!"
+        confirmation_button.innerHTML = __("Yes!")
         confirmation_button.classList = "fmi-metweb-filter-button"
         confirmation_button.addEventListener('click', () => {
           this.golden.goldenLayout.destroy()
@@ -144,7 +144,7 @@ class Layout {
         })
 
         let back_button = document.createElement("div")
-        back_button.innerHTML = "En!"
+        back_button.innerHTML = __("No!")
         back_button.classList = "fmi-metweb-filter-button"
         back_button.addEventListener('click', () => {
           confirmation.parentNode.removeChild(confirmation)

@@ -5,5 +5,18 @@
     "Loading previous session": "Ladataan viimeisintä istuntoa",
     "Product list": "Tuotevalikko",
     "Filters": "Filtterit",
-    "Filter": "Filtteri"
+    "Filter": "Filtteri",
+    "Add new sub window": "Lisää uusi ali-ikkuna",
+    "Add to favorites": "Lisää suosikkeihin",
+    "Close view": "Sulje näkymä",
+    "Are tou sure you want to delete the view": "Haluatko varmasti poistaa näkymän?",
+    "Yes!": "Kyllä!",
+    "No!": "En!",
+    "Window": "Ikkuna",
+    "Show fullscreen": "Näytä koko ruudulla",
+    "Close fullscreen": "Poistu koko näytön tilasta",
+    "Timeslider: rotate": "Aikajana: käännä",
+    "Share window": "Jaa ikkuna",
+    "Delete window": "Poista ikkuna",
+    "Are you sure you want to delete the window": "Haluatko varmasti poistaa ikkunan?"
 }

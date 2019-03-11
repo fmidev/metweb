@@ -93,7 +93,7 @@ class MainView extends React.Component{
     baseWorkspaceContainer.appendChild(newWorkspaceContainer)
     document.getElementById("version").innerHTML = version;
 
-    let workspace = new Layout(containerId)
+    let workspace = new Layout(containerId, __("en"))
 
       .onSelectionChanged(function(id){
         // Dispatch action to update Sidebar

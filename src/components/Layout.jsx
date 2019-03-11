@@ -64,7 +64,7 @@ class GoldenLayout extends React.Component {
           content: [{
             type: 'react-component',
             component: 'WeatherMapContainer',
-            title: 'Ikkuna 1',
+            title: __("Window") + ' 1',
             isClosable: false,
             index: 0,
             props: {
@@ -166,16 +166,16 @@ class GoldenLayout extends React.Component {
       const windowMenu = createMenu({
         id: 'menu-dots-' + id,
         items: [{
-          title: 'Näytä koko ruudulla',
+          title: __("Show fullscreen"),
           callback: () => {
             let selected_item = document.getElementsByClassName('lm_item lm_stack lm_selected')[0]
             selected_item.classList.toggle('lm_fullscreen')
             selected_item.childNodes[1].childNodes[0].childNodes[0].classList.toggle('lm_content_fullscreen')
             selected_item.childNodes[0].childNodes[1].childNodes[0].childNodes[0].classList.toggle('metoclient-menu-fullscreen')
             if (selected_item.classList.contains('lm_fullscreen')) {
-              selected_item.childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0].innerHTML = '<a href=\"#\">Poistu koko ruudun tilasta</a>'
+              selected_item.childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0].innerHTML = '<a href=\"#\">' + __("Close fullscreen") + '</a>'
             } else {
-              selected_item.childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0].innerHTML = '<a href=\"#\">Näytä koko ruudulla</a>'
+              selected_item.childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0].innerHTML = '<a href=\"#\">' + __("Show fullscreen") + '</a>'
             }
             if (selected_item.classList.contains('lm_fullscreen')) {
               document.onkeydown = function(e){
@@ -191,7 +191,7 @@ class GoldenLayout extends React.Component {
             closeMenu()
           }
         }, {
-          title: 'Aikajana: käännä',
+          title: __("Timeslider: rotate"),
           callback: () => {
             let rotatedClass = 'rotated'
             let marginClass = 'margin-added'
@@ -208,17 +208,17 @@ class GoldenLayout extends React.Component {
             closeMenu()
           }
         }, {
-          title: 'Lisää suosikkeihin',
+          title: __("Add to favorites"),
           callback: () => {
             closeMenu()
           }
         }, {
-          title: 'Jaa ikkuna',
+          title: __("Share window"),
           callback: () => {
             closeMenu()
           }
         }, {
-          title: 'Poista ikkuna',
+          title: __("Delete window"),
           callback: () => {
             closeMenu()
             let background = this.node.getElementsByClassName("lm_selected")[0]
