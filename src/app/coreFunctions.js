@@ -34,7 +34,6 @@ export const getApiKey = () => {
 
 // Update menu tree based on GoldenLayout state
 export const updateActiveProducts = (menuObject, windows) => {
-
   // By default everything all products be inactive
   menuObject.menu.forEach((menu, menuIndex) => {
     menu.items.forEach((item, itemIndex) => {
@@ -92,7 +91,6 @@ function setTimeParameters(config){
   }
 }
 
-// Hekpers: Selected window config getter and setter
 export const getSelectedWindowConfig = (windows) => {
   var selectedWindowId = windows.getSelected()
   var config = selectedWindowId !== null && selectedWindowId !== undefined ? windows.get(selectedWindowId) : false

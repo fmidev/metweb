@@ -14,16 +14,17 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider, connect } from 'react-redux'
 
-import { Layout } from 'metoclient-layout'
-import 'metoclient-layout/dist/layout.css'
-
 import UserInfo from './UserInfo.jsx'
 import Sidebar from './Sidebar.jsx'
+import DotsMenu from './DotsMenu.jsx'
+import EditableTitle from './EditableTitle.jsx'
 import MenuReader from '../app/MenuReader.js'
 import { getApiKey } from '../app/coreFunctions.js'
 import mainStore from '../app/mainStore.js'
 import { authorize, loadSession, saveSession } from '../app/asyncActions.js'
 import { version } from '../../package.json'
+import Layout from './LayoutWrapper.jsx'
+import { setState } from '../app/ActionCreators.js'
 
 let firstShownIndex = 0
 let currentWorkspace = 0
@@ -33,7 +34,9 @@ class MainView extends React.Component{
 
   constructor(props) {
     super(props);
+    this.workspaceLayouts = []
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.onResize = this.onResize.bind(this);
   }
 
   componentDidMount() {
@@ -98,7 +101,7 @@ class MainView extends React.Component{
         setTimeout(function(){ this.props.changeWindow() }.bind(this), 0)
       }.bind(this))
 
-      /* More available methods */
+      // More available methods
       .onWindowCreated(function (id) { })
       .onBookmarkAdded(function (id) { })
       .onDestroyed(function (id) { })
@@ -197,6 +200,7 @@ class MainView extends React.Component{
     var workspaceNav = []
     var currentState = mainStore.metStore.getState().sidebarReducer; // TODO ditch
     var index = 0;
+
     active_workspaces = []
 
     mainStore.metStore.getState().sidebarReducer.workspaces.forEach((workspace, workspaceIndex) => {
@@ -269,6 +273,12 @@ class MainView extends React.Component{
       </div>
 
     )
+  }
+
+  onResize() {
+    this.workspaceLayouts.forEach(workspaceLayout => {
+      workspaceLayout.updateSize()
+    })
   }
 
 }

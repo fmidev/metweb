@@ -1,4 +1,3 @@
-
 import mainStore from './mainStore.js'
 import { getCookie, notify } from './coreFunctions.js'
 
