@@ -264,7 +264,7 @@ if (product.time) {
     config.endTime = endTime
     config.lastDataPointTime =  product.time.end
     config.firstDataPointTime = product.time.start
-}
+} 
 
     
 
@@ -274,17 +274,17 @@ if (product.time) {
 }
 
 export const getResolution = (config) => {
-    var resolution = 60
-    if (config.layers) {
-	for (var key in config.layers) {
-	    if (config.layers[key].resolutionTime) {
-		resolution = Math.max(resolution,config.layers[key].resolutionTime)
-	    }
-	}
-	return resolution
-    } else {
-	return NaN
+  var resolution = 300000
+  if (config.layers) {
+    for (var key in config.layers) {
+      if (config.layers[key].resolutionTime) {
+        resolution = Math.max(resolution, config.layers[key].resolutionTime)
+      }
     }
+    return resolution
+  } else {
+    return NaN
+  }
 }
 
 export const getLayerConfig = (product) => {
