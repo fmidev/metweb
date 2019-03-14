@@ -249,22 +249,23 @@ export const generateConfigForProduct = (title, layer, type, product, source, wi
     // Add product to layers
     config.layers[layer] = getLayerConfig(product)
 
-if (product.time) {
+  if (product.time) {
     var endTime = product.time.end
     var beginTime = product.time.start
     if (product.time.type === "for") {
-	endTime = product.time.start + (product.time.resolution * defaultSteps)
+      //endTime = product.time.start + (product.time.resolution * defaultSteps)
+      endTime = product.time.end
     } else if (product.time.type === "obs") {
-	beginTime = product.time.end - (product.time.resolution * defaultSteps)
+      beginTime = product.time.end - (product.time.resolution * defaultSteps)
     }
     config.resolutionTime = getResolution(config)
     config.modifiedResolutionTime = getResolution(config)
     config.defaultAnimationTime = product.time.default
     config.beginTime = beginTime
     config.endTime = endTime
-    config.lastDataPointTime =  product.time.end
+    config.lastDataPointTime = product.time.end
     config.firstDataPointTime = product.time.start
-} 
+  } 
 
     
 
