@@ -267,8 +267,6 @@ export const generateConfigForProduct = (title, layer, type, product, source, wi
     config.firstDataPointTime = product.time.start
   } 
 
-    
-
 
   return config
 
