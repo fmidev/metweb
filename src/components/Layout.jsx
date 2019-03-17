@@ -1,9 +1,7 @@
 import { FMIGoldenLayout } from 'metoclient-goldenlayout';
 import React from 'react';
 import { Provider } from 'react-redux'
-//import { MetOClient } from '@fmidev/metoclient'
-import { MetOClient } from '../../../metoclient'
-import { createMenu } from '../../../metoclient/src/utils'
+import { createMenu } from 'metoclient/src/utils'
 import { setState } from '../app/ActionCreators.js'
 import { WeatherMapContainer } from './WeatherMap.jsx'
 import EditableTitle from './EditableTitle.jsx'
@@ -22,7 +20,6 @@ class GoldenLayout extends React.Component {
     self.context.store.dispatch(setState({
       [self.props.containerId + '-numWindowsCreated']: 0
     }))
-    window.metoclient = MetOClient
 
     var metoclientConfig = {
       layers: {}

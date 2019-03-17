@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { MetOClient } from '../../../metoclient'
+import { MetOClient } from 'metoclient'
 
 // Pure react component. Should not be connected to redux store; its container
 // should be connected to the store.
