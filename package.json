@@ -17,11 +17,12 @@
     "url": ""
   },
   "dependencies": {
-    "@fmidev/metoclient": "^1.0.21",
     "axios": "^0.18.0",
+    "element-resize-detector": "^1.1.15",
     "golden-layout": "^1.5.9",
     "immutable": "^4.0.0-rc.12",
     "jquery": "^3.2.1",
+    "metoclient": "fmidev/metoclient",
     "metoclient-goldenlayout": "fmidev/metoclient-goldenlayout",
     "ol": "^4.4.1",
     "prop-types": "^15.7.2",
@@ -30,10 +31,7 @@
     "react-redux": "^5.0.5",
     "react-resize-detector": "^3.2.1",
     "redux": "^3.6.0",
-    "redux-devtools-extension": "^2.13.8",
-    "redux-immutable": "^4.0.0",
-    "redux-thunk": "^2.3.0",
-    "typeface-roboto": "0.0.54"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -59,6 +57,7 @@
     "style-loader": "^0.18.2",
     "svg-url-loader": "^2.2.0",
     "toml": "^2.3.3",
+    "typeface-roboto": "0.0.54",
     "url-loader": "^1.0.1",
     "url-parse": "^1.4.3",
     "webpack": "^4.28.4",
