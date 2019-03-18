@@ -272,6 +272,12 @@ class Layout {
     return this
   }
 
+  getMetOClient (index) {
+    let id = this.containerId + '-' + index.toString() + '-metoclient'
+    let data = store.getState().get(id)
+    return data
+  }
+
   setContainer (id) {
     this.containerId = id
     return this

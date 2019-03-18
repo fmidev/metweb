@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { MetOClient } from 'metoclient'
+import { setState } from '../app/ActionCreators'
 
 // Pure react component. Should not be connected to redux store; its container
 // should be connected to the store.
@@ -13,6 +14,10 @@ export class WeatherMap extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    if (this.metoclientDispatch) {
+      this.metoclientDispatch = false;
+      return;
+    }
     if (nextProps.config != null) {
       let self = this
       let config
@@ -39,7 +44,6 @@ export class WeatherMap extends React.Component {
           timeStepMenu.classList.remove('visible-menu')
         }
         this.metoclient = new MetOClient(config)
-
         this.metoclient.createAnimation({
           init: function () {
             if (rotated) {
@@ -49,10 +53,18 @@ export class WeatherMap extends React.Component {
             }
           }
         })
+
+
+
       } catch (e) {
       }
     }
-
+    if (this.context.store.getState().get(this.props.id + '-metoclient') == null) {
+      this.metoclientDispatch = true
+      this.context.store.dispatch(setState({
+        [this.props.id + '-metoclient']: this.metoclient
+      }))
+    }
     window.addEventListener("keydown", keydownHandler, false);
     window.addEventListener("keyup", keyupHandler, false);
 
@@ -109,12 +121,18 @@ export class WeatherMap extends React.Component {
 }
 
 WeatherMap.PropTypes = {
-  config: PropTypes.object.isRequired
+  config: PropTypes.object.isRequired,
+  metoclient: PropTypes.object.isRequired
+}
+
+WeatherMap.contextTypes = {
+  store: PropTypes.object.isRequired
 }
 
 function mapStateToProps (state, ownProps) {
   return {
-    config: state.get(ownProps.id + '-mapConfig')
+    config: state.get(ownProps.id + '-mapConfig'),
+    metoclient: state.get(ownProps.id + '-metoclient')
   }
 }
 

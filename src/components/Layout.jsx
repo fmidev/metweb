@@ -21,10 +21,6 @@ class GoldenLayout extends React.Component {
       [self.props.containerId + '-numWindowsCreated']: 0
     }))
 
-    var metoclientConfig = {
-      layers: {}
-    }
-
     var config = {
       settings: {
         hasHeaders: true,
@@ -69,7 +65,9 @@ class GoldenLayout extends React.Component {
               container: this.props.containerId + '-map-container-0'
             },
             componentState: {
-              config: metoclientConfig,
+              config: {
+                layers: {}
+              },
               callbacks: {
                 init: function() {},
                 timeSliderCreated: function() {},

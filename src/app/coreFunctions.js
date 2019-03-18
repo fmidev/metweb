@@ -265,7 +265,6 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     }
   }
   // Add product to layers
-
   var layerConfig = {
     className: 'TileWMS',
     title: title,
@@ -297,7 +296,16 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     }
   }
 
-  config.layers[layer] = layerConfig
+  var newLayerConfig = {
+    'layer': layerConfig
+  }
+  if (windows.getMetOClient(windows.getSelected()) !== undefined) {
+    windows.getMetOClient(windows.getSelected()).updateAnimation({
+        layersChanged: newLayerConfig
+    })
+  } else {
+    config.layers[layer] = layerConfig
+  }
   setTimeParameters(config)
 
   return config
