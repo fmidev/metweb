@@ -418,6 +418,10 @@ ul.metoclient-menu-fullscreen {
   top: auto;
   border-bottom-color: transparent; }
 
+.fmi-metoclient-timeslider-timestep-button {
+    display: inline-block !important;
+    font-weight: 400 !important; }
+
 input[type=range] {
   -webkit-appearance: none;
   /* Hides the slider so that custom slider can be made */

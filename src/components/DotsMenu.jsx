@@ -7,6 +7,7 @@ class DotsMenu extends React.Component {
     this.state = {hover: false, visible: false}
   }
   render() {
+    console.log(this.props.id)
     let dotsClass = 'menu-dots light-theme'
     if (this.state.hover) dotsClass += ' hover'
     let menuClass = 'metoclient-menu'
@@ -18,7 +19,7 @@ class DotsMenu extends React.Component {
            onMouseUp={e => this.setState({visible: true})}>
         <ul id={'window-menu-dots-'+this.props.id} className={menuClass}>
           {this.props.items.map((item) => {
-            return <li>
+            return <li key={item.title}>
               <a href="#" onClick={(e) => {
                 this.setState({hover: false, visible: false})
                 item.callback()
