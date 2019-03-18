@@ -7,7 +7,6 @@ class DotsMenu extends React.Component {
     this.state = {hover: false, visible: false}
   }
   render() {
-    console.log(this.props.id)
     let dotsClass = 'menu-dots light-theme'
     if (this.state.hover) dotsClass += ' hover'
     let menuClass = 'metoclient-menu'
