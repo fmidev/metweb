@@ -1,7 +1,7 @@
 import { FMIGoldenLayout } from 'metoclient-goldenlayout';
 import React from 'react';
 import { Provider } from 'react-redux'
-import { createMenu } from 'metoclient/src/utils'
+import { createMenu } from '@fmidev/metoclient/utils'
 import { setState } from '../app/ActionCreators.js'
 import { WeatherMapContainer } from './WeatherMap.jsx'
 import EditableTitle from './EditableTitle.jsx'

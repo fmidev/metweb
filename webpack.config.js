@@ -88,7 +88,7 @@ module.exports = TRANSLATIONS.map(({ language, translation }) => ({
             // Babel
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules\/(?!metoclient)/,
+                exclude: /node_modules\/(?!@fmidev\/metoclient)/,
                 use: {
                     loader: 'babel-loader',
                     options: {

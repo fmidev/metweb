@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { MetOClient } from 'metoclient'
+import { MetOClient } from '@fmidev/metoclient'
 import { setState } from '../app/ActionCreators'
 
 // Pure react component. Should not be connected to redux store; its container
