@@ -109,13 +109,20 @@ export const activateProductInSelectedWindow = (product, windows) => {
 
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
+  var layers = []
+  windows.getMetOClient(windows.getSelected()).getLayerConfigs().forEach((item) => {
+    if (item.title !== product.title) {
+      layers.push(item)
+    }
+  })
+  windows.getMetOClient(windows.getSelected()).updateAnimation({
+      layers: layers
+  })
 
   var config = getSelectedWindowConfig(windows)
-
   if(!config)
     return
 
-  delete config.layers[product.layer]
   setTimeParameters(config)
 
   setSelectedWindowConfig(windows, config)
