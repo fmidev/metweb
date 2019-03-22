@@ -289,8 +289,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         tileSize: 1024
       }
     },
-    "tileCapabilities": "//wms.fmi.fi/fmi-apikey/"+apiKey+"/geoserver/gwc/service/wmts?request=GetCapabilities",
-    'timeCapabilities': sourcecfg.timeCapabilities,
+    timeCapabilities: sourcecfg.timeCapabilities,
     animation: {
       hasLegend: true
     }

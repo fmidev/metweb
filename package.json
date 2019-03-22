@@ -1,6 +1,6 @@
 {
   "name": "metweb",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Weather map animator",
   "author": "FMI",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.2.0",
     "cross-env": "^5.1.6",
-    "css-loader": "^0.28.7",
+    "css-loader": "^2.1.1",
     "extract-text-webpack-plugin": "^4.0.0-alpha.0",
     "file-loader": "^1.1.10",
     "glob": "^7.1.3",

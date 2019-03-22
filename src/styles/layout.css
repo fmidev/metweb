@@ -161,9 +161,14 @@
   top: 0;
   bottom: 0;
   background: #f7f7f7;
-  background-image: url("../assets/images/golden/background-text-en.png");
   background-position: center;
   background-repeat: no-repeat; }
+
+#fmi-metweb-windows div.en {
+  background-image: url("../assets/images/golden/background-text-en.png"); }
+
+#fmi-metweb-windows div.fi {
+  background-image: url("../assets/images/golden/background-text-fi.png"); }
 
 #fmi-metweb-windows div.metoclient-map {
   position: absolute;

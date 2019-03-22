@@ -114,7 +114,7 @@ export class WeatherMap extends React.Component {
   render () {
     return (
       <div>
-        <div id={this.props.container} className='map-container'/>
+        <div id={this.props.container} className={'map-container ' + __("en")}/>
       </div>
     )
   }
