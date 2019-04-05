@@ -58,13 +58,15 @@ export class WeatherMap extends React.Component {
 
       } catch (e) {
       }
+
+      if (this.context.store.getState().get(this.props.id + '-mapConfig') !== config) {
+        this.metoclientDispatch = true
+        this.context.store.dispatch(setState({
+          [this.props.id + '-metoclient']: this.metoclient
+        }))
+      }
     }
-    if (this.context.store.getState().get(this.props.id + '-metoclient') == null) {
-      this.metoclientDispatch = true
-      this.context.store.dispatch(setState({
-        [this.props.id + '-metoclient']: this.metoclient
-      }))
-    }
+
     window.addEventListener("keydown", keydownHandler, false);
     window.addEventListener("keyup", keyupHandler, false);
 

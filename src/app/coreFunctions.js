@@ -60,7 +60,7 @@ export const updateActiveProducts = (menuObject, windows) => {
 
 }
 
-const defaultSteps = 10;
+const defaultSteps = 12;
 function setTimeParameters(config){
   config.resolutionTime = 300000
   config.modifiedResolutionTime = 300000
@@ -88,7 +88,20 @@ function setTimeParameters(config){
   } else if (config.lastDataPointTime < currentTime) {
     config.beginTime = config.lastDataPointTime - (config.resolutionTime * defaultSteps)
     config.endTime = config.lastDataPointTime
+  } else {
+    config.beginTime = currentTime - (config.resolutionTime * (defaultSteps / 2))
+    config.endTime = currentTime + (config.resolutionTime * (defaultSteps / 2))
   }
+  config.defaultAnimationTime = config.beginTime
+  return config
+}
+
+function setMapParameters(windows, config){
+  if (windows.getMetOClient(windows.getSelected()) !== undefined) {
+    config.defaultCenterLocation = windows.getMetOClient(windows.getSelected()).getMap().getView().getCenter()
+    config.defaultZoomLevel = windows.getMetOClient(windows.getSelected()).getMap().getView().getZoom()
+  }
+  return config
 }
 
 export const getSelectedWindowConfig = (windows) => {
@@ -109,22 +122,12 @@ export const activateProductInSelectedWindow = (product, windows) => {
 
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
-  var layers = []
-  windows.getMetOClient(windows.getSelected()).getLayerConfigs().forEach((item) => {
-    if (item.title !== product.title) {
-      layers.push(item)
-    }
-  })
-  windows.getMetOClient(windows.getSelected()).updateAnimation({
-      layers: layers
-  })
-
   var config = getSelectedWindowConfig(windows)
   if(!config)
     return
-
-  setTimeParameters(config)
-
+  delete config.layers[product.layer]
+  config = setTimeParameters(config)
+  config = setMapParameters(windows, config)
   setSelectedWindowConfig(windows, config)
 
 }
@@ -302,20 +305,12 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     }
   }
 
-  var newLayerConfig = {
-    'layer': layerConfig
-  }
-  if (windows.getMetOClient(windows.getSelected()) !== undefined) {
-    windows.getMetOClient(windows.getSelected()).updateAnimation({
-        layersChanged: newLayerConfig
-    })
-  } else {
-    config.layers[layer] = layerConfig
-  }
-  setTimeParameters(config)
+  config.layers[layer] = layerConfig
+
+  config = setTimeParameters(config)
+  config = setMapParameters(windows, config)
 
   return config
-
 }
 
 export const notify = (notificationString) => {
