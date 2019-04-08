@@ -61,12 +61,13 @@ export const updateActiveProducts = (menuObject, windows) => {
 }
 
 const defaultSteps = 12;
-function setTimeParameters(config){
+function setTimeParameters(conf){
+  let config = {}
   config.resolutionTime = 300000
   config.modifiedResolutionTime = 300000
   config.firstDataPointTime = Number.MAX_VALUE
   config.lastDataPointTime = 0
-  Object.values(config.layers).forEach((layer) => {
+  Object.values(conf.layers).forEach((layer) => {
     if (layer.animation.hasLegend) {
       if (layer.resolutionTime > config.resolutionTime) {
         config.resolutionTime = layer.resolutionTime
@@ -89,8 +90,8 @@ function setTimeParameters(config){
     config.beginTime = config.lastDataPointTime - (config.resolutionTime * defaultSteps)
     config.endTime = config.lastDataPointTime
   } else {
-    config.beginTime = currentTime - (config.resolutionTime * (defaultSteps / 2))
-    config.endTime = currentTime + (config.resolutionTime * (defaultSteps / 2))
+    config.beginTime = (Math.floor(currentTime / config.resolutionTime) * config.resolutionTime) - (config.resolutionTime * (defaultSteps / 2))
+    config.endTime = (Math.ceil(currentTime / config.resolutionTime) * config.resolutionTime) + (config.resolutionTime * (defaultSteps / 2))
   }
   config.defaultAnimationTime = config.beginTime
   return config
@@ -98,8 +99,10 @@ function setTimeParameters(config){
 
 function setMapParameters(windows, config){
   if (windows.getMetOClient(windows.getSelected()) !== undefined) {
-    config.defaultCenterLocation = windows.getMetOClient(windows.getSelected()).getMap().getView().getCenter()
-    config.defaultZoomLevel = windows.getMetOClient(windows.getSelected()).getMap().getView().getZoom()
+    if (windows.getMetOClient(windows.getSelected()).getMap() !== null) {
+      config.defaultCenterLocation = windows.getMetOClient(windows.getSelected()).getMap().getView().getCenter()
+      config.defaultZoomLevel = windows.getMetOClient(windows.getSelected()).getMap().getView().getZoom()
+    }
   }
   return config
 }
@@ -123,12 +126,33 @@ export const activateProductInSelectedWindow = (product, windows) => {
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
   var config = getSelectedWindowConfig(windows)
+
   if(!config)
     return
-  delete config.layers[product.layer]
-  config = setTimeParameters(config)
-  config = setMapParameters(windows, config)
-  setSelectedWindowConfig(windows, config)
+
+  var modifiedConfig = getSelectedWindowConfig(windows)
+  delete modifiedConfig.layers[product.layer]
+
+  let map = windows.getMetOClient(windows.getSelected())
+  let first = setTimeParameters(config)
+  let second = setTimeParameters(modifiedConfig)
+
+  modifiedConfig.resolutionTime = second.resolutionTime
+  modifiedConfig.modifiedResolutionTime = second.modifiedResolutionTime
+  modifiedConfig.firstDataPointTime = second.firstDataPointTime
+  modifiedConfig.lastDataPointTime = second.lastDataPointTime
+  modifiedConfig.beginTime = second.beginTime
+  modifiedConfig.endTime = second.endTime
+  modifiedConfig.defaultAnimationTime = second.defaultAnimationTime
+  modifiedConfig = setMapParameters(windows, modifiedConfig)
+  if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
+    modifiedConfig.defaultAnimationTime = map.getTime()
+    modifiedConfig.beginTime = map.getAnimationTimes()[0]
+    modifiedConfig.endTime = map.getAnimationTimes()[map.getAnimationTimes().length - 1]
+    modifiedConfig.resolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+    modifiedConfig.modifiedResolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+  }
+  setSelectedWindowConfig(windows, modifiedConfig)
 
 }
 
@@ -305,11 +329,26 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     }
   }
 
+  let map = windows.getMetOClient(windows.getSelected())
+  let first = setTimeParameters(config)
   config.layers[layer] = layerConfig
+  let second = setTimeParameters(config)
 
-  config = setTimeParameters(config)
+  config.resolutionTime = second.resolutionTime
+  config.modifiedResolutionTime = second.resolutionTime
+  config.firstDataPointTime = second.firstDataPointTime
+  config.lastDataPointTime = second.lastDataPointTime
+  config.beginTime = second.beginTime
+  config.endTime = second.endTime
+  config.defaultAnimationTime = second.defaultAnimationTime
   config = setMapParameters(windows, config)
-
+  if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
+    config.defaultAnimationTime = map.getTime()
+    config.beginTime = map.getAnimationTimes()[0]
+    config.endTime = map.getAnimationTimes()[map.getAnimationTimes().length - 1]
+    config.resolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+    config.modifiedResolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+  }
   return config
 }
 
