@@ -82,3 +82,9 @@ url = "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q-t.cgi"
 timeCapabilities = "https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q-t.cgi?request=getCapabilities&service=wms&version=1.3.0"
 server = "generic"
 
+[[source]]
+name = "NEXRAD Base Reflectivity"
+type = "wms"
+url = "https://nowcoast.noaa.gov/arcgis/services/nowcoast/sat_meteo_imagery_time/MapServer/WMSServer"
+timeCapabilities = "https://nowcoast.noaa.gov/arcgis/services/nowcoast/sat_meteo_imagery_time/MapServer/WMSServer?request=GetCapabilities&service=WMS"
+server = "generic"
