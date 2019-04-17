@@ -1,7 +1,7 @@
 
 import MenuReader from './MenuReader.js'
 import Metadata from './Metadata.js'
-
+const clonedeep = require('lodash.clonedeep')
 /* Application core functions */
 
 // Cookie getter
@@ -61,13 +61,17 @@ export const updateActiveProducts = (menuObject, windows) => {
 }
 
 const defaultSteps = 12;
-function setTimeParameters(conf){
+function setTimeParameters(map){
   let config = {}
   config.resolutionTime = 300000
   config.modifiedResolutionTime = 300000
   config.firstDataPointTime = Number.MAX_VALUE
   config.lastDataPointTime = 0
-  Object.values(conf.layers).forEach((layer) => {
+  let layers = []
+  if (map !== undefined) {
+    layers = map.getLayerConfigs()
+  }
+  Object.values(layers).forEach((layer) => {
     if (layer.animation.hasLegend) {
       if (layer.resolutionTime > config.resolutionTime) {
         config.resolutionTime = layer.resolutionTime
@@ -107,53 +111,57 @@ function setMapParameters(windows, config){
   return config
 }
 
-export const getSelectedWindowConfig = (windows) => {
+export let getSelectedWindowConfig = (windows) => {
   var selectedWindowId = windows.getSelected()
   var config = selectedWindowId !== null && selectedWindowId !== undefined ? windows.get(selectedWindowId) : false
   return config;
 }
-export const setSelectedWindowConfig = (windows, config) => {
+export let setSelectedWindowConfig = (windows, config) => {
   var selectedWindowId = windows.getSelected()
   windows.set(selectedWindowId, config)
 }
 
 // Activate product in selected window
-export const activateProductInSelectedWindow = (product, windows) => {
+export let activateProductInSelectedWindow = (product, windows) => {
   var config = generateConfigForProduct(product.title, product.layer, product.type, product.source, windows)
   setSelectedWindowConfig(windows, config);
 }
 
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
-  var config = getSelectedWindowConfig(windows)
-
-  if(!config)
-    return
-
-  var modifiedConfig = getSelectedWindowConfig(windows)
-  delete modifiedConfig.layers[product.layer]
-
   let map = windows.getMetOClient(windows.getSelected())
-  let first = setTimeParameters(config)
-  let second = setTimeParameters(modifiedConfig)
-
-  modifiedConfig.resolutionTime = second.resolutionTime
-  modifiedConfig.modifiedResolutionTime = second.modifiedResolutionTime
-  modifiedConfig.firstDataPointTime = second.firstDataPointTime
-  modifiedConfig.lastDataPointTime = second.lastDataPointTime
-  modifiedConfig.beginTime = second.beginTime
-  modifiedConfig.endTime = second.endTime
-  modifiedConfig.defaultAnimationTime = second.defaultAnimationTime
-  modifiedConfig = setMapParameters(windows, modifiedConfig)
+  let modifiedMap = clonedeep(map)
+  let layers = map.getLayerConfigs()
+  let modifiedLayers = []
+  layers.forEach(function(layer) {
+    if (layer.title !== product.title) {
+      modifiedLayers.push(layer)
+    }
+  })
+  modifiedMap.updateAnimation({
+    layers: modifiedLayers
+  })
+  let first = setTimeParameters(map)
+  let second = setTimeParameters(modifiedMap)
   if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
-    modifiedConfig.defaultAnimationTime = map.getTime()
-    modifiedConfig.beginTime = map.getAnimationTimes()[0]
-    modifiedConfig.endTime = map.getAnimationTimes()[map.getAnimationTimes().length - 1]
-    modifiedConfig.resolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
-    modifiedConfig.modifiedResolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+    map.updateAnimation({
+      layers: modifiedLayers,
+      firstDataPointTime: second.firstDataPointTime,
+      lastDataPointTime: second.lastDataPointTime,
+      beginTime: map.getAnimationTimes()[0],
+      endTime: map.getAnimationTimes()[map.getAnimationTimes().length - 1],
+      timeStep: (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1),
+    })
+  } else {
+    map.updateAnimation({
+      layers: modifiedLayers,
+      firstDataPointTime: second.firstDataPointTime,
+      lastDataPointTime: second.lastDataPointTime,
+      beginTime: second.beginTime,
+      endTime: second.endTime,
+      timeStep: second.resolutionTime
+    })
   }
-  setSelectedWindowConfig(windows, modifiedConfig)
-
 }
 
 // Generate MetOClient config object based on the less verbose TOML config
@@ -161,6 +169,11 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 // In Metweb terms, _product object_ is _added_ to _currently selected window_.
 // In MetOClient terms, _config object_ is _modified_ by appending a _layer_
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
+  let initialized = false
+  let map = windows.getMetOClient(windows.getSelected())
+  if (map !== undefined) {
+    initialized = true
+  }
   var config = windows.get(windows.getSelected())
   var sourcecfg = MenuReader.getSource(source)
 
@@ -264,7 +277,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       projection: 'EPSG:3857',
       extent: extent3857,
       resolutions: resolutions,
-      defaultCenterLocation: [2750000, 9000000],
+      defaultCenterLocation: initialized ? map.getCenter() : [2750000, 9000000],
       defaultCenterProjection: 'EPSG:3857',
       defaultZoomLevel: 2,
       showLegend: true,
@@ -291,6 +304,17 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       firstDataPointTime: timeData.beginTime,
       endTimeDelay: 1000,
       showTimeSlider: true,
+      menuTimeSteps: [
+        ['5min', 300000],
+        ['10min', 600000],
+        ['15min', 900000],
+        ['30min', 1800000],
+        ['1h', 3600000],
+        ['3h', 10800000],
+        ['6h', 21600000],
+        ['12h', 43200000],
+        ['24h', 86400000]
+      ],
       timeLimitsForced: true,
       timeZone: 'Europe/Helsinki',
       localization: {
@@ -329,25 +353,37 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
     }
   }
 
-  let map = windows.getMetOClient(windows.getSelected())
-  let first = setTimeParameters(config)
-  config.layers[layer] = layerConfig
-  let second = setTimeParameters(config)
-
-  config.resolutionTime = second.resolutionTime
-  config.modifiedResolutionTime = second.resolutionTime
-  config.firstDataPointTime = second.firstDataPointTime
-  config.lastDataPointTime = second.lastDataPointTime
-  config.beginTime = second.beginTime
-  config.endTime = second.endTime
-  config.defaultAnimationTime = second.defaultAnimationTime
-  config = setMapParameters(windows, config)
+  let newLayerConfig = {
+    'layer': layerConfig
+  }
+  let modifiedMap = clonedeep(map)
+  if (map !== undefined) {
+    modifiedMap.updateAnimation({
+      layersChanged: newLayerConfig
+    })
+  }
+  let first = setTimeParameters(map)
+  let second = setTimeParameters(modifiedMap)
   if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
-    config.defaultAnimationTime = map.getTime()
-    config.beginTime = map.getAnimationTimes()[0]
-    config.endTime = map.getAnimationTimes()[map.getAnimationTimes().length - 1]
-    config.resolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
-    config.modifiedResolutionTime = (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1)
+    map.updateAnimation({
+      layersChanged: newLayerConfig,
+      firstDataPointTime: second.firstDataPointTime,
+      lastDataPointTime: second.lastDataPointTime,
+      beginTime: map.getAnimationTimes()[0],
+      endTime: map.getAnimationTimes()[map.getAnimationTimes().length - 1],
+      timeStep: (map.getAnimationTimes()[map.getAnimationTimes().length - 1] - map.getAnimationTimes()[0]) / (map.getAnimationTimes().length - 1),
+    })
+  } else if (map !== undefined) {
+    map.updateAnimation({
+      layersChanged: newLayerConfig,
+      firstDataPointTime: second.firstDataPointTime,
+      lastDataPointTime: second.lastDataPointTime,
+      beginTime: second.beginTime,
+      endTime: second.endTime,
+      timeStep: second.resolutionTime,
+    })
+  } else {
+    config.layers[layer] = layerConfig
   }
   return config
 }
