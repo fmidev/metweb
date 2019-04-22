@@ -261,8 +261,11 @@ class Layout {
 
   getSelected () {
     let selectedId = store.getState().get(this.containerId + '-selected')
-    let item = this.findItemById(selectedId)
-    return item.config.index
+    if (selectedId !== undefined) {
+      let item = this.findItemById(selectedId)
+      return item.config.index
+    }
+    return null
   }
 
   unset (index) {

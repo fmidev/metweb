@@ -61,16 +61,12 @@ export const updateActiveProducts = (menuObject, windows) => {
 }
 
 const defaultSteps = 12;
-function setTimeParameters(map){
+function setTimeParameters(layers){
   let config = {}
   config.resolutionTime = 300000
   config.modifiedResolutionTime = 300000
   config.firstDataPointTime = Number.MAX_VALUE
   config.lastDataPointTime = 0
-  let layers = []
-  if (map !== undefined) {
-    layers = map.getLayerConfigs()
-  }
   Object.values(layers).forEach((layer) => {
     if (layer.animation.hasLegend) {
       if (layer.resolutionTime > config.resolutionTime) {
@@ -130,7 +126,6 @@ export let activateProductInSelectedWindow = (product, windows) => {
 // Deactivate product in selected window
 export const deactivateProductInSelectedWindow = (product, windows) => {
   let map = windows.getMetOClient(windows.getSelected())
-  let modifiedMap = clonedeep(map)
   let layers = map.getLayerConfigs()
   let modifiedLayers = []
   layers.forEach(function(layer) {
@@ -138,11 +133,8 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
       modifiedLayers.push(layer)
     }
   })
-  modifiedMap.updateAnimation({
-    layers: modifiedLayers
-  })
-  let first = setTimeParameters(map)
-  let second = setTimeParameters(modifiedMap)
+  let first = setTimeParameters(layers)
+  let second = setTimeParameters(modifiedLayers)
   if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
     map.updateAnimation({
       layers: modifiedLayers,
@@ -169,11 +161,7 @@ export const deactivateProductInSelectedWindow = (product, windows) => {
 // In Metweb terms, _product object_ is _added_ to _currently selected window_.
 // In MetOClient terms, _config object_ is _modified_ by appending a _layer_
 export const generateConfigForProduct = (title, layer, type, source, windows) => {
-  let initialized = false
   let map = windows.getMetOClient(windows.getSelected())
-  if (map !== undefined) {
-    initialized = true
-  }
   var config = windows.get(windows.getSelected())
   var sourcecfg = MenuReader.getSource(source)
 
@@ -277,7 +265,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       projection: 'EPSG:3857',
       extent: extent3857,
       resolutions: resolutions,
-      defaultCenterLocation: initialized ? map.getCenter() : [2750000, 9000000],
+      defaultCenterLocation: [2750000, 9000000],
       defaultCenterProjection: 'EPSG:3857',
       defaultZoomLevel: 2,
       showLegend: true,
@@ -356,14 +344,16 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   let newLayerConfig = {
     'layer': layerConfig
   }
+  let first = setTimeParameters([])
+  let second = setTimeParameters([])
   let modifiedMap = clonedeep(map)
+  let addedLayer = []
   if (map !== undefined) {
-    modifiedMap.updateAnimation({
-      layersChanged: newLayerConfig
-    })
+    addedLayer = modifiedMap.getLayerConfigs()
+    addedLayer.push(layerConfig)
+    first = setTimeParameters(map.getLayerConfigs())
+    second = setTimeParameters(addedLayer)
   }
-  let first = setTimeParameters(map)
-  let second = setTimeParameters(modifiedMap)
   if (map !== undefined && first.firstDataPointTime == second.firstDataPointTime && first.lastDataPointTime == second.lastDataPointTime) {
     map.updateAnimation({
       layersChanged: newLayerConfig,
