@@ -204,6 +204,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'OpenStreetMap': {
           className: 'OSM',
           title: 'OpenStreetMap',
+          preload: Infinity,
           type: 'map',
           animation: {
             hasLegend: false
@@ -212,6 +213,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'Taustakartta': {
           className: 'WMTS',
           title: 'MML Taustakartta',
+          preload: Infinity,
           type: 'map',
           source: {
             matrixSet: 'WGS84_Pseudo-Mercator',
@@ -225,6 +227,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'Ocean_Basemap': {
           className: 'WMTS',
           title: 'ESRI ArcGIS Ocean Map',
+          preload: Infinity,
           type: 'map',
           source: {
             matrixSet: 'GoogleMapsCompatible',
@@ -238,6 +241,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'Canvas_World_Dark_Gray_Base': {
           className: 'WMTS',
           title: 'ESRI ArcGIS Dark Gray Basemap',
+          preload: Infinity,
           type: 'map',
           source: {
             matrixSet: 'GoogleMapsCompatible',
@@ -251,6 +255,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
         'Canvas_World_Light_Gray_Base': {
           className: 'WMTS',
           title: 'ESRI ArcGIS Light Gray Basemap',
+          preload: Infinity,
           type: 'map',
           source: {
             matrixSet: 'GoogleMapsCompatible',
@@ -314,6 +319,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var layerConfig = {
     className: 'TileWMS',
     title: title,
+    preload: Infinity,
     visible: true,
     opacity: 1.0,
     type: type || timeData.type,
