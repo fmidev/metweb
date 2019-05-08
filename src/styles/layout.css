@@ -274,18 +274,19 @@
   background: #ebecec; }
 
 #fmi-metweb-windows header {
-  height: 50px;
+  height: 40px;
   display: flex;
   justify-content: space-between;
   z-index: 40;
   background: #eceded; }
   #fmi-metweb-windows header span {
-    line-height: 50px;
+    line-height: 40px;
     letter-spacing: 0.2px;
     font-family: Roboto, Arial, Helvetica, sans-serif;
     font-size: 15px;
     font-weight: bold;
     text-align: left;
+    padding-left: 5px;
     color: #4a4a4a; }
   #fmi-metweb-windows header ul.metoclient-menu {
     width: 200px;
@@ -858,20 +859,24 @@ input[type=range]:focus::-ms-fill-upper {
 
 #fmi-metweb-windows .lm_splitter.lm_vertical .lm_drag_handle {
   width: 100%;
-  height: 15px;
+  height: 10px !important;
   position: absolute;
-  top: -5px;
+  top: -2.5px !important;
   cursor: ns-resize; }
 
 #fmi-metweb-windows .lm_splitter.lm_horizontal {
   float: left;
+  width: 5px !important;
   height: 100%; }
 
+#fmi-metweb-windows .lm_splitter.lm_vertical {
+  height: 5px !important; }
+
 #fmi-metweb-windows .lm_splitter.lm_horizontal .lm_drag_handle {
-  width: 15px;
+  width: 10px !important;
   height: 100%;
   position: absolute;
-  left: -5px;
+  left: -2.5px !important;
   cursor: ew-resize; }
 
 #fmi-metweb-windows .lm_header {
