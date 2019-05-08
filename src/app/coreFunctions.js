@@ -83,6 +83,9 @@ function setTimeParameters(layers){
   })
   var currentDate = new Date()
   var currentTime = currentDate.getTime()
+  if (config.firstDataPointTime + 36000000 > currentTime) {
+    config.firstDataPointTime = Math.ceil(currentTime / config.resolutionTime) * config.resolutionTime
+  }
   if (config.firstDataPointTime > currentTime) {
     config.endTime = config.firstDataPointTime + (config.resolutionTime * defaultSteps)
     config.beginTime = config.firstDataPointTime
@@ -189,10 +192,13 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   var endTime = timeData.endTime
   var beginTime = timeData.beginTime
+  if (beginTime + 36000000 > currentTime) {
+    beginTime = Math.ceil(currentTime / timeData.resolutionTime) * timeData.resolutionTime
+  }
   if (timeData.type === "for") {
-    endTime = timeData.beginTime + (timeData.resolutionTime * defaultSteps)
+    endTime = beginTime + (timeData.resolutionTime * defaultSteps)
   } else if (timeData.type === "obs") {
-    beginTime = timeData.endTime - (timeData.resolutionTime * defaultSteps)
+    beginTime = endTime - (timeData.resolutionTime * defaultSteps)
   }
 
   if (config == null) {
