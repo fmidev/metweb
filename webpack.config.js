@@ -60,7 +60,7 @@ module.exports = TRANSLATIONS.map(({ language, translation }) => ({
         }),
 
         new HtmlWebpackPlugin({
-            filename: `${language}/index.html`,
+            filename: `${language}.html`,
             template: path.join(__dirname, 'src/templates/home.handlebars'),
             title: appHtmlTitle
         }),

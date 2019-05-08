@@ -194,6 +194,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var beginTime = timeData.beginTime
   if (beginTime + 36000000 > currentTime) {
     beginTime = Math.ceil(currentTime / timeData.resolutionTime) * timeData.resolutionTime
+    timeData.beginTime = Math.ceil(currentTime / timeData.resolutionTime) * timeData.resolutionTime
   }
   if (timeData.type === "for") {
     endTime = beginTime + (timeData.resolutionTime * defaultSteps)
