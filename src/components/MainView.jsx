@@ -234,7 +234,7 @@ class MainView extends React.Component{
         <div id="fmi-metweb-header">
 
           <div id="fmi-metweb-header-title">
-            MetWeb <span id="version"></span>  <a href="https://github.com/fmidev/metweb/releases"><img id="link" src="src/assets/images/link.png"></img></a>
+            MetWeb <span id="version"></span>
           </div>
           <div id="fmi-metweb-header-other">
             <div id="fullscreen-button-container" onClick={this.toggleFullscreen.bind()}><img id="fullscreen" src="src/assets/images/fullscreen.png"></img>
