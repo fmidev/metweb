@@ -18,6 +18,8 @@ const sidebarReducer = (state, action) => {
     workspaces: [],
     selectedWorkspace: false,
     menu: { menu: [] },
+    productLists: [],
+    itemList: [],
     worthwhile: false, // Worthwhile to save session, that is. Important because false here means it will crash metoclient-goldenlayout
     ...state
   }
@@ -55,6 +57,14 @@ const sidebarReducer = (state, action) => {
       newState.menu.menu[action.menuIndex].open = !newState.menu.menu[action.menuIndex].open
       return newState
 
+    case 'SHOW_PRODUCTLIST':
+      newState.menu.menu[action.menuIndex].hidden = false
+      return newState
+
+    case 'HIDE_PRODUCTLIST':
+      newState.menu.menu[action.menuIndex].hidden = true
+      return newState
+
     case 'PRODUCT_ON':
       newState.worthwhile = true;
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = true
@@ -65,6 +75,17 @@ const sidebarReducer = (state, action) => {
       newState.menu.menu[action.menuIndex].items[action.itemIndex].active = false
       deactivateProductInSelectedWindow(newState.menu.menu[action.menuIndex].items[action.itemIndex], newState.workspaces[newState.selectedWorkspace])
       return newState
+
+    case 'PRODUCT_SHOW':
+      newState.menu.menu[action.menuIndex].items[action.itemIndex].hidden = false
+      return newState
+
+    case 'PRODUCT_HIDE':
+      newState.menu.menu[action.menuIndex].items[action.itemIndex].hidden = true
+      return newState
+
+    case 'FILL_ITEMLIST':
+      newState.itemList.push.apply(newState.itemList, action.products)
 
     default:
       return newState

@@ -8,18 +8,31 @@ export class Product extends React.Component{
 
   constructor(props) {
     super(props);
+    /*this.hide = this.hide.bind(this);
+    this.props.hideProduct(this.hide)
+    this.show = this.show.bind(this);
+    this.props.showProduct(this.show)*/
   }
 
   // Toggle value and pass the resulting value up the hierarchy
   handleChange() {
     this.props.toggle();
   };
+/*
+  hide(menuIndex, itemIndex) {
+    this.props.hide(menuIndex, itemIndex)
+  }
+
+  show(menuIndex, itemIndex) {
+    this.props.show(menuIndex, itemIndex)
+  }
+*/
 
   render(){
 
     return(
 
-      <div className="fmi-metweb-productgroup-product">
+      <div className={"fmi-metweb-productgroup-product "+(this.props.hidden ? "hidden" : "")}>
         <div className="fmi-metweb-product-title">{this.props.product.title}</div>
         <label className="fmi-metweb-switch">
           <input type="checkbox" checked={this.props.active ? this.props.active : false} onChange={this.handleChange.bind(this)} /><span className="fmi-metweb-slider"></span>
@@ -34,7 +47,8 @@ export class Product extends React.Component{
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    active: state.sidebarReducer.menu.menu[ownProps.menuIndex].items[ownProps.itemIndex].active
+    active: state.sidebarReducer.menu.menu[ownProps.menuIndex].items[ownProps.itemIndex].active,
+    hidden: state.sidebarReducer.menu.menu[ownProps.menuIndex].items[ownProps.itemIndex].hidden
   }
 }
 
@@ -46,7 +60,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }else{
         dispatch({ type: "PRODUCT_ON", menuIndex: ownProps.menuIndex, itemIndex: ownProps.itemIndex })
       }
-    }
+    },/*
+    hide: (menuIndex, itemIndex) => {
+      console.log("product", ownProps)
+      dispatch({type: "PRODUCT_HIDE", menuIndex: menuIndex, itemIndex: itemIndex})
+    },
+    show: (menuIndex, itemIndex) => {
+      dispatch({type: "PRODUCT_SHOW", menuIndex: menuIndex, itemIndex: itemIndex})
+    }*/
   }
 }
 

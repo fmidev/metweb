@@ -86,7 +86,16 @@ class MenuReader {
                     })
                     parentIdx = this.menu.menu.length - 1
                   }
-                  this.menu.menu[parentIdx].items.push(item);
+                  let adding = true
+                  for (let i of this.menu.menu[parentIdx].items){
+                    if (i.layer == item.layer) {
+                      adding = false
+                      break;
+                    }
+                  }
+                  if (adding) {
+                    this.menu.menu[parentIdx].items.push(item);
+                  }
                 })
                 break;
 
@@ -105,7 +114,16 @@ class MenuReader {
                     })
                     parentIdx = this.menu.menu.length - 1
                   }
-                  this.menu.menu[parentIdx].items.push(item);
+                  let adding = true
+                  for (let i of this.menu.menu[parentIdx].items){
+                    if (i.layer == item.layer) {
+                      adding = false
+                      break;
+                    }
+                  }
+                  if (adding) {
+                    this.menu.menu[parentIdx].items.push(item);
+                  }
                 })
                 break;
 
