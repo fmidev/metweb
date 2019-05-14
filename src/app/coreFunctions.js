@@ -83,7 +83,7 @@ function setTimeParameters(layers){
   })
   var currentDate = new Date()
   var currentTime = currentDate.getTime()
-  if (config.firstDataPointTime + 36000000 > currentTime) {
+  if (config.firstDataPointTime + 25200000 > currentTime) {
     config.firstDataPointTime = Math.ceil(currentTime / config.resolutionTime) * config.resolutionTime
   }
   if (config.firstDataPointTime > currentTime) {
@@ -192,7 +192,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
 
   var endTime = timeData.endTime
   var beginTime = timeData.beginTime
-  if (beginTime + 36000000 > currentTime) {
+  if (beginTime + 25200000 > currentTime) {
     beginTime = Math.ceil(currentTime / timeData.resolutionTime) * timeData.resolutionTime
     timeData.beginTime = Math.ceil(currentTime / timeData.resolutionTime) * timeData.resolutionTime
   }

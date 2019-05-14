@@ -322,7 +322,9 @@ class GoldenLayout extends React.Component {
 
     const erd = elementResizeDetectorMaker()
     erd.listenTo(document.getElementById(self.props.containerId), (element) => {
-      self.goldenLayout.updateSize()
+      if (self.goldenLayout.width !== null){
+        self.goldenLayout.updateSize()
+      }
     })
   }
 
