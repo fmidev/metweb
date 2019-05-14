@@ -69,15 +69,28 @@ function setTimeParameters(layers){
   config.lastDataPointTime = 0
   Object.values(layers).forEach((layer) => {
     if (layer.animation.hasLegend) {
-      if (layer.resolutionTime > config.resolutionTime) {
-        config.resolutionTime = layer.resolutionTime
-        config.modifiedResolutionTime = layer.resolutionTime
-      }
-      if (layer.firstDataPointTime < config.firstDataPointTime) {
-        config.firstDataPointTime = layer.firstDataPointTime
-      }
-      if (layer.lastDataPointTime > config.lastDataPointTime) {
-        config.lastDataPointTime = layer.lastDataPointTime
+      if (layer.animation.capabBeginTime !== undefined) {
+        if (layer.animation.capabResolutionTime > config.resolutionTime) {
+          config.resolutionTime = layer.animation.capabResolutionTime
+          config.modifiedResolutionTime = layer.animation.capabResolutionTime
+        }
+        if (layer.animation.capabBeginTime < config.firstDataPointTime) {
+          config.firstDataPointTime = layer.animation.capabBeginTime
+        }
+        if (layer.animation.capabEndTime > config.lastDataPointTime) {
+          config.lastDataPointTime = layer.animation.capabEndTime
+        }
+      } else {
+        if (layer.resolutionTime > config.resolutionTime) {
+          config.resolutionTime = layer.resolutionTime
+          config.modifiedResolutionTime = layer.resolutionTime
+        }
+        if (layer.firstDataPointTime < config.firstDataPointTime) {
+          config.firstDataPointTime = layer.firstDataPointTime
+        }
+        if (layer.lastDataPointTime > config.lastDataPointTime) {
+          config.lastDataPointTime = layer.lastDataPointTime
+        }
       }
     }
   })
