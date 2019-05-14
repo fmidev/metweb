@@ -181,11 +181,13 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
   var currentDate = new Date()
   var currentTime = currentDate.getTime()
 
-  var resolutions = [8192, 4096, 2048, 1024, 512, 256, 128, 64]
-  // What is the reason for origins? Removing them doesn't seem to change anything.
-  var origins1024 = [[-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 8432773.1670142], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352], [-118331.36640836, 7907751.53726352]]
+  var resolutions = [32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64]
+  // Different origins for each resolution derived from extent.
+  // Layers are shown correctly with these values (extent, extent/2, extent/4 and 0)
+  var origins3857 = [[0, 0], [-10013188.195, 10024483.05], [-20026376.39, 20048966.10], [-20026376.39, 20048966.10], [0, 0], [-10013188.195, 10024483.05], [-5006594.0975, 5012241.525], [-20026376.39, 20048966.10], [-20026376.39, 20048966.10], [-10013188.195, 10024483.05]]
   var extent3067 = [-118331.366408356, 6335621.16701424, 875567.731906565, 7907751.53726352]
   var extent3857 = [-20026376.39, -20048966.10, 20026376.39, 20048966.10]
+
 
   // {beginTime, endTime, resolutionTime}
   var timeData = Metadata.getTimeDataForLayer(sourcecfg, layer)
@@ -279,7 +281,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       resolutions: resolutions,
       defaultCenterLocation: [2750000, 9000000],
       defaultCenterProjection: 'EPSG:3857',
-      defaultZoomLevel: 2,
+      defaultZoomLevel: 4,
       showLegend: true,
       legendTitle: 'Legend',
       noLegendText: 'None',
@@ -342,7 +344,7 @@ export const generateConfigForProduct = (title, layer, type, source, windows) =>
       },
       projection: 'EPSG:3857',
       tileGridOptions: {
-        origins: origins1024,
+        origins: origins3857,
         extent: extent3857,
         resolutions: resolutions,
         tileSize: 1024
