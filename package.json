@@ -24,7 +24,6 @@
     "immutable": "^4.0.0-rc.12",
     "jquery": "^3.4.1",
     "lodash.clonedeep": "^4.5.0",
-    "metoclient-goldenlayout": "fmidev/metoclient-goldenlayout",
     "ol": "^4.4.1",
     "prop-types": "^15.7.2",
     "react": "^15.5.4",
