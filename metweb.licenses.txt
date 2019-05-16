@@ -1,4 +1,4 @@
-@fmidev/metoclient@1.0.26
+@fmidev/metoclient@1.0.27
 MIT
 MIT
 
