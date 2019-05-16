@@ -15,20 +15,3 @@ url = "https://apps.ecmwf.int/wms/"
 tileCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
 timeCapabilities = "https://apps.ecmwf.int/wms/?token=public&request=GetCapabilities&service=WMS"
 server = "geoserver"
-
-[[source]]
-name = "fmiwms"
-type = "wms"
-url = "https://wms.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/geoserver/"
-tileCapabilities = "https://wms.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/geoserver/gwc/service/wmts?request=GetCapabilities"
-timeCapabilities = "https://wms.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/geoserver/wms?request=GetCapabilities&service=WMS"
-default = true
-server = "geoserver"
-
-[[source]]
-name = "fmidaliwms"
-type = "wms"
-url = "https://data.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/"
-timeCapabilities = "https://data.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/wms?request=GetCapabilities&service=WMS"
-tileCapabilities = "https://data.fmi.fi/fmi-apikey/8298e66f-ce1b-4b7f-9862-92ca3adc9059/wms?request=GetCapabilities&service=WMS"
-server = "smartmet"
