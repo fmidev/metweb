@@ -1,4 +1,4 @@
-import { FMIGoldenLayout } from 'metoclient-goldenlayout';
+import * as Golden from 'golden-layout';
 import React from 'react';
 import { Provider } from 'react-redux'
 //import { MetOClient } from '@fmidev/metoclient'
@@ -100,7 +100,7 @@ class GoldenLayout extends React.Component {
     }
 
     /* you can pass config as prop, or use a predefined one */
-    this.goldenLayout = new FMIGoldenLayout(config, this.node);
+    this.goldenLayout = new Golden(config, this.node)
 
     /* register components or bind events to your new instance here */
 
